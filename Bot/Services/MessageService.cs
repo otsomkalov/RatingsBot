@@ -2,10 +2,14 @@
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
+using RatingsBot.Constants;
 using RatingsBot.Data;
+using RatingsBot.Helpers;
 using RatingsBot.Models;
 using RatingsBot.Options;
+using RatingsBot.Resources;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using User = RatingsBot.Models.User;
@@ -19,11 +23,13 @@ namespace RatingsBot.Services
         private readonly ITelegramBotClient _bot;
         private readonly TelegramOptions _telegramOptions;
         private readonly AppDbContext _context;
+        private readonly IStringLocalizer<Messages> _localizer;
 
-        public MessageService(ITelegramBotClient bot, IOptions<TelegramOptions> telegramOptions, AppDbContext context)
+        public MessageService(ITelegramBotClient bot, IOptions<TelegramOptions> telegramOptions, AppDbContext context, IStringLocalizer<Messages> localizer)
         {
             _bot = bot;
             _context = context;
+            _localizer = localizer;
             _telegramOptions = telegramOptions.Value;
         }
 
@@ -33,14 +39,14 @@ namespace RatingsBot.Services
             {
                 await _context.AddAsync(new User
                 {
-                    TelegramId = message.From.Id
+                    Id = message.From.Id
                 });
 
                 await _context.SaveChangesAsync();
 
                 await _bot.SendTextMessageAsync(
-                    new ChatId(message.From.Id),
-                    )
+                    new(message.From.Id),
+                    _localizer[ResourcesNames.Welcome]);
 
                 return;
             }
@@ -49,10 +55,12 @@ namespace RatingsBot.Services
             {
                 var name = message.Text[NewItemCommand.Length..];
 
-                await _context.AddAsync(new Item
+                var createdItem = await _context.AddAsync(new Item
                 {
                     Name = name
                 });
+
+                await _context.SaveChangesAsync();
 
                 var users = await _context.Users
                     .AsNoTracking()
@@ -60,10 +68,9 @@ namespace RatingsBot.Services
 
                 foreach (var user in users)
                 {
-                    await _bot.SendTextMessageAsync(
-                        new(user.Id),
-                        "",
-                        replyMarkup: )
+                    await _bot.SendTextMessageAsync(new(user.Id),
+                        name,
+                        replyMarkup: ReplyMarkupHelpers.GetRatingsMarkup(createdItem.Entity.Id));
                 }
             }
         }

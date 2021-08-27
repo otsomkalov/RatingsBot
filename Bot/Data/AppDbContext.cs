@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Reflection;
+using Microsoft.EntityFrameworkCore;
 using RatingsBot.Models;
 
 namespace RatingsBot.Data
@@ -13,17 +14,15 @@ namespace RatingsBot.Data
 
         public DbSet<User> Users { get; set; }
 
+        public AppDbContext(DbContextOptions options) : base(options)
+        {
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasPostgresExtension("uuid-ossp");
 
-            modelBuilder.Entity<BaseEntity>(builder =>
-            {
-                builder.HasKey(e => e.Id);
-
-                builder.Property(e => e.Id)
-                    .HasDefaultValueSql("uuid_generate_v4()");
-            });
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
     }
 }

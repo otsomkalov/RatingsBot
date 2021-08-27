@@ -36,8 +36,8 @@ namespace RatingsBot
 
             services.AddLocalization();
 
-            services.AddSingleton<MessageService>()
-                .AddSingleton<CallbackQueryService>();
+            services.AddScoped<MessageService>()
+                .AddScoped<CallbackQueryService>();
 
             services.Configure<TelegramOptions>(_configuration.GetSection(TelegramOptions.SectionName))
                 .AddTelegram();
@@ -53,10 +53,10 @@ namespace RatingsBot
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "RatingsBot v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Bot v1"));
             }
 
-            app.UseHttpsRedirection();
+            // app.UseHttpsRedirection();
 
             app.UseRouting();
 

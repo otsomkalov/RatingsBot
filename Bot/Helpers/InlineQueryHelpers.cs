@@ -1,4 +1,4 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Linq;
 using RatingsBot.Models;
 using Telegram.Bot.Types.InlineQueryResults;
 
@@ -8,10 +8,10 @@ namespace RatingsBot.Helpers
     {
         public static InlineQueryResultArticle GetArticle(Rating rating)
         {
-            new InlineQueryResultArticle(rating.Id, rating.Item.Name, new InputTextMessageContent(rating.Item.Name))
+            return new(rating.Id, rating.Item.Name, new InputTextMessageContent(rating.Item.Name))
             {
-                Description = "⭐"
-            }
+                Description = string.Join(string.Empty, Enumerable.Repeat("⭐", rating.Value))
+            };
         }
     }
 }
