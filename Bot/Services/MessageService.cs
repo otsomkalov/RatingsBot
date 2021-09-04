@@ -1,6 +1,4 @@
-﻿using System;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
@@ -18,7 +16,10 @@ namespace RatingsBot.Services
 {
     public class MessageService
     {
+        private const string StartCommand = "/start";
         private const string NewItemCommand = "/newitem ";
+        private const string NewPlaceCommand = "/newplace ";
+        private const string NewCategoryCommand = "/newcategory ";
 
         private readonly ITelegramBotClient _bot;
         private readonly TelegramOptions _telegramOptions;
@@ -35,14 +36,18 @@ namespace RatingsBot.Services
 
         public async Task HandleAsync(Message message)
         {
-            if (message.Text.StartsWith("/start", StringComparison.InvariantCultureIgnoreCase))
+            if (message.Text.StartsWithCI(StartCommand))
             {
-                await _context.AddAsync(new User
+                if (!await _context.Users.AnyAsync(u => u.Id == message.From.Id))
                 {
-                    Id = message.From.Id
-                });
+                    await _context.AddAsync(new User
+                    {
+                        Id = message.From.Id,
+                        FirstName = message.From.FirstName
+                    });
 
-                await _context.SaveChangesAsync();
+                    await _context.SaveChangesAsync();
+                }
 
                 await _bot.SendTextMessageAsync(
                     new(message.From.Id),
@@ -51,27 +56,54 @@ namespace RatingsBot.Services
                 return;
             }
 
-            if (message.Text.StartsWith(NewItemCommand, StringComparison.InvariantCultureIgnoreCase))
+            if (message.Text.StartsWithCI(NewCategoryCommand))
             {
-                var name = message.Text[NewItemCommand.Length..];
+                var categoryName = message.Text[NewCategoryCommand.Length..];
 
-                var createdItem = await _context.AddAsync(new Item
+                await _context.AddAsync(new Category
                 {
-                    Name = name
+                    Name = categoryName
                 });
 
                 await _context.SaveChangesAsync();
 
-                var users = await _context.Users
-                    .AsNoTracking()
-                    .ToListAsync();
+                await _bot.SendTextMessageAsync(new(message.From.Id),
+                    _localizer[ResourcesNames.Created]);
+            }
 
-                foreach (var user in users)
+            if (message.Text.StartsWithCI(NewPlaceCommand))
+            {
+                var placeName = message.Text[NewPlaceCommand.Length..];
+
+                await _context.AddAsync(new Place
                 {
-                    await _bot.SendTextMessageAsync(new(user.Id),
-                        name,
-                        replyMarkup: ReplyMarkupHelpers.GetRatingsMarkup(createdItem.Entity.Id));
-                }
+                    Name = placeName
+                });
+
+                await _context.SaveChangesAsync();
+
+                await _bot.SendTextMessageAsync(new(message.From.Id),
+                    _localizer[ResourcesNames.Created]);
+            }
+
+            if (message.Text.StartsWithCI(NewItemCommand))
+            {
+                var categories = await _context.Categories.AsNoTracking().ToListAsync();
+
+                var name = message.Text[NewItemCommand.Length..];
+
+                var newItem = new Item
+                {
+                    Name = name
+                };
+                await _context.AddAsync(newItem);
+                await _context.SaveChangesAsync();
+
+                await _bot.SendTextMessageAsync(
+                    new(message.From.Id),
+                    _localizer[ResourcesNames.Category],
+                    replyMarkup: ReplyMarkupHelpers.GetCategoriesMarkup(newItem.Id, categories));
+
             }
         }
     }

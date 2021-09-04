@@ -11,7 +11,7 @@ namespace RatingsBot.Data.Configuration
             builder.HasKey(e => e.Id);
 
             builder.Property(e => e.Id)
-                .HasDefaultValueSql("uuid_generate_v4()");
+                .ValueGeneratedOnAdd();
         }
     }
 }

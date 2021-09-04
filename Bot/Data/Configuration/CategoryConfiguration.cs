@@ -1,7 +1,17 @@
-﻿namespace RatingsBot.Data.Configuration
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using RatingsBot.Models;
+
+namespace RatingsBot.Data.Configuration
 {
-    public class CategoryConfiguration
+    public class CategoryConfiguration : BaseEntityConfiguration<Category>
     {
-        
+        public override void Configure(EntityTypeBuilder<Category> builder)
+        {
+            base.Configure(builder);
+
+            builder.HasMany(c => c.Items)
+                .WithOne(i => i.Category)
+                .HasForeignKey(i => i.CategoryId);
+        }
     }
 }

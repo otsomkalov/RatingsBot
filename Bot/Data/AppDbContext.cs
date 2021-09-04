@@ -14,6 +14,8 @@ namespace RatingsBot.Data
 
         public DbSet<User> Users { get; set; }
 
+        public DbSet<Place> Places { get; set; }
+
         public AppDbContext(DbContextOptions options) : base(options)
         {
         }

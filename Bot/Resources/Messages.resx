@@ -21,4 +21,23 @@
     <data name="Welcome" xml:space="preserve">
         <value>Welcome to ratings bot. Type @rtngsbot in chat to see your ratings &amp; available items.</value>
     </data>
+    <data name="Category" xml:space="preserve">
+        <value>Select category</value>
+    </data>
+    <data name="Place" xml:space="preserve">
+        <value>Select place</value>
+    </data>
+    <data name="Created" xml:space="preserve">
+        <value>Created!</value>
+    </data>
+    <data name="NewItemTemplate" xml:space="preserve">
+        <value>Wrong command template. Correct one is: /newitem [name]</value>
+    </data>
+    <data name="ItemTemplate" xml:space="preserve">
+        <value>
+*Item:* {0}
+*Category:* {1}
+*Place:* {2}
+        </value>
+    </data>
 </root>

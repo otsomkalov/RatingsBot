@@ -25,7 +25,7 @@ namespace RatingsBot.Services
                 .AsNoTracking()
                 .Include(i => i.Item)
                 .Where(r => EF.Functions.Like(r.Item.Name, $"%{inlineQuery.Query}%"))
-                .Where(r => r.UsedId == inlineQuery.From.Id)
+                .Where(r => r.UserId == inlineQuery.From.Id)
                 .ToListAsync();
 
             var itemsArticles = items.Select(InlineQueryHelpers.GetArticle);

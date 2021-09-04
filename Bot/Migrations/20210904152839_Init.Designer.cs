@@ -10,8 +10,8 @@ using RatingsBot.Data;
 namespace RatingsBot.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20210815133519_Init2")]
-    partial class Init2
+    [Migration("20210904152839_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -24,8 +24,10 @@ namespace RatingsBot.Migrations
 
             modelBuilder.Entity("RatingsBot.Models.Category", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<string>("Name")
                         .HasColumnType("text");
@@ -37,44 +39,55 @@ namespace RatingsBot.Migrations
 
             modelBuilder.Entity("RatingsBot.Models.Item", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("text")
-                        .HasDefaultValueSql("uuid_generate_v4()");
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<int>("CategoryId")
+                    b.Property<int?>("CategoryId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("CategoryId1")
+                    b.Property<string>("Name")
                         .HasColumnType("text");
+
+                    b.Property<int?>("PlaceId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("PlaceId");
+
+                    b.ToTable("Items");
+                });
+
+            modelBuilder.Entity("RatingsBot.Models.Place", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId1");
-
-                    b.ToTable("Items");
+                    b.ToTable("Places");
                 });
 
             modelBuilder.Entity("RatingsBot.Models.Rating", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("text")
-                        .HasDefaultValueSql("uuid_generate_v4()");
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<int>("ItemId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("ItemId1")
-                        .HasColumnType("text");
-
-                    b.Property<long>("UsedId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("UserId")
+                    b.Property<long>("UserId")
                         .HasColumnType("bigint");
 
                     b.Property<int>("Value")
@@ -82,7 +95,7 @@ namespace RatingsBot.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ItemId1");
+                    b.HasIndex("ItemId");
 
                     b.HasIndex("UserId");
 
@@ -96,6 +109,9 @@ namespace RatingsBot.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
+                    b.Property<string>("FirstName")
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
                     b.ToTable("Users");
@@ -105,20 +121,30 @@ namespace RatingsBot.Migrations
                 {
                     b.HasOne("RatingsBot.Models.Category", "Category")
                         .WithMany("Items")
-                        .HasForeignKey("CategoryId1");
+                        .HasForeignKey("CategoryId");
+
+                    b.HasOne("RatingsBot.Models.Place", "Place")
+                        .WithMany("Items")
+                        .HasForeignKey("PlaceId");
 
                     b.Navigation("Category");
+
+                    b.Navigation("Place");
                 });
 
             modelBuilder.Entity("RatingsBot.Models.Rating", b =>
                 {
                     b.HasOne("RatingsBot.Models.Item", "Item")
-                        .WithMany()
-                        .HasForeignKey("ItemId1");
+                        .WithMany("Ratings")
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("RatingsBot.Models.User", "User")
                         .WithMany("Ratings")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Item");
 
@@ -126,6 +152,16 @@ namespace RatingsBot.Migrations
                 });
 
             modelBuilder.Entity("RatingsBot.Models.Category", b =>
+                {
+                    b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("RatingsBot.Models.Item", b =>
+                {
+                    b.Navigation("Ratings");
+                });
+
+            modelBuilder.Entity("RatingsBot.Models.Place", b =>
                 {
                     b.Navigation("Items");
                 });

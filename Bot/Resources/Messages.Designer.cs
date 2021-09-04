@@ -61,6 +61,55 @@ namespace RatingsBot.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Select category.
+        /// </summary>
+        internal static string Category {
+            get {
+                return ResourceManager.GetString("Category", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Created!.
+        /// </summary>
+        internal static string Created {
+            get {
+                return ResourceManager.GetString("Created", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to
+        ///*Item:* {0}
+        ///*Category:* {1}
+        ///*Place:* {2}
+        ///        .
+        /// </summary>
+        internal static string ItemTemplate {
+            get {
+                return ResourceManager.GetString("ItemTemplate", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Wrong command template. Correct one is: /newitem [name].
+        /// </summary>
+        internal static string NewItemTemplate {
+            get {
+                return ResourceManager.GetString("NewItemTemplate", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Select place.
+        /// </summary>
+        internal static string Place {
+            get {
+                return ResourceManager.GetString("Place", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Welcome to ratings bot. Type @rtngsbot in chat to see your ratings &amp; available items..
         /// </summary>
         internal static string Welcome {

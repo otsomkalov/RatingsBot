@@ -6,6 +6,8 @@ namespace RatingsBot.Models
     {
         public long Id { get; set; }
 
+        public string FirstName { get; set; }
+
         public virtual IEnumerable<Rating> Ratings { get; set; }
     }
 }
