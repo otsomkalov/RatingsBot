@@ -14,6 +14,6 @@ namespace RatingsBot.Models
 
         public virtual Place Place { get; set; }
 
-        public virtual IEnumerable<Rating> Ratings { get; set; }
+        public virtual IReadOnlyCollection<Rating> Ratings { get; set; }
     }
 }

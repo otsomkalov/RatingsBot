@@ -1,10 +1,15 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
+using RatingsBot.Constants;
 using RatingsBot.Data;
 using RatingsBot.Helpers;
+using RatingsBot.Models;
+using RatingsBot.Resources;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.InlineQueryResults;
 
 namespace RatingsBot.Services
 {
@@ -12,25 +17,46 @@ namespace RatingsBot.Services
     {
         private readonly AppDbContext _context;
         private readonly ITelegramBotClient _bot;
+        private readonly IStringLocalizer<Messages> _localizer;
 
-        public InlineQueryService(AppDbContext context, ITelegramBotClient bot)
+        public InlineQueryService(AppDbContext context, ITelegramBotClient bot, IStringLocalizer<Messages> localizer)
         {
             _context = context;
             _bot = bot;
+            _localizer = localizer;
         }
 
         public async Task HandleAsync(InlineQuery inlineQuery)
         {
-            var items = await _context.Ratings
-                .AsNoTracking()
-                .Include(i => i.Item)
-                .Where(r => EF.Functions.Like(r.Item.Name, $"%{inlineQuery.Query}%"))
-                .Where(r => r.UserId == inlineQuery.From.Id)
+            var items = await _context.Items
+                .Where(i => EF.Functions.ILike(i.Name, $"%{inlineQuery.Query}%"))
                 .ToListAsync();
 
-            var itemsArticles = items.Select(InlineQueryHelpers.GetArticle);
+            var itemsArticles = items.Select(item =>
+            {
+                var content = string.Format(_localizer[ResourcesNames.ItemTemplate], item.Name, item.Category?.Name, item.Place?.Name);
 
-            await _bot.AnswerInlineQueryAsync(inlineQuery.Id, itemsArticles);
+                var currentUserRating = item.Ratings.FirstOrDefault(r => r.UserId == inlineQuery.From.Id);
+                var avgRating = item.Ratings.Any()
+                    ? item.Ratings.Sum(r => r.Value) / item.Ratings.Count
+                    : 0;
+
+                var currentRatingString = currentUserRating == null
+                    ? "No rating"
+                    : string.Join(string.Empty, Enumerable.Repeat("⭐", currentUserRating.Value));
+
+                var avgRatingString = avgRating == 0
+                    ? "No average rating"
+                    : string.Join(string.Empty, Enumerable.Repeat("⭐", avgRating));
+
+                return new InlineQueryResultArticle(item.Id.ToString(), item.Name, new InputTextMessageContent(content))
+                {
+                    Description = string.Format(_localizer[ResourcesNames.Rating], currentRatingString, avgRatingString),
+                    ReplyMarkup = ReplyMarkupHelpers.GetRatingsMarkup(item.Id)
+                };
+            });
+
+            await _bot.AnswerInlineQueryAsync(inlineQuery.Id, itemsArticles, 1);
         }
     }
 }

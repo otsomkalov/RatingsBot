@@ -33,6 +33,15 @@
     <data name="NewItemTemplate" xml:space="preserve">
         <value>Wrong command template. Correct one is: /newitem [name]</value>
     </data>
+    <data name="Recorded" xml:space="preserve">
+        <value>Recorded</value>
+    </data>
+    <data name="Rating" xml:space="preserve">
+        <value>
+Your rating: {0}
+Average rating: {1}
+        </value>
+    </data>
     <data name="ItemTemplate" xml:space="preserve">
         <value>
 *Item:* {0}

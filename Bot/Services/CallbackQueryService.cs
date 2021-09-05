@@ -34,10 +34,7 @@ namespace RatingsBot.Services
             var itemId = int.Parse(callbackData[0]);
             var entityId = int.Parse(callbackData[2]);
 
-            var item = await _context.Items
-                .Include(i => i.Category)
-                .Include(i => i.Place)
-                .FirstOrDefaultAsync(i => i.Id == itemId);
+            var item = await _context.Items.FindAsync(itemId);
 
             switch (callbackData[1])
             {
@@ -78,7 +75,7 @@ namespace RatingsBot.Services
                         await _bot.SendTextMessageAsync(new(user.Id),
                             string.Format(_localizer[ResourcesNames.ItemTemplate], item.Name, item.Category?.Name, item.Place?.Name),
                             ParseMode.Markdown,
-                            replyMarkup: ReplyMarkupHelpers.GetRatingsMarkup(callbackData[0]));
+                            replyMarkup: ReplyMarkupHelpers.GetRatingsMarkup(itemId));
 
                         await Task.Delay(300);
                     }
@@ -87,14 +84,20 @@ namespace RatingsBot.Services
 
                 case ReplyMarkup.Rating:
 
-                    var rating = new Rating
+                    if (!await _context.Ratings.AnyAsync(r => r.ItemId == itemId && r.UserId == callbackQuery.From.Id))
                     {
-                        ItemId = itemId,
-                        UserId = callbackQuery.From.Id
-                    };
+                        var rating = new Rating
+                        {
+                            ItemId = itemId,
+                            UserId = callbackQuery.From.Id,
+                            Value = entityId
+                        };
 
-                    await _context.AddAsync(rating);
-                    await _context.SaveChangesAsync();
+                        await _context.AddAsync(rating);
+                        await _context.SaveChangesAsync();
+                    }
+
+                    await _bot.AnswerCallbackQueryAsync(callbackQuery.Id, _localizer[ResourcesNames.Recorded]);
 
                     break;
             }

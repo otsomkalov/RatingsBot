@@ -110,6 +110,27 @@ namespace RatingsBot.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to
+        ///Your rating: {0}
+        ///Average rating: {1}
+        ///        .
+        /// </summary>
+        internal static string Rating {
+            get {
+                return ResourceManager.GetString("Rating", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Recorded.
+        /// </summary>
+        internal static string Recorded {
+            get {
+                return ResourceManager.GetString("Recorded", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Welcome to ratings bot. Type @rtngsbot in chat to see your ratings &amp; available items..
         /// </summary>
         internal static string Welcome {

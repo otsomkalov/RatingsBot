@@ -8,5 +8,7 @@
         public const string Created = nameof(Created);
         public const string NewItemTemplate = nameof(NewItemTemplate);
         public const string ItemTemplate = nameof(ItemTemplate);
+        public const string Recorded = nameof(Recorded);
+        public const string Rating = nameof(Rating);
     }
 }
