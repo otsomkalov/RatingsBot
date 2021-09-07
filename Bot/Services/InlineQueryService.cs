@@ -34,8 +34,6 @@ namespace RatingsBot.Services
 
             var itemsArticles = items.Select(item =>
             {
-                var content = string.Format(_localizer[ResourcesNames.ItemTemplate], item.Name, item.Category?.Name, item.Place?.Name);
-
                 var currentUserRating = item.Ratings.FirstOrDefault(r => r.UserId == inlineQuery.From.Id);
                 var avgRating = item.Ratings.Any()
                     ? item.Ratings.Sum(r => r.Value) / item.Ratings.Count
@@ -49,9 +47,13 @@ namespace RatingsBot.Services
                     ? "No average rating"
                     : string.Join(string.Empty, Enumerable.Repeat("⭐", avgRating));
 
+                var content = string.Format(_localizer[ResourcesNames.ItemMessageTemplate], item.Name, item.Category?.Name,
+                    item.Place?.Name, currentRatingString, avgRatingString);
+
                 return new InlineQueryResultArticle(item.Id.ToString(), item.Name, new InputTextMessageContent(content))
                 {
-                    Description = string.Format(_localizer[ResourcesNames.Rating], currentRatingString, avgRatingString),
+                    Description = string.Format(_localizer[ResourcesNames.ItemInlineArticleTemplate], item.Category?.Name, item.Place?.Name,
+                        currentRatingString),
                     ReplyMarkup = ReplyMarkupHelpers.GetRatingsMarkup(item.Id)
                 };
             });

@@ -30,23 +30,32 @@
     <data name="Created" xml:space="preserve">
         <value>Created!</value>
     </data>
-    <data name="NewItemTemplate" xml:space="preserve">
-        <value>Wrong command template. Correct one is: /newitem [name]</value>
+    <data name="NewItemCommand" xml:space="preserve">
+        <value>Command usage is: /newitem [name]</value>
+    </data>
+    <data name="NewCategoryCommand" xml:space="preserve">
+        <value>Command usage is: /newcategory [name]</value>
+    </data>
+    <data name="NewPlaceCommand" xml:space="preserve">
+        <value>Command usage is: /newplace [name]</value>
     </data>
     <data name="Recorded" xml:space="preserve">
         <value>Recorded</value>
     </data>
-    <data name="Rating" xml:space="preserve">
+    <data name="ItemInlineArticleTemplate" xml:space="preserve">
         <value>
-Your rating: {0}
-Average rating: {1}
+Category: {0}
+Place: {1}
+Your rating: {2}
         </value>
     </data>
-    <data name="ItemTemplate" xml:space="preserve">
+    <data name="ItemMessageTemplate" xml:space="preserve">
         <value>
-*Item:* {0}
-*Category:* {1}
-*Place:* {2}
+Item: {0}
+Category: {1}
+Place: {2}
+Your rating: {3}
+Average rating: {4}
         </value>
     </data>
 </root>

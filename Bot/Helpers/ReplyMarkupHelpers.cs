@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using Microsoft.VisualBasic;
 using RatingsBot.Constants;
 using RatingsBot.Models;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -60,10 +61,19 @@ namespace RatingsBot.Helpers
                 }));
             }
 
+            rows.Add(new InlineKeyboardButton[]
+            {
+                new()
+                {
+                    Text = "Refresh",
+                    CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Category, 0)
+                }
+            });
+
             return new(rows);
         }
 
-        public static InlineKeyboardMarkup GetPlacesMarkup(string itemId, IReadOnlyCollection<Place> places)
+        public static InlineKeyboardMarkup GetPlacesMarkup(int itemId, IReadOnlyCollection<Place> places)
         {
             var rows = new List<IEnumerable<InlineKeyboardButton>>();
 
@@ -75,6 +85,15 @@ namespace RatingsBot.Helpers
                     CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Place, place.Id)
                 }));
             }
+
+            rows.Add(new InlineKeyboardButton[]
+            {
+                new()
+                {
+                    Text = "Refresh",
+                    CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Place, 0)
+                }
+            });
 
             return new(rows);
         }

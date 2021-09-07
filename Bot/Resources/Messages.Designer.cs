@@ -80,23 +80,56 @@ namespace RatingsBot.Resources {
 
         /// <summary>
         ///   Looks up a localized string similar to
-        ///*Item:* {0}
-        ///*Category:* {1}
-        ///*Place:* {2}
+        ///Category: {0}
+        ///Place: {1}
+        ///Your rating: {2}
         ///        .
         /// </summary>
-        internal static string ItemTemplate {
+        internal static string ItemInlineArticleTemplate {
             get {
-                return ResourceManager.GetString("ItemTemplate", resourceCulture);
+                return ResourceManager.GetString("ItemInlineArticleTemplate", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Wrong command template. Correct one is: /newitem [name].
+        ///   Looks up a localized string similar to
+        ///Item: {0}
+        ///Category: {1}
+        ///Place: {2}
+        ///Your rating: {3}
+        ///Average rating: {4}
+        ///        .
         /// </summary>
-        internal static string NewItemTemplate {
+        internal static string ItemMessageTemplate {
             get {
-                return ResourceManager.GetString("NewItemTemplate", resourceCulture);
+                return ResourceManager.GetString("ItemMessageTemplate", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Command usage is: /newcategory [name].
+        /// </summary>
+        internal static string NewCategoryCommand {
+            get {
+                return ResourceManager.GetString("NewCategoryCommand", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Command usage is: /newitem [name].
+        /// </summary>
+        internal static string NewItemCommand {
+            get {
+                return ResourceManager.GetString("NewItemCommand", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Command usage is: /newplace [name].
+        /// </summary>
+        internal static string NewPlaceCommand {
+            get {
+                return ResourceManager.GetString("NewPlaceCommand", resourceCulture);
             }
         }
 
@@ -106,18 +139,6 @@ namespace RatingsBot.Resources {
         internal static string Place {
             get {
                 return ResourceManager.GetString("Place", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to
-        ///Your rating: {0}
-        ///Average rating: {1}
-        ///        .
-        /// </summary>
-        internal static string Rating {
-            get {
-                return ResourceManager.GetString("Rating", resourceCulture);
             }
         }
 

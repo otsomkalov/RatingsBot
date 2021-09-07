@@ -10,7 +10,6 @@ using RatingsBot.Models;
 using RatingsBot.Resources;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using Telegram.Bot.Types.Enums;
 
 namespace RatingsBot.Services
 {
@@ -36,70 +35,135 @@ namespace RatingsBot.Services
 
             var item = await _context.Items.FindAsync(itemId);
 
-            switch (callbackData[1])
+            await (callbackData[1] switch
             {
-                case ReplyMarkup.Category:
+                ReplyMarkup.Category => ProcessCategoryCommand(callbackQuery, entityId, item),
+                ReplyMarkup.Place => ProcessPlaceCommand(callbackQuery, entityId, item),
+                ReplyMarkup.Rating => ProcessRatingCommand(callbackQuery, item, entityId)
+            });
+        }
 
-                    item.CategoryId = entityId;
+        private async Task ProcessCategoryCommand(CallbackQuery callbackQuery, int entityId, Item item)
+        {
+            if (entityId == 0)
+            {
+                var categories = await _context.Categories.AsNoTracking().ToListAsync();
 
-                    _context.Update(item);
-                    await _context.SaveChangesAsync();
+                await _bot.EditMessageReplyMarkupAsync(new(callbackQuery.From.Id),
+                    callbackQuery.Message.MessageId,
+                    ReplyMarkupHelpers.GetCategoriesMarkup(item.Id, categories));
+            }
+            else
+            {
+                item.CategoryId = entityId;
 
-                    var places = await _context.Places.AsNoTracking()
-                        .ToListAsync();
+                _context.Update(item);
+                await _context.SaveChangesAsync();
 
-                    await _bot.EditMessageTextAsync(new(callbackQuery.From.Id),
-                        callbackQuery.Message.MessageId,
-                        _localizer[ResourcesNames.Place],
-                        replyMarkup: ReplyMarkupHelpers.GetPlacesMarkup(callbackData[0], places));
+                var places = await _context.Places.AsNoTracking()
+                    .ToListAsync();
 
-                    break;
+                await _bot.EditMessageTextAsync(new(callbackQuery.From.Id),
+                    callbackQuery.Message.MessageId,
+                    _localizer[ResourcesNames.Place],
+                    replyMarkup: ReplyMarkupHelpers.GetPlacesMarkup(item.Id, places));
+            }
+        }
 
-                case ReplyMarkup.Place:
+        private async Task ProcessPlaceCommand(CallbackQuery callbackQuery, int entityId, Item item)
+        {
+            if (entityId == 0)
+            {
+                var places = await _context.Places.AsNoTracking().ToListAsync();
 
-                    item.PlaceId = entityId;
+                await _bot.EditMessageReplyMarkupAsync(new(callbackQuery.From.Id),
+                    callbackQuery.Message.MessageId,
+                    ReplyMarkupHelpers.GetPlacesMarkup(item.Id, places));
+            }
+            else
+            {
+                item.PlaceId = entityId;
 
-                    _context.Update(item);
-                    await _context.SaveChangesAsync();
+                _context.Update(item);
+                await _context.SaveChangesAsync();
 
-                    await _bot.AnswerCallbackQueryAsync(callbackQuery.Id,
-                        _localizer[ResourcesNames.Created]);
+                var currentUserRating = item.Ratings.FirstOrDefault(r => r.UserId == callbackQuery.From.Id);
+                var avgRating = item.Ratings.Any()
+                    ? item.Ratings.Sum(r => r.Value) / item.Ratings.Count
+                    : 0;
 
-                    await _bot.DeleteMessageAsync(new(callbackQuery.From.Id), callbackQuery.Message.MessageId);
+                var currentRatingString = currentUserRating == null
+                    ? "No rating"
+                    : string.Join(string.Empty, Enumerable.Repeat("⭐", currentUserRating.Value));
 
-                    var users = await _context.Users.AsNoTracking()
-                        .ToListAsync();
+                var avgRatingString = avgRating == 0
+                    ? "No average rating"
+                    : string.Join(string.Empty, Enumerable.Repeat("⭐", avgRating));
 
-                    foreach (var user in users)
-                    {
-                        await _bot.SendTextMessageAsync(new(user.Id),
-                            string.Format(_localizer[ResourcesNames.ItemTemplate], item.Name, item.Category?.Name, item.Place?.Name),
-                            ParseMode.Markdown,
-                            replyMarkup: ReplyMarkupHelpers.GetRatingsMarkup(itemId));
+                var messageText = string.Format(_localizer[ResourcesNames.ItemMessageTemplate], item.Name, item.Category?.Name, item.Place?.Name,
+                    currentRatingString, avgRatingString);
 
-                        await Task.Delay(300);
-                    }
+                await _bot.EditMessageTextAsync(new(callbackQuery.From.Id),
+                    callbackQuery.Message.MessageId,
+                    messageText,
+                    replyMarkup: ReplyMarkupHelpers.GetRatingsMarkup(item.Id));
+            }
+        }
 
-                    break;
+        private async Task ProcessRatingCommand(CallbackQuery callbackQuery, Item item, int entityId)
+        {
+            var rating = await _context.Ratings.FirstOrDefaultAsync(r => r.UserId == callbackQuery.From.Id && r.ItemId == item.Id);
 
-                case ReplyMarkup.Rating:
+            if (rating != null)
+            {
+                rating.Value = entityId;
 
-                    if (!await _context.Ratings.AnyAsync(r => r.ItemId == itemId && r.UserId == callbackQuery.From.Id))
-                    {
-                        var rating = new Rating
-                        {
-                            ItemId = itemId,
-                            UserId = callbackQuery.From.Id,
-                            Value = entityId
-                        };
+                _context.Update(rating);
+            }
+            else
+            {
+                rating = new()
+                {
+                    ItemId = item.Id,
+                    UserId = callbackQuery.From.Id,
+                    Value = entityId
+                };
 
-                        await _context.AddAsync(rating);
-                        await _context.SaveChangesAsync();
-                    }
+                await _context.AddAsync(rating);
+            }
 
-                    await _bot.AnswerCallbackQueryAsync(callbackQuery.Id, _localizer[ResourcesNames.Recorded]);
+            await _context.SaveChangesAsync();
 
-                    break;
+            await _bot.AnswerCallbackQueryAsync(callbackQuery.Id, _localizer[ResourcesNames.Recorded]);
+
+            var currentUserRating = item.Ratings.FirstOrDefault(r => r.UserId == callbackQuery.From.Id);
+            var avgRating = item.Ratings.Any()
+                ? item.Ratings.Sum(r => r.Value) / item.Ratings.Count
+                : 0;
+
+            var currentRatingString = currentUserRating == null
+                ? "No rating"
+                : string.Join(string.Empty, Enumerable.Repeat("⭐", currentUserRating.Value));
+
+            var avgRatingString = avgRating == 0
+                ? "No average rating"
+                : string.Join(string.Empty, Enumerable.Repeat("⭐", avgRating));
+
+            var messageText = string.Format(_localizer[ResourcesNames.ItemMessageTemplate], item.Name, item.Category?.Name, item.Place?.Name,
+                currentRatingString, avgRatingString);
+
+            if (callbackQuery.InlineMessageId != null)
+            {
+                await _bot.EditMessageTextAsync(callbackQuery.InlineMessageId,
+                    messageText,
+                    replyMarkup: ReplyMarkupHelpers.GetRatingsMarkup(item.Id));
+            }
+            else
+            {
+                await _bot.EditMessageTextAsync(new(callbackQuery.From.Id),
+                    callbackQuery.Message.MessageId,
+                    messageText,
+                    replyMarkup: ReplyMarkupHelpers.GetRatingsMarkup(item.Id));
             }
         }
     }

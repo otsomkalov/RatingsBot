@@ -17,9 +17,9 @@ namespace RatingsBot.Services
     public class MessageService
     {
         private const string StartCommand = "/start";
-        private const string NewItemCommand = "/newitem ";
-        private const string NewPlaceCommand = "/newplace ";
-        private const string NewCategoryCommand = "/newcategory ";
+        private const string NewItemCommand = "/newitem";
+        private const string NewPlaceCommand = "/newplace";
+        private const string NewCategoryCommand = "/newcategory";
 
         private readonly ITelegramBotClient _bot;
         private readonly TelegramOptions _telegramOptions;
@@ -58,7 +58,15 @@ namespace RatingsBot.Services
 
             if (message.Text.StartsWithCI(NewCategoryCommand))
             {
-                var categoryName = message.Text[NewCategoryCommand.Length..];
+                if (message.Text.Length == NewCategoryCommand.Length)
+                {
+                    await _bot.SendTextMessageAsync(new(message.From.Id),
+                        _localizer[ResourcesNames.NewCategoryCommand]);
+
+                    return;
+                }
+
+                var categoryName = message.Text[NewCategoryCommand.Length..].Trim();
 
                 await _context.AddAsync(new Category
                 {
@@ -73,7 +81,15 @@ namespace RatingsBot.Services
 
             if (message.Text.StartsWithCI(NewPlaceCommand))
             {
-                var placeName = message.Text[NewPlaceCommand.Length..];
+                if (message.Text.Length == NewPlaceCommand.Length)
+                {
+                    await _bot.SendTextMessageAsync(new(message.From.Id),
+                        _localizer[ResourcesNames.NewPlaceCommand]);
+
+                    return;
+                }
+
+                var placeName = message.Text[NewPlaceCommand.Length..].Trim();
 
                 await _context.AddAsync(new Place
                 {
@@ -88,9 +104,17 @@ namespace RatingsBot.Services
 
             if (message.Text.StartsWithCI(NewItemCommand))
             {
+                if (message.Text.Length == NewItemCommand.Length)
+                {
+                    await _bot.SendTextMessageAsync(new(message.From.Id),
+                        _localizer[ResourcesNames.NewItemCommand]);
+
+                    return;
+                }
+
                 var categories = await _context.Categories.AsNoTracking().ToListAsync();
 
-                var name = message.Text[NewItemCommand.Length..];
+                var name = message.Text[NewItemCommand.Length..].Trim();
 
                 var newItem = new Item
                 {
