@@ -7,11 +7,11 @@ namespace RatingsBot.Data.Configuration
     {
         public override void Configure(EntityTypeBuilder<Category> builder)
         {
-            base.Configure(builder);
-
             builder.HasMany(c => c.Items)
                 .WithOne(i => i.Category)
                 .HasForeignKey(i => i.CategoryId);
+
+            base.Configure(builder);
         }
     }
 }
