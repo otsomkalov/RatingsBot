@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using RatingsBot.Options;
+using RatingsBot.Services;
 using Telegram.Bot;
 
 namespace RatingsBot.Extensions
@@ -15,6 +16,18 @@ namespace RatingsBot.Extensions
 
                 return new TelegramBotClient(options.Token);
             });
+        }
+
+        public static IServiceCollection AddServices(this IServiceCollection services)
+        {
+            return services.AddScoped<CategoryService>()
+                .AddScoped<ItemService>()
+                .AddScoped<PlaceService>()
+                .AddScoped<RatingService>()
+                .AddScoped<UserService>()
+                .AddScoped<MessageService>()
+                .AddScoped<CallbackQueryService>()
+                .AddScoped<InlineQueryService>();
         }
     }
 }

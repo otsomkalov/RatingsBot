@@ -42,13 +42,6 @@
     <data name="Recorded" xml:space="preserve">
         <value>Recorded</value>
     </data>
-    <data name="ItemInlineArticleTemplate" xml:space="preserve">
-        <value>
-Category: {0}
-Place: {1}
-Your rating: {2}
-        </value>
-    </data>
     <data name="ItemMessageTemplate" xml:space="preserve">
         <value>
 Item: {0}

@@ -6,8 +6,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using RatingsBot.Data;
 using RatingsBot.Extensions;
+using RatingsBot.Middlewares;
 using RatingsBot.Options;
-using RatingsBot.Services;
 
 namespace RatingsBot
 {
@@ -28,11 +28,10 @@ namespace RatingsBot
                     .UseLazyLoadingProxies()
                     .UseNpgsql(_configuration.GetConnectionString(DatabaseOptions.ConnectionStringName)));
 
-            services.AddLocalization();
+            services.AddLocalization()
+                .AddServices();
 
-            services.AddScoped<MessageService>()
-                .AddScoped<CallbackQueryService>()
-                .AddScoped<InlineQueryService>();
+            services.AddScoped<ExceptionHandlerMiddleware>();
 
             services.Configure<TelegramOptions>(_configuration.GetSection(TelegramOptions.SectionName))
                 .AddTelegram();
@@ -48,6 +47,8 @@ namespace RatingsBot
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseMiddleware<ExceptionHandlerMiddleware>();
 
             // app.UseHttpsRedirection();
 

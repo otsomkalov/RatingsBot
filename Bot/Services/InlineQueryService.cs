@@ -1,11 +1,8 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using RatingsBot.Constants;
-using RatingsBot.Data;
 using RatingsBot.Helpers;
-using RatingsBot.Models;
 using RatingsBot.Resources;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -15,50 +12,34 @@ namespace RatingsBot.Services
 {
     public class InlineQueryService
     {
-        private readonly AppDbContext _context;
         private readonly ITelegramBotClient _bot;
         private readonly IStringLocalizer<Messages> _localizer;
+        private readonly ItemService _itemService;
 
-        public InlineQueryService(AppDbContext context, ITelegramBotClient bot, IStringLocalizer<Messages> localizer)
+        public InlineQueryService(ITelegramBotClient bot, IStringLocalizer<Messages> localizer, ItemService itemService)
         {
-            _context = context;
             _bot = bot;
             _localizer = localizer;
+            _itemService = itemService;
         }
 
         public async Task HandleAsync(InlineQuery inlineQuery)
         {
-            var items = await _context.Items
-                .Where(i => EF.Functions.ILike(i.Name, $"%{inlineQuery.Query}%"))
-                .ToListAsync();
+            var items = await _itemService.ListAsync(inlineQuery.Query);
 
             var itemsArticles = items.Select(item =>
             {
-                var currentUserRating = item.Ratings.FirstOrDefault(r => r.UserId == inlineQuery.From.Id);
-                var avgRating = item.Ratings.Any()
-                    ? item.Ratings.Sum(r => r.Value) / item.Ratings.Count
-                    : 0;
+                var description =
+                    MessageHelpers.GetItemMessageText(item, inlineQuery.From.Id, _localizer[ResourcesNames.ItemMessageTemplate]);
 
-                var currentRatingString = currentUserRating == null
-                    ? "No rating"
-                    : string.Join(string.Empty, Enumerable.Repeat("⭐", currentUserRating.Value));
-
-                var avgRatingString = avgRating == 0
-                    ? "No average rating"
-                    : string.Join(string.Empty, Enumerable.Repeat("⭐", avgRating));
-
-                var content = string.Format(_localizer[ResourcesNames.ItemMessageTemplate], item.Name, item.Category?.Name,
-                    item.Place?.Name, currentRatingString, avgRatingString);
-
-                return new InlineQueryResultArticle(item.Id.ToString(), item.Name, new InputTextMessageContent(content))
+                return new InlineQueryResultArticle(item.Id.ToString(), item.Name, new InputTextMessageContent(description))
                 {
-                    Description = string.Format(_localizer[ResourcesNames.ItemInlineArticleTemplate], item.Category?.Name, item.Place?.Name,
-                        currentRatingString),
+                    Description = description,
                     ReplyMarkup = ReplyMarkupHelpers.GetRatingsMarkup(item.Id)
                 };
             });
 
-            await _bot.AnswerInlineQueryAsync(inlineQuery.Id, itemsArticles, 1);
+            await _bot.AnswerInlineQueryAsync(inlineQuery.Id, itemsArticles);
         }
     }
 }

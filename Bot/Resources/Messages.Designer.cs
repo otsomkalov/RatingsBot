@@ -80,19 +80,6 @@ namespace RatingsBot.Resources {
 
         /// <summary>
         ///   Looks up a localized string similar to
-        ///Category: {0}
-        ///Place: {1}
-        ///Your rating: {2}
-        ///        .
-        /// </summary>
-        internal static string ItemInlineArticleTemplate {
-            get {
-                return ResourceManager.GetString("ItemInlineArticleTemplate", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to
         ///Item: {0}
         ///Category: {1}
         ///Place: {2}

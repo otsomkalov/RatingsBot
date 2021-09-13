@@ -1,10 +1,7 @@
 ﻿using System.Collections.Immutable;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using RatingsBot.Constants;
-using RatingsBot.Data;
 using RatingsBot.Helpers;
 using RatingsBot.Models;
 using RatingsBot.Resources;
@@ -15,15 +12,22 @@ namespace RatingsBot.Services
 {
     public class CallbackQueryService
     {
-        private readonly AppDbContext _context;
         private readonly ITelegramBotClient _bot;
         private readonly IStringLocalizer<Messages> _localizer;
+        private readonly CategoryService _categoryService;
+        private readonly PlaceService _placeService;
+        private readonly ItemService _itemService;
+        private readonly RatingService _ratingService;
 
-        public CallbackQueryService(AppDbContext context, ITelegramBotClient bot, IStringLocalizer<Messages> localizer)
+        public CallbackQueryService(ITelegramBotClient bot, IStringLocalizer<Messages> localizer, CategoryService categoryService,
+            PlaceService placeService, ItemService itemService, RatingService ratingService)
         {
-            _context = context;
             _bot = bot;
             _localizer = localizer;
+            _categoryService = categoryService;
+            _placeService = placeService;
+            _itemService = itemService;
+            _ratingService = ratingService;
         }
 
         public async Task HandleAsync(CallbackQuery callbackQuery)
@@ -32,8 +36,7 @@ namespace RatingsBot.Services
 
             var itemId = int.Parse(callbackData[0]);
             var entityId = int.Parse(callbackData[2]);
-
-            var item = await _context.Items.FindAsync(itemId);
+            var item = await _itemService.GetAsync(itemId);
 
             await (callbackData[1] switch
             {
@@ -47,7 +50,7 @@ namespace RatingsBot.Services
         {
             if (entityId == 0)
             {
-                var categories = await _context.Categories.AsNoTracking().ToListAsync();
+                var categories = await _categoryService.ListAsync();
 
                 await _bot.EditMessageReplyMarkupAsync(new(callbackQuery.From.Id),
                     callbackQuery.Message.MessageId,
@@ -55,13 +58,9 @@ namespace RatingsBot.Services
             }
             else
             {
-                item.CategoryId = entityId;
+                await _itemService.UpdateCategoryAsync(item, entityId);
 
-                _context.Update(item);
-                await _context.SaveChangesAsync();
-
-                var places = await _context.Places.AsNoTracking()
-                    .ToListAsync();
+                var places = await _placeService.ListAsync();
 
                 await _bot.EditMessageTextAsync(new(callbackQuery.From.Id),
                     callbackQuery.Message.MessageId,
@@ -74,7 +73,7 @@ namespace RatingsBot.Services
         {
             if (entityId == 0)
             {
-                var places = await _context.Places.AsNoTracking().ToListAsync();
+                var places = await _placeService.ListAsync();
 
                 await _bot.EditMessageReplyMarkupAsync(new(callbackQuery.From.Id),
                     callbackQuery.Message.MessageId,
@@ -82,75 +81,22 @@ namespace RatingsBot.Services
             }
             else
             {
-                item.PlaceId = entityId;
-
-                _context.Update(item);
-                await _context.SaveChangesAsync();
-
-                var currentUserRating = item.Ratings.FirstOrDefault(r => r.UserId == callbackQuery.From.Id);
-                var avgRating = item.Ratings.Any()
-                    ? item.Ratings.Sum(r => r.Value) / item.Ratings.Count
-                    : 0;
-
-                var currentRatingString = currentUserRating == null
-                    ? "No rating"
-                    : string.Join(string.Empty, Enumerable.Repeat("⭐", currentUserRating.Value));
-
-                var avgRatingString = avgRating == 0
-                    ? "No average rating"
-                    : string.Join(string.Empty, Enumerable.Repeat("⭐", avgRating));
-
-                var messageText = string.Format(_localizer[ResourcesNames.ItemMessageTemplate], item.Name, item.Category?.Name, item.Place?.Name,
-                    currentRatingString, avgRatingString);
+                await _itemService.UpdatePlaceAsync(item, entityId);
 
                 await _bot.EditMessageTextAsync(new(callbackQuery.From.Id),
                     callbackQuery.Message.MessageId,
-                    messageText,
+                    MessageHelpers.GetItemMessageText(item, callbackQuery.From.Id, _localizer[ResourcesNames.ItemMessageTemplate]),
                     replyMarkup: ReplyMarkupHelpers.GetRatingsMarkup(item.Id));
             }
         }
 
         private async Task ProcessRatingCommand(CallbackQuery callbackQuery, Item item, int entityId)
         {
-            var rating = await _context.Ratings.FirstOrDefaultAsync(r => r.UserId == callbackQuery.From.Id && r.ItemId == item.Id);
-
-            if (rating != null)
-            {
-                rating.Value = entityId;
-
-                _context.Update(rating);
-            }
-            else
-            {
-                rating = new()
-                {
-                    ItemId = item.Id,
-                    UserId = callbackQuery.From.Id,
-                    Value = entityId
-                };
-
-                await _context.AddAsync(rating);
-            }
-
-            await _context.SaveChangesAsync();
+            await _ratingService.UpsertAsync(callbackQuery.From.Id, item.Id, entityId);
 
             await _bot.AnswerCallbackQueryAsync(callbackQuery.Id, _localizer[ResourcesNames.Recorded]);
 
-            var currentUserRating = item.Ratings.FirstOrDefault(r => r.UserId == callbackQuery.From.Id);
-            var avgRating = item.Ratings.Any()
-                ? item.Ratings.Sum(r => r.Value) / item.Ratings.Count
-                : 0;
-
-            var currentRatingString = currentUserRating == null
-                ? "No rating"
-                : string.Join(string.Empty, Enumerable.Repeat("⭐", currentUserRating.Value));
-
-            var avgRatingString = avgRating == 0
-                ? "No average rating"
-                : string.Join(string.Empty, Enumerable.Repeat("⭐", avgRating));
-
-            var messageText = string.Format(_localizer[ResourcesNames.ItemMessageTemplate], item.Name, item.Category?.Name, item.Place?.Name,
-                currentRatingString, avgRatingString);
+            var messageText = MessageHelpers.GetItemMessageText(item, callbackQuery.From.Id, _localizer[ResourcesNames.ItemMessageTemplate]);
 
             if (callbackQuery.InlineMessageId != null)
             {
@@ -166,5 +112,7 @@ namespace RatingsBot.Services
                     replyMarkup: ReplyMarkupHelpers.GetRatingsMarkup(item.Id));
             }
         }
+
+
     }
 }

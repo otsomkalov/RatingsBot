@@ -7,8 +7,6 @@ namespace RatingsBot.Data.Configuration
     {
         public override void Configure(EntityTypeBuilder<Item> builder)
         {
-            base.Configure(builder);
-
             builder.HasMany(i => i.Ratings)
                 .WithOne(r => r.Item)
                 .HasForeignKey(r => r.ItemId);
@@ -16,6 +14,8 @@ namespace RatingsBot.Data.Configuration
             builder.HasOne(i => i.Category)
                 .WithMany(c => c.Items)
                 .HasForeignKey(i => i.CategoryId);
+
+            base.Configure(builder);
         }
     }
 }

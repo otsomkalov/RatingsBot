@@ -5,7 +5,5 @@
         public const string SectionName = "Telegram";
 
         public string Token { get; set; }
-
-        public int AdminId { get; set; }
     }
 }
