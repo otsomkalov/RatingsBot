@@ -30,7 +30,8 @@ namespace RatingsBot.Controllers
             {
                 UpdateType.Message => _messageService.HandleAsync(update.Message),
                 UpdateType.CallbackQuery => _callbackQueryService.HandleAsync(update.CallbackQuery),
-                UpdateType.InlineQuery => _inlineQueryService.HandleAsync(update.InlineQuery)
+                UpdateType.InlineQuery => _inlineQueryService.HandleAsync(update.InlineQuery),
+                _ => Task.CompletedTask
             };
         }
     }

@@ -12,37 +12,45 @@ namespace RatingsBot.Helpers
     {
         public static InlineKeyboardMarkup GetRatingsMarkup(int itemId)
         {
-            return new(new[]
+            return new(new IEnumerable<InlineKeyboardButton>[]
             {
-                new[]
+                new InlineKeyboardButton[]
                 {
-                    new InlineKeyboardButton
+                    new()
                     {
                         Text = "⭐",
                         CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Rating, RatingValues.OneStar)
                     },
-                    new InlineKeyboardButton
+                    new()
                     {
                         Text = "⭐⭐",
                         CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Rating, RatingValues.TwoStars)
                     },
-                    new InlineKeyboardButton
+                    new()
                     {
                         Text = "⭐⭐⭐",
                         CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Rating, RatingValues.ThreeStars)
                     }
                 },
-                new []
+                new InlineKeyboardButton[]
                 {
-                    new InlineKeyboardButton
+                    new()
                     {
                         Text = "⭐⭐⭐⭐",
                         CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Rating, RatingValues.FourStars)
                     },
-                    new InlineKeyboardButton
+                    new()
                     {
                         Text = "⭐⭐⭐⭐⭐",
                         CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Rating, RatingValues.FiveStars)
+                    }
+                },
+                new InlineKeyboardButton[]
+                {
+                    new()
+                    {
+                        Text = "Refresh",
+                        CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Rating, RatingValues.Refresh)
                     }
                 }
             });

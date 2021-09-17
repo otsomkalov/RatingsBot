@@ -11,5 +11,6 @@
         public const string NewItemCommand = nameof(NewItemCommand);
         public const string NewCategoryCommand = nameof(NewCategoryCommand);
         public const string ItemMessageTemplate = nameof(ItemMessageTemplate);
+        public const string Refreshed = nameof(Refreshed);
     }
 }

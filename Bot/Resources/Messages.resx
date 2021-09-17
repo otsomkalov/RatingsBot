@@ -42,6 +42,9 @@
     <data name="Recorded" xml:space="preserve">
         <value>Recorded</value>
     </data>
+    <data name="Refreshed" xml:space="preserve">
+        <value>Refreshed</value>
+    </data>
     <data name="ItemMessageTemplate" xml:space="preserve">
         <value>
 Item: {0}

@@ -2,6 +2,7 @@
 {
     public static class RatingValues
     {
+        public const int Refresh = 0;
         public const int OneStar = 1;
         public const int TwoStars = 2;
         public const int ThreeStars = 3;

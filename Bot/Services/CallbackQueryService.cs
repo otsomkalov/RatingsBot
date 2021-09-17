@@ -6,6 +6,7 @@ using RatingsBot.Helpers;
 using RatingsBot.Models;
 using RatingsBot.Resources;
 using Telegram.Bot;
+using Telegram.Bot.Exceptions;
 using Telegram.Bot.Types;
 
 namespace RatingsBot.Services
@@ -92,27 +93,36 @@ namespace RatingsBot.Services
 
         private async Task ProcessRatingCommand(CallbackQuery callbackQuery, Item item, int entityId)
         {
-            await _ratingService.UpsertAsync(callbackQuery.From.Id, item.Id, entityId);
+            if (entityId != RatingValues.Refresh)
+            {
+                await _ratingService.UpsertAsync(callbackQuery.From.Id, item.Id, entityId);
 
-            await _bot.AnswerCallbackQueryAsync(callbackQuery.Id, _localizer[ResourcesNames.Recorded]);
+                await _bot.AnswerCallbackQueryAsync(callbackQuery.Id, _localizer[ResourcesNames.Recorded]);
+            }
 
             var messageText = MessageHelpers.GetItemMessageText(item, callbackQuery.From.Id, _localizer[ResourcesNames.ItemMessageTemplate]);
 
-            if (callbackQuery.InlineMessageId != null)
+            try
             {
-                await _bot.EditMessageTextAsync(callbackQuery.InlineMessageId,
-                    messageText,
-                    replyMarkup: ReplyMarkupHelpers.GetRatingsMarkup(item.Id));
+                if (callbackQuery.InlineMessageId != null)
+                {
+                    await _bot.EditMessageTextAsync(callbackQuery.InlineMessageId,
+                        messageText,
+                        replyMarkup: ReplyMarkupHelpers.GetRatingsMarkup(item.Id));
+                }
+                else
+                {
+                    await _bot.EditMessageTextAsync(new(callbackQuery.From.Id),
+                        callbackQuery.Message.MessageId,
+                        messageText,
+                        replyMarkup: ReplyMarkupHelpers.GetRatingsMarkup(item.Id));
+                }
             }
-            else
+            catch (MessageIsNotModifiedException)
             {
-                await _bot.EditMessageTextAsync(new(callbackQuery.From.Id),
-                    callbackQuery.Message.MessageId,
-                    messageText,
-                    replyMarkup: ReplyMarkupHelpers.GetRatingsMarkup(item.Id));
+                await _bot.AnswerCallbackQueryAsync(callbackQuery.Id,
+                    _localizer[ResourcesNames.Refreshed]);
             }
         }
-
-
     }
 }
