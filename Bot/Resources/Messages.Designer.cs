@@ -139,6 +139,15 @@ namespace RatingsBot.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Refreshed.
+        /// </summary>
+        internal static string Refreshed {
+            get {
+                return ResourceManager.GetString("Refreshed", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Welcome to ratings bot. Type @rtngsbot in chat to see your ratings &amp; available items..
         /// </summary>
         internal static string Welcome {

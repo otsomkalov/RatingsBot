@@ -37,7 +37,7 @@ namespace RatingsBot.Services
                     Description = description,
                     ReplyMarkup = ReplyMarkupHelpers.GetRatingsMarkup(item.Id)
                 };
-            });
+            }).Take(50);
 
             await _bot.AnswerInlineQueryAsync(inlineQuery.Id, itemsArticles);
         }
