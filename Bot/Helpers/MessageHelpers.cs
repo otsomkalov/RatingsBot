@@ -21,7 +21,9 @@ namespace RatingsBot.Helpers
                 ? "No average rating"
                 : string.Join(string.Empty, Enumerable.Repeat("⭐", avgRating));
 
-            return string.Format(messageTemplate, item.Name, item.Category?.Name, item.Place?.Name,
+            var placeName = item.Place?.Name ?? "<None>";
+
+            return string.Format(messageTemplate, item.Name, item.Category?.Name, placeName,
                 currentRatingString, avgRatingString);
         }
     }

@@ -36,20 +36,20 @@ namespace RatingsBot.Services
             var callbackData = callbackQuery.Data.Split(ReplyMarkup.Separator).ToImmutableList();
 
             var itemId = int.Parse(callbackData[0]);
-            var entityId = int.Parse(callbackData[2]);
+            int? entityId = int.TryParse(callbackData[2], out var id) ? id : null;
             var item = await _itemService.GetAsync(itemId);
 
             await (callbackData[1] switch
             {
                 ReplyMarkup.Category => ProcessCategoryCommand(callbackQuery, entityId, item),
                 ReplyMarkup.Place => ProcessPlaceCommand(callbackQuery, entityId, item),
-                ReplyMarkup.Rating => ProcessRatingCommand(callbackQuery, item, entityId)
+                ReplyMarkup.Rating => ProcessRatingCommand(callbackQuery, entityId, item)
             });
         }
 
-        private async Task ProcessCategoryCommand(CallbackQuery callbackQuery, int entityId, Item item)
+        private async Task ProcessCategoryCommand(CallbackQuery callbackQuery, int? entityId, Item item)
         {
-            if (entityId == 0)
+            if (!entityId.HasValue)
             {
                 var categories = await _categoryService.ListAsync();
 
@@ -59,7 +59,7 @@ namespace RatingsBot.Services
             }
             else
             {
-                await _itemService.UpdateCategoryAsync(item, entityId);
+                await _itemService.UpdateCategoryAsync(item, entityId.Value);
 
                 var places = await _placeService.ListAsync();
 
@@ -70,9 +70,9 @@ namespace RatingsBot.Services
             }
         }
 
-        private async Task ProcessPlaceCommand(CallbackQuery callbackQuery, int entityId, Item item)
+        private async Task ProcessPlaceCommand(CallbackQuery callbackQuery, int? entityId, Item item)
         {
-            if (entityId == 0)
+            if (entityId is -1)
             {
                 var places = await _placeService.ListAsync();
 
@@ -91,11 +91,11 @@ namespace RatingsBot.Services
             }
         }
 
-        private async Task ProcessRatingCommand(CallbackQuery callbackQuery, Item item, int entityId)
+        private async Task ProcessRatingCommand(CallbackQuery callbackQuery, int? entityId, Item item)
         {
-            if (entityId != RatingValues.Refresh)
+            if (entityId.HasValue)
             {
-                await _ratingService.UpsertAsync(callbackQuery.From.Id, item.Id, entityId);
+                await _ratingService.UpsertAsync(callbackQuery.From.Id, item.Id, entityId.Value);
 
                 await _bot.AnswerCallbackQueryAsync(callbackQuery.Id, _localizer[ResourcesNames.Recorded]);
             }
