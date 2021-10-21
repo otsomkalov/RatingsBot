@@ -37,7 +37,7 @@ namespace RatingsBot.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdatePlaceAsync(Item item, int placeId)
+        public async Task UpdatePlaceAsync(Item item, int? placeId)
         {
             item.PlaceId = placeId;
 

@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
-using Microsoft.VisualBasic;
 using RatingsBot.Constants;
 using RatingsBot.Models;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -50,7 +48,7 @@ namespace RatingsBot.Helpers
                     new()
                     {
                         Text = "Refresh",
-                        CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Rating, RatingValues.Refresh)
+                        CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Rating, null)
                     }
                 }
             });
@@ -74,7 +72,7 @@ namespace RatingsBot.Helpers
                 new()
                 {
                     Text = "Refresh",
-                    CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Category, 0)
+                    CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Category, null)
                 }
             });
 
@@ -98,26 +96,15 @@ namespace RatingsBot.Helpers
             {
                 new()
                 {
+                    Text = "<None>",
+                    CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Place, null)
+                },
+                new()
+                {
                     Text = "Refresh",
-                    CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Place, 0)
+                    CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Place, -1)
                 }
             });
-
-            return new(rows);
-        }
-
-        public static InlineKeyboardMarkup GetUsersMarkup(string itemId, IReadOnlyCollection<User> users)
-        {
-            var rows = new List<IEnumerable<InlineKeyboardButton>>();
-
-            for (var i = 0; i < users.Count; i+= ReplyMarkup.Columns)
-            {
-                rows.Add(users.Skip(i).Take(ReplyMarkup.Columns).Select(user => new InlineKeyboardButton
-                {
-                    Text = user.FirstName,
-                    CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.User, user.Id)
-                }));
-            }
 
             return new(rows);
         }
