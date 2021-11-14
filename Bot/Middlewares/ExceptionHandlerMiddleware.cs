@@ -1,31 +1,25 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
+﻿namespace RatingsBot.Middlewares;
 
-namespace RatingsBot.Middlewares
+public class ExceptionHandlerMiddleware : IMiddleware
 {
-    public class ExceptionHandlerMiddleware : IMiddleware
+    private readonly ILogger<ExceptionHandlerMiddleware> _logger;
+
+    public ExceptionHandlerMiddleware(ILogger<ExceptionHandlerMiddleware> logger)
     {
-        private readonly ILogger<ExceptionHandlerMiddleware> _logger;
+        _logger = logger;
+    }
 
-        public ExceptionHandlerMiddleware(ILogger<ExceptionHandlerMiddleware> logger)
+    public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+    {
+        try
         {
-            _logger = logger;
+            await next(context);
         }
-
-        public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+        catch (Exception e)
         {
-            try
-            {
-                await next(context);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Error during processing request:");
+            _logger.LogError(e, "Error during processing request:");
 
-                context.Response.StatusCode = 200;
-            }
+            context.Response.StatusCode = 200;
         }
     }
 }

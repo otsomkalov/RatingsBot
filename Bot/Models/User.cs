@@ -1,13 +1,10 @@
-﻿using System.Collections.Generic;
+﻿namespace RatingsBot.Models;
 
-namespace RatingsBot.Models
+public class User
 {
-    public class User
-    {
-        public long Id { get; set; }
+    public long Id { get; set; }
 
-        public string FirstName { get; set; }
+    public string FirstName { get; set; }
 
-        public virtual IEnumerable<Rating> Ratings { get; set; }
-    }
+    public virtual IEnumerable<Rating> Ratings { get; set; }
 }

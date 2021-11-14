@@ -1,34 +1,30 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using RatingsBot.Data;
+﻿using Microsoft.EntityFrameworkCore;
 using RatingsBot.Models;
 
-namespace RatingsBot.Services
+namespace RatingsBot.Services;
+
+public class PlaceService
 {
-    public class PlaceService
+    private readonly AppDbContext _context;
+
+    public PlaceService(AppDbContext context)
     {
-        private readonly AppDbContext _context;
+        _context = context;
+    }
 
-        public PlaceService(AppDbContext context)
+    public async Task<IReadOnlyCollection<Place>> ListAsync()
+    {
+        return await _context.Places.AsNoTracking()
+            .ToListAsync();
+    }
+
+    public async Task AddAsync(string name)
+    {
+        await _context.AddAsync(new Place
         {
-            _context = context;
-        }
+            Name = name
+        });
 
-        public async Task<IReadOnlyCollection<Place>> ListAsync()
-        {
-            return await _context.Places.AsNoTracking()
-                .ToListAsync();
-        }
-
-        public async Task AddAsync(string name)
-        {
-            await _context.AddAsync(new Place
-            {
-                Name = name
-            });
-
-            await _context.SaveChangesAsync();
-        }
+        await _context.SaveChangesAsync();
     }
 }

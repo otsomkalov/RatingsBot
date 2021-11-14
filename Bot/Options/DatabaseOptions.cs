@@ -1,7 +1,6 @@
-﻿namespace RatingsBot.Options
+﻿namespace RatingsBot.Options;
+
+public static class DatabaseOptions
 {
-    public static class DatabaseOptions
-    {
-        public const string ConnectionStringName = "Default";
-    }
+    public const string ConnectionStringName = "Default";
 }

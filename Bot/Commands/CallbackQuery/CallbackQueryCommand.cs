@@ -1,5 +1,4 @@
-﻿using MediatR;
-using RatingsBot.Models;
+﻿using RatingsBot.Models;
 
 namespace RatingsBot.Commands.CallbackQuery;
 

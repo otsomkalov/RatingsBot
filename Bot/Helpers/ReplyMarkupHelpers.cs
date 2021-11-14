@@ -1,112 +1,109 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using RatingsBot.Constants;
+﻿using RatingsBot.Constants;
 using RatingsBot.Models;
 using Telegram.Bot.Types.ReplyMarkups;
 
-namespace RatingsBot.Helpers
+namespace RatingsBot.Helpers;
+
+public static class ReplyMarkupHelpers
 {
-    public static class ReplyMarkupHelpers
+    public static InlineKeyboardMarkup GetRatingsMarkup(int itemId)
     {
-        public static InlineKeyboardMarkup GetRatingsMarkup(int itemId)
+        return new(new IEnumerable<InlineKeyboardButton>[]
         {
-            return new(new IEnumerable<InlineKeyboardButton>[]
+            new InlineKeyboardButton[]
             {
-                new InlineKeyboardButton[]
+                new()
                 {
-                    new()
-                    {
-                        Text = "⭐",
-                        CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Rating, RatingValues.OneStar)
-                    },
-                    new()
-                    {
-                        Text = "⭐⭐",
-                        CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Rating, RatingValues.TwoStars)
-                    },
-                    new()
-                    {
-                        Text = "⭐⭐⭐",
-                        CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Rating, RatingValues.ThreeStars)
-                    }
+                    Text = "⭐",
+                    CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Rating, RatingValues.OneStar)
                 },
-                new InlineKeyboardButton[]
+                new()
                 {
-                    new()
-                    {
-                        Text = "⭐⭐⭐⭐",
-                        CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Rating, RatingValues.FourStars)
-                    },
-                    new()
-                    {
-                        Text = "⭐⭐⭐⭐⭐",
-                        CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Rating, RatingValues.FiveStars)
-                    }
+                    Text = "⭐⭐",
+                    CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Rating, RatingValues.TwoStars)
                 },
-                new InlineKeyboardButton[]
+                new()
                 {
-                    new()
-                    {
-                        Text = "Refresh",
-                        CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Rating, null)
-                    }
+                    Text = "⭐⭐⭐",
+                    CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Rating, RatingValues.ThreeStars)
                 }
-            });
-        }
-
-        public static InlineKeyboardMarkup GetCategoriesMarkup(int itemId, IReadOnlyCollection<Category> categories)
-        {
-            var rows = new List<IEnumerable<InlineKeyboardButton>>();
-
-            for (var i = 0; i < categories.Count; i+= ReplyMarkup.Columns)
+            },
+            new InlineKeyboardButton[]
             {
-                rows.Add(categories.Skip(i).Take(ReplyMarkup.Columns).Select(c => new InlineKeyboardButton
+                new()
                 {
-                    Text = c.Name,
-                    CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Category, c.Id)
-                }));
-            }
-
-            rows.Add(new InlineKeyboardButton[]
+                    Text = "⭐⭐⭐⭐",
+                    CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Rating, RatingValues.FourStars)
+                },
+                new()
+                {
+                    Text = "⭐⭐⭐⭐⭐",
+                    CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Rating, RatingValues.FiveStars)
+                }
+            },
+            new InlineKeyboardButton[]
             {
                 new()
                 {
                     Text = "Refresh",
-                    CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Category, null)
+                    CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Rating, null)
                 }
-            });
-
-            return new(rows);
-        }
-
-        public static InlineKeyboardMarkup GetPlacesMarkup(int itemId, IReadOnlyCollection<Place> places)
-        {
-            var rows = new List<IEnumerable<InlineKeyboardButton>>();
-
-            for (var i = 0; i < places.Count; i += ReplyMarkup.Columns)
-            {
-                rows.Add(places.Skip(i).Take(ReplyMarkup.Columns).Select(place => new InlineKeyboardButton
-                {
-                    Text = place.Name,
-                    CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Place, place.Id)
-                }));
             }
+        });
+    }
 
-            rows.Add(new InlineKeyboardButton[]
+    public static InlineKeyboardMarkup GetCategoriesMarkup(int itemId, IReadOnlyCollection<Category> categories)
+    {
+        var rows = new List<IEnumerable<InlineKeyboardButton>>();
+
+        for (var i = 0; i < categories.Count; i+= ReplyMarkup.Columns)
+        {
+            rows.Add(categories.Skip(i).Take(ReplyMarkup.Columns).Select(c => new InlineKeyboardButton
             {
-                new()
-                {
-                    Text = "<None>",
-                    CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Place, null)
-                },
-                new()
-                {
-                    Text = "Refresh",
-                    CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Place, -1)
-                }
-            });
-
-            return new(rows);
+                Text = c.Name,
+                CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Category, c.Id)
+            }));
         }
+
+        rows.Add(new InlineKeyboardButton[]
+        {
+            new()
+            {
+                Text = "Refresh",
+                CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Category, null)
+            }
+        });
+
+        return new(rows);
+    }
+
+    public static InlineKeyboardMarkup GetPlacesMarkup(int itemId, IReadOnlyCollection<Place> places)
+    {
+        var rows = new List<IEnumerable<InlineKeyboardButton>>();
+
+        for (var i = 0; i < places.Count; i += ReplyMarkup.Columns)
+        {
+            rows.Add(places.Skip(i).Take(ReplyMarkup.Columns).Select(place => new InlineKeyboardButton
+            {
+                Text = place.Name,
+                CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Place, place.Id)
+            }));
+        }
+
+        rows.Add(new InlineKeyboardButton[]
+        {
+            new()
+            {
+                Text = "<None>",
+                CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Place, null)
+            },
+            new()
+            {
+                Text = "Refresh",
+                CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Place, -1)
+            }
+        });
+
+        return new(rows);
     }
 }
