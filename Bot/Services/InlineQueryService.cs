@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Localization;
 using RatingsBot.Constants;
 using RatingsBot.Helpers;
+using RatingsBot.Models;
 using RatingsBot.Resources;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -27,17 +28,7 @@ namespace RatingsBot.Services
         {
             var items = await _itemService.ListAsync(inlineQuery.Query);
 
-            var itemsArticles = items.Select(item =>
-            {
-                var description =
-                    MessageHelpers.GetItemMessageText(item, inlineQuery.From.Id, _localizer[ResourcesNames.ItemMessageTemplate]);
-
-                return new InlineQueryResultArticle(item.Id.ToString(), item.Name, new InputTextMessageContent(description))
-                {
-                    Description = description,
-                    ReplyMarkup = ReplyMarkupHelpers.GetRatingsMarkup(item.Id)
-                };
-            }).Take(50);
+            var itemsArticles = items.Select(item => InlineQueryResultHelpers.GetItemQueryResult(item, inlineQuery, _localizer[ResourcesNames.ItemMessageTemplate])).Take(50);
 
             await _bot.AnswerInlineQueryAsync(inlineQuery.Id, itemsArticles);
         }
