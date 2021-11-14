@@ -1,9 +1,8 @@
-﻿namespace RatingsBot.Options
-{
-    public class TelegramOptions
-    {
-        public const string SectionName = "Telegram";
+﻿namespace RatingsBot.Options;
 
-        public string Token { get; set; }
-    }
+public class TelegramOptions
+{
+    public const string SectionName = "Telegram";
+
+    public string Token { get; set; }
 }

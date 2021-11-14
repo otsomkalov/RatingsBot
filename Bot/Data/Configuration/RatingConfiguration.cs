@@ -1,21 +1,20 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using RatingsBot.Models;
 
-namespace RatingsBot.Data.Configuration
+namespace RatingsBot.Data.Configuration;
+
+public class RatingConfiguration : BaseEntityConfiguration<Rating>
 {
-    public class RatingConfiguration : BaseEntityConfiguration<Rating>
+    public override void Configure(EntityTypeBuilder<Rating> builder)
     {
-        public override void Configure(EntityTypeBuilder<Rating> builder)
-        {
-            builder.HasOne(r => r.Item)
-                .WithMany(i => i.Ratings)
-                .HasForeignKey(r => r.ItemId);
+        builder.HasOne(r => r.Item)
+            .WithMany(i => i.Ratings)
+            .HasForeignKey(r => r.ItemId);
 
-            builder.HasOne(r => r.User)
-                .WithMany(u => u.Ratings)
-                .HasForeignKey(r => r.UserId);
+        builder.HasOne(r => r.User)
+            .WithMany(u => u.Ratings)
+            .HasForeignKey(r => r.UserId);
 
-            base.Configure(builder);
-        }
+        base.Configure(builder);
     }
 }

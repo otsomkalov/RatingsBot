@@ -1,34 +1,30 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using RatingsBot.Data;
+﻿using Microsoft.EntityFrameworkCore;
 using RatingsBot.Models;
 
-namespace RatingsBot.Services
+namespace RatingsBot.Services;
+
+public class CategoryService
 {
-    public class CategoryService
+    private readonly AppDbContext _context;
+
+    public CategoryService(AppDbContext context)
     {
-        private readonly AppDbContext _context;
+        _context = context;
+    }
 
-        public CategoryService(AppDbContext context)
+    public async Task<IReadOnlyCollection<Category>> ListAsync()
+    {
+        return await _context.Categories.AsNoTracking()
+            .ToListAsync();
+    }
+
+    public async Task AddAsync(string name)
+    {
+        await _context.AddAsync(new Category
         {
-            _context = context;
-        }
+            Name = name
+        });
 
-        public async Task<IReadOnlyCollection<Category>> ListAsync()
-        {
-            return await _context.Categories.AsNoTracking()
-                .ToListAsync();
-        }
-
-        public async Task AddAsync(string name)
-        {
-            await _context.AddAsync(new Category
-            {
-                Name = name
-            });
-
-            await _context.SaveChangesAsync();
-        }
+        await _context.SaveChangesAsync();
     }
 }

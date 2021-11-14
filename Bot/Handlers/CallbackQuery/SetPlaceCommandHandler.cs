@@ -1,13 +1,7 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using MediatR;
-using Microsoft.Extensions.Localization;
+﻿using Microsoft.Extensions.Localization;
 using RatingsBot.Commands.CallbackQuery;
 using RatingsBot.Constants;
-using RatingsBot.Helpers;
 using RatingsBot.Resources;
-using RatingsBot.Services;
-using Telegram.Bot;
 
 namespace RatingsBot.Handlers.CallbackQuery;
 

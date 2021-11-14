@@ -1,60 +1,55 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using RatingsBot.Data;
+﻿using Microsoft.EntityFrameworkCore;
 using RatingsBot.Models;
 
-namespace RatingsBot.Services
+namespace RatingsBot.Services;
+
+public class ItemService
 {
-    public class ItemService
+    private readonly AppDbContext _context;
+
+    public ItemService(AppDbContext context)
     {
-        private readonly AppDbContext _context;
+        _context = context;
+    }
 
-        public ItemService(AppDbContext context)
+    public async Task<int> AddAsync(string name)
+    {
+        var newItem = new Item
         {
-            _context = context;
-        }
+            Name = name
+        };
 
-        public async Task<int> AddAsync(string name)
-        {
-            var newItem = new Item
-            {
-                Name = name
-            };
+        await _context.AddAsync(newItem);
+        await _context.SaveChangesAsync();
 
-            await _context.AddAsync(newItem);
-            await _context.SaveChangesAsync();
+        return newItem.Id;
+    }
 
-            return newItem.Id;
-        }
+    public async Task UpdateCategoryAsync(Item item, int categoryId)
+    {
+        item.CategoryId = categoryId;
 
-        public async Task UpdateCategoryAsync(Item item, int categoryId)
-        {
-            item.CategoryId = categoryId;
+        _context.Update(item);
+        await _context.SaveChangesAsync();
+    }
 
-            _context.Update(item);
-            await _context.SaveChangesAsync();
-        }
+    public async Task UpdatePlaceAsync(Item item, int? placeId)
+    {
+        item.PlaceId = placeId;
 
-        public async Task UpdatePlaceAsync(Item item, int? placeId)
-        {
-            item.PlaceId = placeId;
+        _context.Update(item);
+        await _context.SaveChangesAsync();
+    }
 
-            _context.Update(item);
-            await _context.SaveChangesAsync();
-        }
+    public ValueTask<Item> GetAsync(int itemId)
+    {
+        return _context.Items.FindAsync(itemId);
+    }
 
-        public ValueTask<Item> GetAsync(int itemId)
-        {
-            return _context.Items.FindAsync(itemId);
-        }
-
-        public async Task<IReadOnlyCollection<Item>> ListAsync(string query)
-        {
-            return await _context.Items
-                .Where(i => EF.Functions.ILike(i.Name, $"%{query}%"))
-                .ToListAsync();
-        }
+    public async Task<IReadOnlyCollection<Item>> ListAsync(string query)
+    {
+        return await _context.Items
+            .Where(i => EF.Functions.ILike(i.Name, $"%{query}%"))
+            .ToListAsync();
     }
 }
