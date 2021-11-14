@@ -1,3 +1,4 @@
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -37,6 +38,8 @@ namespace RatingsBot
 
             services.Configure<TelegramOptions>(_configuration.GetSection(TelegramOptions.SectionName))
                 .AddTelegram();
+
+            services.AddMediatR(typeof(Startup));
 
             services.AddControllers()
                 .AddNewtonsoftJson();
