@@ -1,6 +1,6 @@
 ﻿using Telegram.Bot.Types.ReplyMarkups;
 
-namespace RatingsBot.Helpers;
+namespace Bot.Helpers;
 
 public static class ReplyKeyboardMarkupHelpers
 {

@@ -1,4 +1,4 @@
-﻿namespace RatingsBot.Middlewares;
+﻿namespace Bot.Middlewares;
 
 public class ExceptionHandlerMiddleware : IMiddleware
 {

@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Bot.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using RatingsBot.Models;
 
-namespace RatingsBot.Data.Configuration;
+namespace Bot.Data.Configuration;
 
 public class UserConfiguration : IEntityTypeConfiguration<User>
 {

@@ -1,6 +1,6 @@
-﻿using RatingsBot.Models;
+﻿using Bot.Models;
 
-namespace RatingsBot.Helpers;
+namespace Bot.Helpers;
 
 public static class MessageHelpers
 {

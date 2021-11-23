@@ -1,8 +1,8 @@
-﻿using RatingsBot.Models;
+﻿using Bot.Models;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.InlineQueryResults;
 
-namespace RatingsBot.Helpers;
+namespace Bot.Helpers;
 
 public static class InlineQueryResultHelpers
 {

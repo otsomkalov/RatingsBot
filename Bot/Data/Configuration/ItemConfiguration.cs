@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using RatingsBot.Models;
+﻿using Bot.Models;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace RatingsBot.Data.Configuration;
+namespace Bot.Data.Configuration;
 
 public class ItemConfiguration : BaseEntityConfiguration<Item>
 {

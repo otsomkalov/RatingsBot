@@ -1,8 +1,8 @@
 ﻿using System.Reflection;
+using Bot.Models;
 using Microsoft.EntityFrameworkCore;
-using RatingsBot.Models;
 
-namespace RatingsBot.Data;
+namespace Bot.Data;
 
 public class AppDbContext : DbContext
 {

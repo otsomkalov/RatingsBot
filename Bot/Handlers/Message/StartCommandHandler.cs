@@ -1,8 +1,10 @@
-﻿using Microsoft.Extensions.Localization;
-using RatingsBot.Commands.Message;
-using RatingsBot.Resources;
+﻿using Bot.Commands.Message;
+using Bot.Helpers;
+using Bot.Resources;
+using Bot.Services;
+using Microsoft.Extensions.Localization;
 
-namespace RatingsBot.Handlers.Message;
+namespace Bot.Handlers.Message;
 
 public class StartCommandHandler : AsyncRequestHandler<StartCommand>
 {
