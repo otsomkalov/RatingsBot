@@ -1,6 +1,8 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Bot.Options;
+using Bot.Services;
+using Microsoft.Extensions.Options;
 
-namespace RatingsBot.Extensions;
+namespace Bot.Extensions;
 
 public static class ServiceCollectionExtensions
 {

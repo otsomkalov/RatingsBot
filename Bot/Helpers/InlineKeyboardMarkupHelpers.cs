@@ -1,8 +1,8 @@
-﻿using RatingsBot.Constants;
-using RatingsBot.Models;
+﻿using Bot.Constants;
+using Bot.Models;
 using Telegram.Bot.Types.ReplyMarkups;
 
-namespace RatingsBot.Helpers;
+namespace Bot.Helpers;
 
 public static class ReplyMarkupHelpers
 {

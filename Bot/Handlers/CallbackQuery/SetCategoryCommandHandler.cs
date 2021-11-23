@@ -1,8 +1,10 @@
-﻿using Microsoft.Extensions.Localization;
-using RatingsBot.Commands.CallbackQuery;
-using RatingsBot.Resources;
+﻿using Bot.Commands.CallbackQuery;
+using Bot.Helpers;
+using Bot.Resources;
+using Bot.Services;
+using Microsoft.Extensions.Localization;
 
-namespace RatingsBot.Handlers.CallbackQuery;
+namespace Bot.Handlers.CallbackQuery;
 
 public class SetCategoryCommandHandler : AsyncRequestHandler<SetCategoryCommand>
 {

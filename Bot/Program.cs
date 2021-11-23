@@ -1,4 +1,4 @@
-namespace RatingsBot;
+namespace Bot;
 
 public class Program
 {

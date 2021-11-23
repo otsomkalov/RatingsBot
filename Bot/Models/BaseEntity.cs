@@ -1,4 +1,4 @@
-﻿namespace RatingsBot.Models;
+﻿namespace Bot.Models;
 
 public class BaseEntity
 {

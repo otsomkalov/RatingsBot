@@ -1,7 +1,10 @@
+using Bot.Data;
+using Bot.Extensions;
+using Bot.Middlewares;
+using Bot.Options;
 using Microsoft.EntityFrameworkCore;
-using RatingsBot.Middlewares;
 
-namespace RatingsBot;
+namespace Bot;
 
 public class Startup
 {

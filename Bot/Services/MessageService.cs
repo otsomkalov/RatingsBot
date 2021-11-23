@@ -1,9 +1,9 @@
-﻿using Microsoft.Extensions.Localization;
-using RatingsBot.Commands.Message;
-using RatingsBot.Resources;
+﻿using Bot.Commands.Message;
+using Bot.Resources;
+using Microsoft.Extensions.Localization;
 using Telegram.Bot.Types;
 
-namespace RatingsBot.Services;
+namespace Bot.Services;
 
 public class MessageService
 {

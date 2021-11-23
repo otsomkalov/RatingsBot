@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Bot.Services;
+using Microsoft.AspNetCore.Mvc;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
-namespace RatingsBot.Controllers;
+namespace Bot.Controllers;
 
 [ApiController]
 [Route("update")]
@@ -12,7 +13,7 @@ public class UpdateController : ControllerBase
     private readonly CallbackQueryService _callbackQueryService;
     private readonly InlineQueryService _inlineQueryService;
 
-    public UpdateController(MessageService messageService, CallbackQueryService callbackQueryService, InlineQueryService inlineQueryService, ILogger<UpdateController> logger)
+    public UpdateController(MessageService messageService, CallbackQueryService callbackQueryService, InlineQueryService inlineQueryService)
     {
         _messageService = messageService;
         _callbackQueryService = callbackQueryService;

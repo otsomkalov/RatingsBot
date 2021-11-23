@@ -1,6 +1,6 @@
-﻿using RatingsBot.Models;
+﻿using Bot.Models;
 using TG = Telegram.Bot.Types;
 
-namespace RatingsBot.Commands.CallbackQuery;
+namespace Bot.Commands.CallbackQuery;
 
 public record CallbackQueryCommand(TG.CallbackQuery CallbackQuery, int? EntityId, Item Item) : IRequest;

@@ -1,4 +1,4 @@
-﻿namespace RatingsBot.Constants;
+﻿namespace Bot.Constants;
 
 public static class ReplyMarkup
 {

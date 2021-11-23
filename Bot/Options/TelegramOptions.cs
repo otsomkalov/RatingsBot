@@ -1,4 +1,4 @@
-﻿namespace RatingsBot.Options;
+﻿namespace Bot.Options;
 
 public class TelegramOptions
 {

@@ -1,7 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using RatingsBot.Models;
+﻿using Bot.Data;
+using Bot.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace RatingsBot.Services;
+namespace Bot.Services;
 
 public class PlaceService
 {

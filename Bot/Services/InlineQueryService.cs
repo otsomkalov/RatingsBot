@@ -1,8 +1,9 @@
-﻿using Microsoft.Extensions.Localization;
-using RatingsBot.Resources;
+﻿using Bot.Helpers;
+using Bot.Resources;
+using Microsoft.Extensions.Localization;
 using Telegram.Bot.Types;
 
-namespace RatingsBot.Services;
+namespace Bot.Services;
 
 public class InlineQueryService
 {

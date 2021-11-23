@@ -1,9 +1,9 @@
 ﻿using System.Collections.Immutable;
-using RatingsBot.Commands.CallbackQuery;
-using RatingsBot.Constants;
+using Bot.Commands.CallbackQuery;
+using Bot.Constants;
 using Telegram.Bot.Types;
 
-namespace RatingsBot.Services;
+namespace Bot.Services;
 
 public class CallbackQueryService
 {

@@ -1,6 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Bot.Data;
+using Microsoft.EntityFrameworkCore;
 
-namespace RatingsBot.Services;
+namespace Bot.Services;
 
 public class RatingService
 {
