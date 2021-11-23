@@ -61,15 +61,6 @@ namespace RatingsBot.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Select category.
-        /// </summary>
-        internal static string Category {
-            get {
-                return ResourceManager.GetString("Category", resourceCulture);
-            }
-        }
-
-        /// <summary>
         ///   Looks up a localized string similar to Created!.
         /// </summary>
         internal static string Created {
@@ -94,7 +85,7 @@ namespace RatingsBot.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Command usage is: /newcategory [name].
+        ///   Looks up a localized string similar to Type a name of a new category.
         /// </summary>
         internal static string NewCategoryCommand {
             get {
@@ -103,7 +94,7 @@ namespace RatingsBot.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Command usage is: /newitem [name].
+        ///   Looks up a localized string similar to Type a name of a new item.
         /// </summary>
         internal static string NewItemCommand {
             get {
@@ -112,20 +103,11 @@ namespace RatingsBot.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Command usage is: /newplace [name].
+        ///   Looks up a localized string similar to Type a name of a new place.
         /// </summary>
         internal static string NewPlaceCommand {
             get {
                 return ResourceManager.GetString("NewPlaceCommand", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Select place.
-        /// </summary>
-        internal static string Place {
-            get {
-                return ResourceManager.GetString("Place", resourceCulture);
             }
         }
 
@@ -144,6 +126,24 @@ namespace RatingsBot.Resources {
         internal static string Refreshed {
             get {
                 return ResourceManager.GetString("Refreshed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Select category.
+        /// </summary>
+        internal static string SelectCategory {
+            get {
+                return ResourceManager.GetString("SelectCategory", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Select place.
+        /// </summary>
+        internal static string SelectPlace {
+            get {
+                return ResourceManager.GetString("SelectPlace", resourceCulture);
             }
         }
 

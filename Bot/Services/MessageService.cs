@@ -1,41 +1,53 @@
-﻿using RatingsBot.Commands.Message;
+﻿using Microsoft.Extensions.Localization;
+using RatingsBot.Commands.Message;
+using RatingsBot.Resources;
 using Telegram.Bot.Types;
 
 namespace RatingsBot.Services;
 
 public class MessageService
 {
+    private readonly IStringLocalizer<Messages> _localizer;
     private readonly IMediator _mediator;
 
-    public MessageService(IMediator mediator)
+    public MessageService(IMediator mediator, IStringLocalizer<Messages> localizer)
     {
         _mediator = mediator;
+        _localizer = localizer;
     }
 
     public async Task HandleAsync(Message message)
     {
-        await HandleCommandAsync(Constants.Commands.Start, message);
-        await HandleCommandAsync(Constants.Commands.NewCategory, message);
-        await HandleCommandAsync(Constants.Commands.NewPlace, message);
-        await HandleCommandAsync(Constants.Commands.NewItem, message);
-    }
-
-    private async Task HandleCommandAsync(string command, Message message)
-    {
-        if (!message.Text.StartsWithCI(command))
+        if (message.From.IsBot)
         {
             return;
         }
 
-        MessageCommand request = command switch
+        MessageCommand request = message.Text.Trim() switch
         {
             Constants.Commands.Start => new StartCommand(message),
-            Constants.Commands.NewCategory => new NewCategoryCommand(message),
             Constants.Commands.NewPlace => new NewPlaceCommand(message),
+            Constants.Commands.NewCategory => new NewCategoryCommand(message),
             Constants.Commands.NewItem => new NewItemCommand(message),
-            _ => throw new ArgumentOutOfRangeException(nameof(command), command, null)
+            _ => null
         };
 
-        await _mediator.Send(request);
+        if (message.ReplyToMessage?.Text == _localizer[Messages.NewCategoryCommand])
+        {
+            request = new CreateCategoryCommand(message);
+        }
+        else if (message.ReplyToMessage?.Text == _localizer[Messages.NewPlaceCommand])
+        {
+            request = new CreatePlaceCommand(message);
+        }
+        else if (message.ReplyToMessage?.Text == _localizer[Messages.NewItemCommand])
+        {
+            request = new CreateItemCommand(message);
+        }
+
+        if (request != null)
+        {
+            await _mediator.Send(request);
+        }
     }
 }

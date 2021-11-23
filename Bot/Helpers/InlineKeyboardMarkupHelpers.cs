@@ -56,13 +56,15 @@ public static class ReplyMarkupHelpers
     {
         var rows = new List<IEnumerable<InlineKeyboardButton>>();
 
-        for (var i = 0; i < categories.Count; i+= ReplyMarkup.Columns)
+        for (var i = 0; i < categories.Count; i += ReplyMarkup.Columns)
         {
-            rows.Add(categories.Skip(i).Take(ReplyMarkup.Columns).Select(c => new InlineKeyboardButton
-            {
-                Text = c.Name,
-                CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Category, c.Id)
-            }));
+            rows.Add(categories.Skip(i)
+                .Take(ReplyMarkup.Columns)
+                .Select(c => new InlineKeyboardButton
+                {
+                    Text = c.Name,
+                    CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Category, c.Id)
+                }));
         }
 
         rows.Add(new InlineKeyboardButton[]
@@ -83,11 +85,13 @@ public static class ReplyMarkupHelpers
 
         for (var i = 0; i < places.Count; i += ReplyMarkup.Columns)
         {
-            rows.Add(places.Skip(i).Take(ReplyMarkup.Columns).Select(place => new InlineKeyboardButton
-            {
-                Text = place.Name,
-                CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Place, place.Id)
-            }));
+            rows.Add(places.Skip(i)
+                .Take(ReplyMarkup.Columns)
+                .Select(place => new InlineKeyboardButton
+                {
+                    Text = place.Name,
+                    CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Place, place.Id)
+                }));
         }
 
         rows.Add(new InlineKeyboardButton[]
