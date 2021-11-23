@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Localization;
-using RatingsBot.Constants;
 using RatingsBot.Resources;
 using Telegram.Bot.Types;
 
@@ -22,7 +21,9 @@ public class InlineQueryService
     {
         var items = await _itemService.ListAsync(inlineQuery.Query);
 
-        var itemsArticles = items.Select(item => InlineQueryResultHelpers.GetItemQueryResult(item, inlineQuery, _localizer[ResourcesNames.ItemMessageTemplate])).Take(50);
+        var itemsArticles = items
+            .Select(item => InlineQueryResultHelpers.GetItemQueryResult(item, inlineQuery, _localizer[Messages.ItemMessageTemplate]))
+            .Take(50);
 
         await _bot.AnswerInlineQueryAsync(inlineQuery.Id, itemsArticles);
     }

@@ -3,7 +3,7 @@
 internal static class Commands
 {
     public const string Start = "/start";
-    public const string NewItem = "/newitem";
-    public const string NewPlace = "/newplace";
-    public const string NewCategory = "/newcategory";
+    public const string NewItem = "📦 New item";
+    public const string NewPlace = "🏢 New place";
+    public const string NewCategory = "🏷️ New category";
 }

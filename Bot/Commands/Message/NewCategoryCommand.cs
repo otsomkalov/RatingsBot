@@ -1,3 +1,5 @@
-﻿namespace RatingsBot.Commands.Message;
+﻿using TG = Telegram.Bot.Types;
 
-public record NewCategoryCommand(Telegram.Bot.Types.Message Message) : MessageCommand(Message);
+namespace RatingsBot.Commands.Message;
+
+public record NewCategoryCommand(TG.Message Message) : MessageCommand(Message);

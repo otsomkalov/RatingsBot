@@ -1,3 +1,5 @@
-﻿namespace RatingsBot.Commands.Message;
+﻿using TG = Telegram.Bot.Types;
 
-public record MessageCommand(Telegram.Bot.Types.Message Message) : IRequest;
+namespace RatingsBot.Commands.Message;
+
+public record MessageCommand(TG.Message Message) : IRequest;

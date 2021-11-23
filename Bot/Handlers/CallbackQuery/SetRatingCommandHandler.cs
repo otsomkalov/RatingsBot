@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Localization;
 using RatingsBot.Commands.CallbackQuery;
-using RatingsBot.Constants;
 using RatingsBot.Resources;
 using Telegram.Bot.Exceptions;
 
@@ -27,10 +26,10 @@ public class SetRatingCommandHandler : AsyncRequestHandler<SetRatingCommand>
         {
             await _ratingService.UpsertAsync(callbackQuery.From.Id, item.Id, entityId.Value);
 
-            await _bot.AnswerCallbackQueryAsync(callbackQuery.Id, _localizer[ResourcesNames.Recorded], cancellationToken: cancellationToken);
+            await _bot.AnswerCallbackQueryAsync(callbackQuery.Id, _localizer[Messages.Recorded], cancellationToken: cancellationToken);
         }
 
-        var messageText = MessageHelpers.GetItemMessageText(item, callbackQuery.From.Id, _localizer[ResourcesNames.ItemMessageTemplate]);
+        var messageText = MessageHelpers.GetItemMessageText(item, callbackQuery.From.Id, _localizer[Messages.ItemMessageTemplate]);
 
         try
         {
@@ -51,7 +50,7 @@ public class SetRatingCommandHandler : AsyncRequestHandler<SetRatingCommand>
         catch (MessageIsNotModifiedException)
         {
             await _bot.AnswerCallbackQueryAsync(callbackQuery.Id,
-                _localizer[ResourcesNames.Refreshed], cancellationToken: cancellationToken);
+                _localizer[Messages.Refreshed], cancellationToken: cancellationToken);
         }
     }
 }

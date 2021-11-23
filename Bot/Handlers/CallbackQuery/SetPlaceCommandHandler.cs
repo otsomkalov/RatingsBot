@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Localization;
 using RatingsBot.Commands.CallbackQuery;
-using RatingsBot.Constants;
 using RatingsBot.Resources;
 
 namespace RatingsBot.Handlers.CallbackQuery;
@@ -39,7 +38,7 @@ public class SetPlaceCommandHandler : AsyncRequestHandler<SetPlaceCommand>
 
             await _bot.EditMessageTextAsync(new(callbackQuery.From.Id),
                 callbackQuery.Message.MessageId,
-                MessageHelpers.GetItemMessageText(item, callbackQuery.From.Id, _localizer[ResourcesNames.ItemMessageTemplate]),
+                MessageHelpers.GetItemMessageText(item, callbackQuery.From.Id, _localizer[Messages.ItemMessageTemplate]),
                 replyMarkup: ReplyMarkupHelpers.GetRatingsMarkup(item.Id), cancellationToken: cancellationToken);
         }
     }

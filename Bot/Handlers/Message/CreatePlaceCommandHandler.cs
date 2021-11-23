@@ -4,27 +4,28 @@ using RatingsBot.Resources;
 
 namespace RatingsBot.Handlers.Message;
 
-public class StartCommandHandler : AsyncRequestHandler<StartCommand>
+public class CreatePlaceCommandHandler : AsyncRequestHandler<CreatePlaceCommand>
 {
-    private readonly UserService _userService;
     private readonly ITelegramBotClient _bot;
     private readonly IStringLocalizer<Messages> _localizer;
+    private readonly PlaceService _placeService;
 
-    public StartCommandHandler(UserService userService, ITelegramBotClient bot, IStringLocalizer<Messages> localizer)
+    public CreatePlaceCommandHandler(PlaceService placeService, ITelegramBotClient bot, IStringLocalizer<Messages> localizer)
     {
-        _userService = userService;
+        _placeService = placeService;
         _bot = bot;
         _localizer = localizer;
     }
 
-    protected override async Task Handle(StartCommand request, CancellationToken cancellationToken)
+    protected override async Task Handle(CreatePlaceCommand request, CancellationToken cancellationToken)
     {
         var message = request.Message;
 
-        await _userService.CreateIfNotExistsAsync(message.From.Id);
+        await _placeService.AddAsync(message.Text.Trim());
 
         await _bot.SendTextMessageAsync(new(message.From.Id),
-            _localizer[Messages.Welcome],
+            _localizer[Messages.Created],
+            replyToMessageId: message.MessageId,
             replyMarkup: ReplyKeyboardMarkupHelpers.GetStartReplyKeyboardMarkup(),
             cancellationToken: cancellationToken);
     }
