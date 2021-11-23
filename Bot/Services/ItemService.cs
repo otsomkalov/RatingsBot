@@ -46,10 +46,17 @@ public class ItemService
         return _context.Items.FindAsync(itemId);
     }
 
-    public async Task<IReadOnlyCollection<Item>> ListAsync(string query)
+    public async Task<IReadOnlyCollection<Item>> ListAsync(string query, int count)
     {
         return await _context.Items
-            .Where(i => EF.Functions.ILike(i.Name, $"%{query}%"))
+            .Include(i => i.Category)
+            .Include(i => i.Place)
+            .Include(i => i.Ratings)
+            .Where(i =>
+                EF.Functions.ILike(i.Name, $"%{query}%") ||
+                EF.Functions.ILike(i.Category.Name, $"%{query}%") ||
+                EF.Functions.ILike(i.Place.Name, $"%{query}%"))
+            .Take(count)
             .ToListAsync();
     }
 }
