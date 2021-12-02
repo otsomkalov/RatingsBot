@@ -2,8 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <LangVersion>latest</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
@@ -39,11 +37,11 @@
     <Using Include="System" />
     <Using Include="MediatR" />
     <Using Include="Telegram.Bot" />
-    <Using Include="RatingsBot.Helpers" />
-    <Using Include="RatingsBot.Options" />
-    <Using Include="RatingsBot.Services" />
-    <Using Include="RatingsBot.Data" />
-    <Using Include="RatingsBot.Extensions" />
+    <Using Include="Bot.Helpers" />
+    <Using Include="Bot.Options" />
+    <Using Include="Bot.Services" />
+    <Using Include="Bot.Data" />
+    <Using Include="Bot.Extensions" />
   </ItemGroup>
 
 </Project>
