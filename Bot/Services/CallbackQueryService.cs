@@ -9,15 +9,19 @@ public class CallbackQueryService
 {
     private readonly ItemService _itemService;
     private readonly IMediator _mediator;
+    private readonly UserService _userService;
 
-    public CallbackQueryService(ItemService itemService, IMediator mediator)
+    public CallbackQueryService(ItemService itemService, IMediator mediator, UserService userService)
     {
         _itemService = itemService;
         _mediator = mediator;
+        _userService = userService;
     }
 
     public async Task HandleAsync(CallbackQuery callbackQuery)
     {
+        await _userService.CreateIfNotExistsAsync(callbackQuery.From.Id);
+
         var callbackData = callbackQuery.Data.Split(ReplyMarkup.Separator).ToImmutableList();
 
         var itemId = int.Parse(callbackData[0]);
