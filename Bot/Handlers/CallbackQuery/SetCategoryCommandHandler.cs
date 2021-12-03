@@ -44,7 +44,7 @@ public class SetCategoryCommandHandler : AsyncRequestHandler<SetCategoryCommand>
 
             await _bot.EditMessageTextAsync(new(callbackQuery.From.Id),
                 callbackQuery.Message.MessageId,
-                _localizer[Messages.SelectPlace],
+                _localizer[nameof(Messages.SelectPlace)],
                 replyMarkup: ReplyMarkupHelpers.GetPlacesMarkup(item.Id, places), cancellationToken: cancellationToken);
         }
     }

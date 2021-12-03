@@ -23,7 +23,7 @@ public class InlineQueryService
         var items = await _itemService.ListAsync(inlineQuery.Query, Constants.Telegram.MaximumInlineResults);
 
         var itemsArticles = items
-            .Select(item => InlineQueryResultHelpers.GetItemQueryResult(item, inlineQuery, _localizer[Messages.ItemMessageTemplate]));
+            .Select(item => InlineQueryResultHelpers.GetItemQueryResult(item, inlineQuery, _localizer[nameof(Messages.ItemMessageTemplate)]));
 
         await _bot.AnswerInlineQueryAsync(inlineQuery.Id, itemsArticles);
     }

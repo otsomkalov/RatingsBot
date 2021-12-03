@@ -32,15 +32,15 @@ public class MessageService
             _ => null
         };
 
-        if (message.ReplyToMessage?.Text == _localizer[Messages.NewCategoryCommand])
+        if (message.ReplyToMessage?.Text == _localizer[nameof(Messages.NewCategoryCommand)])
         {
             request = new CreateCategoryCommand(message);
         }
-        else if (message.ReplyToMessage?.Text == _localizer[Messages.NewPlaceCommand])
+        else if (message.ReplyToMessage?.Text == _localizer[nameof(Messages.NewPlaceCommand)])
         {
             request = new CreatePlaceCommand(message);
         }
-        else if (message.ReplyToMessage?.Text == _localizer[Messages.NewItemCommand])
+        else if (message.ReplyToMessage?.Text == _localizer[nameof(Messages.NewItemCommand)])
         {
             request = new CreateItemCommand(message);
         }

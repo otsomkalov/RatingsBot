@@ -28,10 +28,10 @@ public class SetRatingCommandHandler : AsyncRequestHandler<SetRatingCommand>
         {
             await _ratingService.UpsertAsync(callbackQuery.From.Id, item.Id, entityId.Value);
 
-            await _bot.AnswerCallbackQueryAsync(callbackQuery.Id, _localizer[Messages.Recorded], cancellationToken: cancellationToken);
+            await _bot.AnswerCallbackQueryAsync(callbackQuery.Id, _localizer[nameof(Messages.Recorded)], cancellationToken: cancellationToken);
         }
 
-        var messageText = MessageHelpers.GetItemMessageText(item, callbackQuery.From.Id, _localizer[Messages.ItemMessageTemplate]);
+        var messageText = MessageHelpers.GetItemMessageText(item, callbackQuery.From.Id, _localizer[nameof(Messages.ItemMessageTemplate)]);
 
         try
         {
@@ -52,7 +52,7 @@ public class SetRatingCommandHandler : AsyncRequestHandler<SetRatingCommand>
         catch (MessageIsNotModifiedException)
         {
             await _bot.AnswerCallbackQueryAsync(callbackQuery.Id,
-                _localizer[Messages.Refreshed], cancellationToken: cancellationToken);
+                _localizer[nameof(Messages.Refreshed)], cancellationToken: cancellationToken);
         }
     }
 }

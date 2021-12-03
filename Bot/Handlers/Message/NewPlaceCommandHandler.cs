@@ -21,7 +21,7 @@ public class NewPlaceCommandHandler : AsyncRequestHandler<NewPlaceCommand>
         var message = request.Message;
 
         await _bot.SendTextMessageAsync(new(message.From.Id),
-            _localizer[Messages.NewPlaceCommand],
+            _localizer[nameof(Messages.NewPlaceCommand)],
             replyMarkup: new ForceReplyMarkup(),
             replyToMessageId: request.Message.MessageId,
             cancellationToken: cancellationToken);

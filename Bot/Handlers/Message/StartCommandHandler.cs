@@ -26,7 +26,7 @@ public class StartCommandHandler : AsyncRequestHandler<StartCommand>
         await _userService.CreateIfNotExistsAsync(message.From.Id);
 
         await _bot.SendTextMessageAsync(new(message.From.Id),
-            _localizer[Messages.Welcome],
+            _localizer[nameof(Messages.Welcome)],
             replyMarkup: ReplyKeyboardMarkupHelpers.GetStartReplyKeyboardMarkup(),
             cancellationToken: cancellationToken);
     }

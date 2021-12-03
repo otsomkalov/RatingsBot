@@ -21,7 +21,7 @@ public class NewCategoryCommandHandler : AsyncRequestHandler<NewCategoryCommand>
         var message = request.Message;
 
         await _bot.SendTextMessageAsync(new(message.From.Id),
-            _localizer[Messages.NewCategoryCommand],
+            _localizer[nameof(Messages.NewCategoryCommand)],
             replyMarkup: new ForceReplyMarkup(),
             replyToMessageId: request.Message.MessageId,
             cancellationToken: cancellationToken);

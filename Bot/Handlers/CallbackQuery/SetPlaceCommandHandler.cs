@@ -40,7 +40,7 @@ public class SetPlaceCommandHandler : AsyncRequestHandler<SetPlaceCommand>
 
             await _bot.EditMessageTextAsync(new(callbackQuery.From.Id),
                 callbackQuery.Message.MessageId,
-                MessageHelpers.GetItemMessageText(item, callbackQuery.From.Id, _localizer[Messages.ItemMessageTemplate]),
+                MessageHelpers.GetItemMessageText(item, callbackQuery.From.Id, _localizer[nameof(Messages.ItemMessageTemplate)]),
                 replyMarkup: ReplyMarkupHelpers.GetRatingsMarkup(item.Id), cancellationToken: cancellationToken);
         }
     }

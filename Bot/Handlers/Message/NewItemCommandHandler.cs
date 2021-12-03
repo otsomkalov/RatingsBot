@@ -21,7 +21,7 @@ public class NewItemCommandHandler : AsyncRequestHandler<NewItemCommand>
         var message = request.Message;
 
         await _bot.SendTextMessageAsync(new(message.From.Id),
-            _localizer[Messages.NewItemCommand],
+            _localizer[nameof(Messages.NewItemCommand)],
             replyMarkup: new ForceReplyMarkup(),
             replyToMessageId: request.Message.MessageId,
             cancellationToken: cancellationToken);

@@ -26,7 +26,7 @@ public class CreatePlaceCommandHandler : AsyncRequestHandler<CreatePlaceCommand>
         await _placeService.AddAsync(message.Text.Trim());
 
         await _bot.SendTextMessageAsync(new(message.From.Id),
-            _localizer[Messages.Created],
+            _localizer[nameof(Messages.Created)],
             replyToMessageId: message.MessageId,
             replyMarkup: ReplyKeyboardMarkupHelpers.GetStartReplyKeyboardMarkup(),
             cancellationToken: cancellationToken);

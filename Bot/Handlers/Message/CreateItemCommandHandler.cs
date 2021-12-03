@@ -30,7 +30,7 @@ public class CreateItemCommandHandler : AsyncRequestHandler<CreateItemCommand>
         var categories = await _categoryService.ListAsync();
 
         await _bot.SendTextMessageAsync(new(message.From.Id),
-            _localizer[Messages.SelectCategory],
+            _localizer[nameof(Messages.SelectCategory)],
             replyMarkup: ReplyMarkupHelpers.GetCategoriesMarkup(newItemId, categories),
             replyToMessageId: message.MessageId,
             cancellationToken: cancellationToken);
