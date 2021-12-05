@@ -1,7 +1,4 @@
-using Bot.Data;
-using Bot.Extensions;
 using Bot.Middlewares;
-using Bot.Options;
 using Microsoft.EntityFrameworkCore;
 
 namespace Bot;

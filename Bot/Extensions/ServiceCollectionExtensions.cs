@@ -1,6 +1,4 @@
-﻿using Bot.Options;
-using Bot.Services;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 
 namespace Bot.Extensions;
 
@@ -25,6 +23,7 @@ public static class ServiceCollectionExtensions
             .AddScoped<UserService>()
             .AddScoped<MessageService>()
             .AddScoped<CallbackQueryService>()
-            .AddScoped<InlineQueryService>();
+            .AddScoped<InlineQueryService>()
+            .AddSingleton<UserIdProvider>();
     }
 }

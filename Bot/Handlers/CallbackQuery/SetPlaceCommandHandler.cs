@@ -1,7 +1,5 @@
 ﻿using Bot.Commands.CallbackQuery;
-using Bot.Helpers;
 using Bot.Resources;
-using Bot.Services;
 using Microsoft.Extensions.Localization;
 
 namespace Bot.Handlers.CallbackQuery;

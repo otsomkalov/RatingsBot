@@ -1,5 +1,4 @@
-﻿using Bot.Helpers;
-using Bot.Resources;
+﻿using Bot.Resources;
 using Microsoft.Extensions.Localization;
 using Telegram.Bot.Types;
 

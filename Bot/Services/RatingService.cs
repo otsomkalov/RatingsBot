@@ -1,5 +1,4 @@
-﻿using Bot.Data;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Bot.Services;
 
