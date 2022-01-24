@@ -22,7 +22,7 @@ stages:
         dockerRegistryEndpoint: 'DockerHub'
         command: 'Build an image'
         dockerFile: '**/Dockerfile'
-        imageName: '$(ImageName):dev'
+        imageName: '$(ImageName)'
         includeLatestTag: true
         useDefaultContext: false
         buildContext: '.'
@@ -32,4 +32,4 @@ stages:
         containerregistrytype: 'Container Registry'
         dockerRegistryEndpoint: 'DockerHub'
         command: 'Push an image'
-        imageName: '$(ImageName):dev'
+        imageName: '$(ImageName)'
