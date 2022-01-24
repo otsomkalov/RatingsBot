@@ -1,17 +1,17 @@
 trigger:
   branches:
     include:
-      - main
+      - dev
 
 pr: none
 
 pool:
   vmImage: 'ubuntu-latest'
- 
+
 stages:
 - stage: Build
   displayName: Build image
-  jobs:  
+  jobs:
   - job: Build
     displayName: Build and push the Docker image
     steps:
@@ -22,7 +22,7 @@ stages:
         dockerRegistryEndpoint: 'DockerHub'
         command: 'Build an image'
         dockerFile: '**/Dockerfile'
-        imageName: '$(ImageName)'
+        imageName: '$(ImageName):dev'
         includeLatestTag: true
         useDefaultContext: false
         buildContext: '.'
@@ -32,4 +32,4 @@ stages:
         containerregistrytype: 'Container Registry'
         dockerRegistryEndpoint: 'DockerHub'
         command: 'Push an image'
-        imageName: '$(ImageName)'
+        imageName: '$(ImageName):dev'

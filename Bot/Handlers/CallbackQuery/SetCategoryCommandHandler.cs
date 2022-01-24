@@ -8,18 +8,18 @@ public class SetCategoryCommandHandler : AsyncRequestHandler<SetCategoryCommand>
 {
     private readonly CategoryService _categoryService;
     private readonly ITelegramBotClient _bot;
-    private readonly ItemService _itemService;
+    private readonly AppDbContext _context;
     private readonly PlaceService _placeService;
     private readonly IStringLocalizer<Messages> _localizer;
 
-    public SetCategoryCommandHandler(CategoryService categoryService, ITelegramBotClient bot, ItemService itemService,
-        PlaceService placeService, IStringLocalizer<Messages> localizer)
+    public SetCategoryCommandHandler(CategoryService categoryService, ITelegramBotClient bot,
+        PlaceService placeService, IStringLocalizer<Messages> localizer, AppDbContext context)
     {
         _categoryService = categoryService;
         _bot = bot;
-        _itemService = itemService;
         _placeService = placeService;
         _localizer = localizer;
+        _context = context;
     }
 
     protected override async Task Handle(SetCategoryCommand request, CancellationToken cancellationToken)
@@ -36,7 +36,10 @@ public class SetCategoryCommandHandler : AsyncRequestHandler<SetCategoryCommand>
         }
         else
         {
-            await _itemService.UpdateCategoryAsync(item, entityId.Value);
+            item.CategoryId = entityId.Value;
+
+            _context.Update (item);
+            await _context.SaveChangesAsync(cancellationToken);
 
             var places = await _placeService.ListAsync();
 

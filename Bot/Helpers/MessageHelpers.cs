@@ -4,25 +4,36 @@ namespace Bot.Helpers;
 
 public static class MessageHelpers
 {
-    public static string GetItemMessageText(Item item, long userId, string messageTemplate)
+    public static string GetItemMessageText(Item item, string messageTemplate, string ratingLineTemplate)
     {
-        var currentUserRating = item.Ratings.FirstOrDefault(r => r.UserId == userId);
-
         var avgRating = item.Ratings.Any()
             ? item.Ratings.Sum(r => r.Value) / item.Ratings.Count
             : 0;
 
-        var currentRatingString = currentUserRating == null
-            ? "No rating"
-            : string.Join(string.Empty, Enumerable.Repeat("⭐", currentUserRating.Value));
-
         var avgRatingString = avgRating == 0
             ? "No average rating"
-            : string.Join(string.Empty, Enumerable.Repeat("⭐", avgRating));
+            : StringHelpers.CreateStarsString(avgRating);
 
-        var placeName = item.Place?.Name ?? "<None>";
+        var placeName = item.Place?.Name ?? string.Empty;
 
-        return string.Format(messageTemplate, item.Name, item.Category?.Name, placeName,
-            currentRatingString, avgRatingString);
+        return GetItemMessageText(item, messageTemplate, ratingLineTemplate, placeName, avgRatingString);
+    }
+
+    public static string GetItemMessageText(Item item, string messageTemplate, string ratingLineTemplate, string placeName,
+        string avgRatingString)
+    {
+        var ratings = new List<string>();
+
+        foreach (var rating in item.Ratings)
+        {
+            var ratingLineText = string.Format(ratingLineTemplate, rating.User?.FirstName, StringHelpers.CreateStarsString(rating.Value));
+            ratings.Add(ratingLineText);
+        }
+
+        var ratingsString = ratings.Any()
+            ? string.Join(Environment.NewLine, ratings)
+            : "No ratings";
+
+        return string.Format(messageTemplate, item.Category?.Name, item.Name, placeName, avgRatingString, ratingsString);
     }
 }

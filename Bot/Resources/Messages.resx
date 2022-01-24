@@ -49,13 +49,23 @@
     <data name="Refreshed" xml:space="preserve">
         <value>Refreshed</value>
     </data>
+    <data name="RatingLineTemplate" xml:space="preserve">
+        <value>{0} - {1}</value>
+    </data>
+    <data name="InlineQueryResultArticleTemplate" xml:space="preserve">
+        <value>
+{0} {1} {2}
+{3}
+Ratings:
+{4}
+        </value>
+    </data>
     <data name="ItemMessageTemplate" xml:space="preserve">
         <value>
-Item: {0}
-Category: {1}
-Place: {2}
-Your rating: {3}
-Average rating: {4}
+{0} {1} {2}
+{3}
+Ratings:
+{4}
         </value>
     </data>
 </root>

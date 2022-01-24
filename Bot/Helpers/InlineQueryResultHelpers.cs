@@ -6,14 +6,38 @@ namespace Bot.Helpers;
 
 public static class InlineQueryResultHelpers
 {
-    public static InlineQueryResultArticle GetItemQueryResult(Item item, InlineQuery inlineQuery, string messageTemplate)
+    public static InlineQueryResultArticle GetItemQueryResult(Item item, InlineQuery inlineQuery, string messageTemplate,
+        string ratingsTemplate)
     {
-        var description = MessageHelpers.GetItemMessageText(item, inlineQuery.From.Id, messageTemplate);
+        var placeName = item.Place?.Name ?? string.Empty;
+        var ratings = item.Ratings;
+        var currentUserRating = ratings.FirstOrDefault(r => r.UserId == inlineQuery.From.Id);
 
-        return new(item.Id.ToString(), item.Name, new InputTextMessageContent(description))
+        var avgRating = ratings.Any()
+            ? CalculateAverageRating(ratings)
+            : 0;
+
+        var currentRatingString = currentUserRating != null
+            ? StringHelpers.CreateStarsString(currentUserRating.Value)
+            : "-";
+
+        var avgRatingString = avgRating != 0
+            ? StringHelpers.CreateStarsString(avgRating)
+            : "-";
+
+        var title = $"{item.Category?.Name} {item.Name} {placeName}";
+        var messageText = MessageHelpers.GetItemMessageText(item, messageTemplate, ratingsTemplate, placeName, avgRatingString);
+        var messageContent = new InputTextMessageContent(messageText);
+
+        return new(item.Id.ToString(), title, messageContent)
         {
-            Description = description,
+            Description = $"{currentRatingString}/{avgRatingString}",
             ReplyMarkup = ReplyMarkupHelpers.GetRatingsMarkup(item.Id)
         };
+    }
+
+    private static int CalculateAverageRating(IReadOnlyCollection<Rating> ratings)
+    {
+        return (int)Math.Round(ratings.Sum(r => r.Value) / (double)ratings.Count, MidpointRounding.ToPositiveInfinity);
     }
 }

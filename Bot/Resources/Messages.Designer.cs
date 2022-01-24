@@ -9,6 +9,9 @@
 //------------------------------------------------------------------------------
 
 namespace Bot.Resources {
+    using System;
+
+
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -36,7 +39,7 @@ namespace Bot.Resources {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("RatingsBot.Resources.Messages", typeof(Messages).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Bot.Resources.Messages", typeof(Messages).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -68,11 +71,24 @@ namespace Bot.Resources {
 
         /// <summary>
         ///   Looks up a localized string similar to
-        ///Item: {0}
-        ///Category: {1}
-        ///Place: {2}
-        ///Your rating: {3}
-        ///Average rating: {4}
+        ///{0} {1} {2}
+        ///{3}
+        ///Ratings:
+        ///{4}
+        ///        .
+        /// </summary>
+        internal static string InlineQueryResultArticleTemplate {
+            get {
+                return ResourceManager.GetString("InlineQueryResultArticleTemplate", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to
+        ///{0} {1} {2}
+        ///{3}
+        ///Ratings:
+        ///{4}
         ///        .
         /// </summary>
         internal static string ItemMessageTemplate {
@@ -105,6 +121,15 @@ namespace Bot.Resources {
         internal static string NewPlaceCommand {
             get {
                 return ResourceManager.GetString("NewPlaceCommand", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} - {1}.
+        /// </summary>
+        internal static string RatingLineTemplate {
+            get {
+                return ResourceManager.GetString("RatingLineTemplate", resourceCulture);
             }
         }
 

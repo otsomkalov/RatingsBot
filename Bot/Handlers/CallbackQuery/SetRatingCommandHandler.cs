@@ -29,7 +29,8 @@ public class SetRatingCommandHandler : AsyncRequestHandler<SetRatingCommand>
             await _bot.AnswerCallbackQueryAsync(callbackQuery.Id, _localizer[nameof(Messages.Recorded)], cancellationToken: cancellationToken);
         }
 
-        var messageText = MessageHelpers.GetItemMessageText(item, callbackQuery.From.Id, _localizer[nameof(Messages.ItemMessageTemplate)]);
+        var messageText = MessageHelpers.GetItemMessageText(item, _localizer[nameof(Messages.ItemMessageTemplate)],
+            _localizer[nameof(Messages.RatingLineTemplate)]);
 
         try
         {
