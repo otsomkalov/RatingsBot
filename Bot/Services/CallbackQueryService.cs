@@ -7,15 +7,15 @@ namespace Bot.Services;
 
 public class CallbackQueryService
 {
-    private readonly ItemService _itemService;
     private readonly IMediator _mediator;
     private readonly UserService _userService;
+    private readonly AppDbContext _context;
 
-    public CallbackQueryService(ItemService itemService, IMediator mediator, UserService userService)
+    public CallbackQueryService(IMediator mediator, UserService userService, AppDbContext context)
     {
-        _itemService = itemService;
         _mediator = mediator;
         _userService = userService;
+        _context = context;
     }
 
     public async Task HandleAsync(CallbackQuery callbackQuery)
@@ -26,7 +26,7 @@ public class CallbackQueryService
 
         var itemId = int.Parse(callbackData[0]);
         int? entityId = int.TryParse(callbackData[2], out var id) ? id : null;
-        var item = await _itemService.GetAsync(itemId);
+        var item = await _context.Items.FindAsync(itemId);
 
         CallbackQueryCommand command = callbackData[1] switch
         {

@@ -8,16 +8,16 @@ public class SetPlaceCommandHandler : AsyncRequestHandler<SetPlaceCommand>
 {
     private readonly PlaceService _placeService;
     private readonly ITelegramBotClient _bot;
-    private readonly ItemService _itemService;
     private readonly IStringLocalizer<Messages> _localizer;
+    private readonly AppDbContext _context;
 
-    public SetPlaceCommandHandler(PlaceService placeService, ITelegramBotClient bot, ItemService itemService,
-        IStringLocalizer<Messages> localizer)
+    public SetPlaceCommandHandler(PlaceService placeService, ITelegramBotClient bot,
+        IStringLocalizer<Messages> localizer, AppDbContext context)
     {
         _placeService = placeService;
         _bot = bot;
-        _itemService = itemService;
         _localizer = localizer;
+        _context = context;
     }
 
     protected override async Task Handle(SetPlaceCommand request, CancellationToken cancellationToken)
@@ -34,12 +34,17 @@ public class SetPlaceCommandHandler : AsyncRequestHandler<SetPlaceCommand>
         }
         else
         {
-            await _itemService.UpdatePlaceAsync(item, entityId);
+            item.PlaceId = entityId;
+
+            _context.Update(item);
+            await _context.SaveChangesAsync(cancellationToken);
 
             await _bot.EditMessageTextAsync(new(callbackQuery.From.Id),
                 callbackQuery.Message.MessageId,
-                MessageHelpers.GetItemMessageText(item, callbackQuery.From.Id, _localizer[nameof(Messages.ItemMessageTemplate)]),
-                replyMarkup: ReplyMarkupHelpers.GetRatingsMarkup(item.Id), cancellationToken: cancellationToken);
+                MessageHelpers.GetItemMessageText(item, _localizer[nameof(Messages.ItemMessageTemplate)],
+                    _localizer[nameof(Messages.RatingLineTemplate)]),
+                replyMarkup: ReplyMarkupHelpers.GetRatingsMarkup(item.Id),
+                cancellationToken: cancellationToken);
         }
     }
 }

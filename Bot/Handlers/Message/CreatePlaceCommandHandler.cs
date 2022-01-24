@@ -1,4 +1,5 @@
 ﻿using Bot.Commands.Message;
+using Bot.Models;
 using Bot.Resources;
 using Microsoft.Extensions.Localization;
 
@@ -8,20 +9,25 @@ public class CreatePlaceCommandHandler : AsyncRequestHandler<CreatePlaceCommand>
 {
     private readonly ITelegramBotClient _bot;
     private readonly IStringLocalizer<Messages> _localizer;
-    private readonly PlaceService _placeService;
+    private readonly AppDbContext _context;
 
-    public CreatePlaceCommandHandler(PlaceService placeService, ITelegramBotClient bot, IStringLocalizer<Messages> localizer)
+    public CreatePlaceCommandHandler(ITelegramBotClient bot, IStringLocalizer<Messages> localizer, AppDbContext context)
     {
-        _placeService = placeService;
         _bot = bot;
         _localizer = localizer;
+        _context = context;
     }
 
     protected override async Task Handle(CreatePlaceCommand request, CancellationToken cancellationToken)
     {
         var message = request.Message;
 
-        await _placeService.AddAsync(message.Text.Trim());
+        await _context.AddAsync(new Place
+        {
+            Name = message.Text.Trim()
+        }, cancellationToken);
+
+        await _context.SaveChangesAsync(cancellationToken);
 
         await _bot.SendTextMessageAsync(new(message.From.Id),
             _localizer[nameof(Messages.Created)],

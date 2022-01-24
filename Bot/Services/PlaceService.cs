@@ -17,14 +17,4 @@ public class PlaceService
         return await _context.Places.AsNoTracking()
             .ToListAsync();
     }
-
-    public async Task AddAsync(string name)
-    {
-        await _context.AddAsync(new Place
-        {
-            Name = name
-        });
-
-        await _context.SaveChangesAsync();
-    }
 }
