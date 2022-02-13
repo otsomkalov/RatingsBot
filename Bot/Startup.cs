@@ -18,9 +18,7 @@ public class Startup
         services.AddApplicationInsightsTelemetry();
 
         services.AddDbContext<AppDbContext>(builder =>
-            builder
-                .UseLazyLoadingProxies()
-                .UseNpgsql(_configuration.GetConnectionString(DatabaseOptions.ConnectionStringName)));
+            builder.UseNpgsql(_configuration.GetConnectionString(DatabaseOptions.ConnectionStringName)));
 
         services.AddLocalization()
             .AddServices();

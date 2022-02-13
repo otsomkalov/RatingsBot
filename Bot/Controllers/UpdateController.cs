@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Bot.Commands.CallbackQuery;
+using Bot.Commands.InlineQuery;
+using Bot.Commands.Message;
+using Microsoft.AspNetCore.Mvc;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
@@ -8,34 +11,34 @@ namespace Bot.Controllers;
 [Route("update")]
 public class UpdateController : ControllerBase
 {
-    private readonly MessageService _messageService;
-    private readonly CallbackQueryService _callbackQueryService;
-    private readonly InlineQueryService _inlineQueryService;
     private readonly ILogger<UpdateController> _logger;
+    private readonly IMediator _mediator;
 
-    public UpdateController(MessageService messageService, CallbackQueryService callbackQueryService, InlineQueryService inlineQueryService,
-        ILogger<UpdateController> logger)
+    public UpdateController(ILogger<UpdateController> logger, IMediator mediator)
     {
-        _messageService = messageService;
-        _callbackQueryService = callbackQueryService;
-        _inlineQueryService = inlineQueryService;
         _logger = logger;
+        _mediator = mediator;
     }
 
     [HttpPost]
     public async Task HandleUpdateAsync(Update update)
     {
-        var handleUpdateTask = update.Type switch
+        IRequest command = update.Type switch
         {
-            UpdateType.Message => _messageService.HandleAsync(update.Message),
-            UpdateType.CallbackQuery => _callbackQueryService.HandleAsync(update.CallbackQuery),
-            UpdateType.InlineQuery => _inlineQueryService.HandleAsync(update.InlineQuery),
-            _ => Task.CompletedTask
+            UpdateType.Message => new ProcessNewMessage(update.Message),
+            UpdateType.CallbackQuery => new ProcessCallbackQuery(update.CallbackQuery),
+            UpdateType.InlineQuery => new ProcessInlineQuery(update.InlineQuery),
+            _ => null
         };
+
+        if (command == null)
+        {
+            return;
+        }
 
         try
         {
-            await handleUpdateTask;
+            await _mediator.Send(command);
         }
         catch (Exception e)
         {

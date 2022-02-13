@@ -16,13 +16,6 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
-        return services.AddScoped<CategoryService>()
-            .AddScoped<PlaceService>()
-            .AddScoped<RatingService>()
-            .AddScoped<UserService>()
-            .AddScoped<MessageService>()
-            .AddScoped<CallbackQueryService>()
-            .AddScoped<InlineQueryService>()
-            .AddSingleton<UserIdProvider>();
+        return services.AddSingleton<UserIdProvider>();
     }
 }
