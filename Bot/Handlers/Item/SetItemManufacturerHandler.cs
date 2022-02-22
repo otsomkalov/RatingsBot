@@ -1,54 +1,55 @@
-﻿using Bot.Commands.Category;
-using Bot.Commands.Item;
+﻿using Bot.Commands.Item;
 using Bot.Commands.Manufacturer;
+using Bot.Commands.Place;
 using Bot.Resources;
 using Microsoft.Extensions.Localization;
 
 namespace Bot.Handlers.Item;
 
-public class SetItemCategoryHandler : AsyncRequestHandler<SetItemCategory>
+public class SetItemManufacturerHandler : AsyncRequestHandler<SetItemManufacturer>
 {
     private readonly ITelegramBotClient _bot;
     private readonly AppDbContext _context;
     private readonly IStringLocalizer<Messages> _localizer;
     private readonly IMediator _mediator;
 
-    public SetItemCategoryHandler(ITelegramBotClient bot, IStringLocalizer<Messages> localizer, AppDbContext context, IMediator mediator)
+    public SetItemManufacturerHandler(IMediator mediator, ITelegramBotClient bot, AppDbContext context,
+        IStringLocalizer<Messages> localizer)
     {
-        _bot = bot;
-        _localizer = localizer;
-        _context = context;
         _mediator = mediator;
+        _bot = bot;
+        _context = context;
+        _localizer = localizer;
     }
 
-    protected override async Task Handle(SetItemCategory request, CancellationToken cancellationToken)
+    protected override async Task Handle(SetItemManufacturer request, CancellationToken cancellationToken)
     {
         var (callbackQuery, entityId, itemId) = request;
 
-        if (!entityId.HasValue)
+        if (entityId is -1)
         {
-            var categoriesMarkup = await _mediator.Send(new GetCategoriesMarkup(itemId), cancellationToken);
+            var manufacturersMarkup = await _mediator.Send(new GetManufacturersMarkup(itemId), cancellationToken);
 
             await _bot.EditMessageReplyMarkupAsync(new(callbackQuery.From.Id),
                 callbackQuery.Message.MessageId,
-                categoriesMarkup,
+                manufacturersMarkup,
                 cancellationToken);
         }
         else
         {
             var item = await _context.Items.FindAsync(itemId);
 
-            item.CategoryId = entityId.Value;
+            item.ManufacturerId = entityId.Value;
 
             _context.Items.Update(item);
             await _context.SaveChangesAsync(cancellationToken);
 
-            var manufacturersMarkup = await _mediator.Send(new GetManufacturersMarkup(itemId), cancellationToken);
+            var placesMarkup = await _mediator.Send(new GetPlacesMarkup(itemId), cancellationToken);
 
             await _bot.EditMessageTextAsync(new(callbackQuery.From.Id),
                 callbackQuery.Message.MessageId,
-                _localizer[nameof(Messages.SelectManufacturer)],
-                replyMarkup: manufacturersMarkup,
+                _localizer[nameof(Messages.SelectPlace)],
+                replyMarkup: placesMarkup,
                 cancellationToken: cancellationToken);
         }
     }

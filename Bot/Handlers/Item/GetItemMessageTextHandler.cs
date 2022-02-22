@@ -26,6 +26,7 @@ public class GetItemMessageTextHandler : RequestHandler<GetItemMessageText, stri
             : StringHelpers.CreateStarsString(avgRating);
 
         var placeName = item.Place?.Name ?? string.Empty;
+        var manufacturerName = item.Manufacturer?.Name ?? string.Empty;
 
         string ratingsString;
 
@@ -48,7 +49,7 @@ public class GetItemMessageTextHandler : RequestHandler<GetItemMessageText, stri
             ratingsString = "No ratings";
         }
 
-        return string.Format(_localizer[nameof(Messages.ItemMessageTemplate)], item.Category.Name, item.Name, placeName, avgRatingString,
-            ratingsString);
+        return string.Format(_localizer[nameof(Messages.ItemMessageTemplate)], item.Category.Name, manufacturerName, item.Name, placeName,
+            avgRatingString, ratingsString);
     }
 }

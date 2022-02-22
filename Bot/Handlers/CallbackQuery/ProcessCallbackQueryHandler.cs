@@ -30,6 +30,7 @@ public class ProcessCallbackQueryHandler : AsyncRequestHandler<ProcessCallbackQu
         {
             ReplyMarkup.Category => new SetItemCategory(callbackQuery, entityId, itemId),
             ReplyMarkup.Place => new SetItemPlace(callbackQuery, entityId, itemId),
+            ReplyMarkup.Manufacturer => new SetItemManufacturer(callbackQuery, entityId, itemId),
             ReplyMarkup.Rating => new SetItemRating(callbackQuery, entityId, itemId)
         };
 

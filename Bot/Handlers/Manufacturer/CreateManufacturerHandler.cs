@@ -1,27 +1,27 @@
-﻿using Bot.Commands.Place;
+﻿using Bot.Commands.Manufacturer;
 using Bot.Resources;
 using Microsoft.Extensions.Localization;
 
-namespace Bot.Handlers.Place;
+namespace Bot.Handlers.Manufacturer;
 
-public class CreatePlaceHandler : AsyncRequestHandler<CreatePlace>
+public class CreateManufacturerHandler : AsyncRequestHandler<CreateManufacturer>
 {
     private readonly ITelegramBotClient _bot;
-    private readonly IStringLocalizer<Messages> _localizer;
     private readonly AppDbContext _context;
+    private readonly IStringLocalizer<Messages> _localizer;
 
-    public CreatePlaceHandler(ITelegramBotClient bot, IStringLocalizer<Messages> localizer, AppDbContext context)
+    public CreateManufacturerHandler(AppDbContext context, ITelegramBotClient bot, IStringLocalizer<Messages> localizer)
     {
+        _context = context;
         _bot = bot;
         _localizer = localizer;
-        _context = context;
     }
 
-    protected override async Task Handle(CreatePlace request, CancellationToken cancellationToken)
+    protected override async Task Handle(CreateManufacturer request, CancellationToken cancellationToken)
     {
         var message = request.Message;
 
-        await _context.Places.AddAsync(new()
+        await _context.Manufacturers.AddAsync(new()
         {
             Name = message.Text.Trim()
         }, cancellationToken);
