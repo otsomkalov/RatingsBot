@@ -34,6 +34,7 @@ public class SetItemPlaceHandler : AsyncRequestHandler<SetItemPlace>
         {
             var item = await _context.Items
                 .Include(i => i.Category)
+                .Include(i => i.Manufacturer)
                 .Include(i => i.Place)
                 .FirstOrDefaultAsync(i => i.Id == itemId, cancellationToken);
 

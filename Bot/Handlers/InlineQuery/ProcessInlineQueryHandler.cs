@@ -29,12 +29,14 @@ public class ProcessInlineQueryHandler : AsyncRequestHandler<ProcessInlineQuery>
         var items = await _context.Items
             .Include(i => i.Category)
             .Include(i => i.Place)
+            .Include(i => i.Manufacturer)
             .Include(i => i.Ratings)
             .ThenInclude(r => r.User)
             .Where(i =>
                 EF.Functions.ILike(i.Name, $"%{inlineQuery.Query}%") ||
                 EF.Functions.ILike(i.Category.Name, $"%{inlineQuery.Query}%") ||
-                EF.Functions.ILike(i.Place.Name, $"%{inlineQuery.Query}%"))
+                EF.Functions.ILike(i.Place.Name, $"%{inlineQuery.Query}%") ||
+                EF.Functions.ILike(i.Manufacturer.Name, $"%{inlineQuery.Query}%"))
             .Take(Constants.Telegram.MaximumInlineResults)
             .ToListAsync(cancellationToken);
 
@@ -43,7 +45,8 @@ public class ProcessInlineQueryHandler : AsyncRequestHandler<ProcessInlineQuery>
         await _bot.AnswerInlineQueryAsync(inlineQuery.Id, articles, cancellationToken: cancellationToken);
     }
 
-    private async Task<InlineQueryResultArticle> ItemToArticleAsync(Models.Item item, Telegram.Bot.Types.InlineQuery inlineQuery, CancellationToken cancellationToken)
+    private async Task<InlineQueryResultArticle> ItemToArticleAsync(Models.Item item, Telegram.Bot.Types.InlineQuery inlineQuery,
+        CancellationToken cancellationToken)
     {
         var placeName = item.Place?.Name ?? string.Empty;
         var currentUserRating = item.Ratings.FirstOrDefault(r => r.UserId == inlineQuery.From.Id);
@@ -76,6 +79,6 @@ public class ProcessInlineQueryHandler : AsyncRequestHandler<ProcessInlineQuery>
 
     private static int CalculateAverageRating(IReadOnlyCollection<Models.Rating> ratings)
     {
-        return (int)Math.Round(ratings.Sum(r => r.Value) / (double)ratings.Count, MidpointRounding.ToPositiveInfinity);
+        return (int) Math.Round(ratings.Sum(r => r.Value) / (double) ratings.Count, MidpointRounding.ToPositiveInfinity);
     }
 }

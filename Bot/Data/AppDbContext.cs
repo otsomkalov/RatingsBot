@@ -16,6 +16,8 @@ public class AppDbContext : DbContext
 
     public DbSet<Place> Places { get; set; }
 
+    public DbSet<Manufacturer> Manufacturers { get; set; }
+
     public AppDbContext(DbContextOptions options) : base(options)
     {
     }

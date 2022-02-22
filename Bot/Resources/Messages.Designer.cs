@@ -71,24 +71,10 @@ namespace Bot.Resources {
 
         /// <summary>
         ///   Looks up a localized string similar to
-        ///{0} {1} {2}
-        ///{3}
-        ///Ratings:
+        ///{0} {1} {2} {3}
         ///{4}
-        ///        .
-        /// </summary>
-        internal static string InlineQueryResultArticleTemplate {
-            get {
-                return ResourceManager.GetString("InlineQueryResultArticleTemplate", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to
-        ///{0} {1} {2}
-        ///{3}
         ///Ratings:
-        ///{4}
+        ///{5}
         ///        .
         /// </summary>
         internal static string ItemMessageTemplate {
@@ -112,6 +98,15 @@ namespace Bot.Resources {
         internal static string NewItemCommand {
             get {
                 return ResourceManager.GetString("NewItemCommand", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Type a name of a new manufacturer.
+        /// </summary>
+        internal static string NewManufacturerCommand {
+            get {
+                return ResourceManager.GetString("NewManufacturerCommand", resourceCulture);
             }
         }
 
@@ -157,6 +152,15 @@ namespace Bot.Resources {
         internal static string SelectCategory {
             get {
                 return ResourceManager.GetString("SelectCategory", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Select manufacturer.
+        /// </summary>
+        internal static string SelectManufacturer {
+            get {
+                return ResourceManager.GetString("SelectManufacturer", resourceCulture);
             }
         }
 

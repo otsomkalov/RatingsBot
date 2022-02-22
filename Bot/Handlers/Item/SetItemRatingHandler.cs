@@ -60,6 +60,7 @@ public class SetItemRatingHandler : AsyncRequestHandler<SetItemRating>
             .ThenInclude(r => r.User)
             .Include(i => i.Place)
             .Include(i => i.Category)
+            .Include(i => i.Manufacturer)
             .FirstOrDefaultAsync(i => i.Id == itemId, cancellationToken);
 
         var messageText = await _mediator.Send(new GetItemMessageText(item), cancellationToken);

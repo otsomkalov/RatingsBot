@@ -31,11 +31,17 @@
     <data name="SelectPlace" xml:space="preserve">
         <value>Select place</value>
     </data>
+    <data name="SelectManufacturer" xml:space="preserve">
+        <value>Select manufacturer</value>
+    </data>
     <data name="Created" xml:space="preserve">
         <value>Created!</value>
     </data>
     <data name="NewItemCommand" xml:space="preserve">
         <value>Type a name of a new item</value>
+    </data>
+    <data name="NewManufacturerCommand" xml:space="preserve">
+        <value>Type a name of a new manufacturer</value>
     </data>
     <data name="NewCategoryCommand" xml:space="preserve">
         <value>Type a name of a new category</value>
@@ -52,20 +58,12 @@
     <data name="RatingLineTemplate" xml:space="preserve">
         <value>{0} - {1}</value>
     </data>
-    <data name="InlineQueryResultArticleTemplate" xml:space="preserve">
-        <value>
-{0} {1} {2}
-{3}
-Ratings:
-{4}
-        </value>
-    </data>
     <data name="ItemMessageTemplate" xml:space="preserve">
         <value>
-{0} {1} {2}
-{3}
-Ratings:
+{0} {1} {2} {3}
 {4}
+Ratings:
+{5}
         </value>
     </data>
 </root>

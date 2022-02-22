@@ -1,5 +1,6 @@
 ﻿using Bot.Commands.Category;
 using Bot.Commands.Item;
+using Bot.Commands.Manufacturer;
 using Bot.Commands.Message;
 using Bot.Commands.Place;
 using Bot.Commands.User;
@@ -36,6 +37,7 @@ public class ProcessNewMessageHandler : AsyncRequestHandler<ProcessNewMessage>
             Constants.Commands.NewPlace => new NewPlace(message),
             Constants.Commands.NewCategory => new NewCategory(message),
             Constants.Commands.NewItem => new NewItem(message),
+            Constants.Commands.NewManufacturer => new NewManufacturer(message),
             _ => null
         };
 
@@ -57,6 +59,10 @@ public class ProcessNewMessageHandler : AsyncRequestHandler<ProcessNewMessage>
         else if (message.ReplyToMessage?.Text == _localizer[nameof(Messages.NewItemCommand)])
         {
             command = new CreateItem(message);
+        }
+        else if (message.ReplyToMessage?.Text == _localizer[nameof(Messages.NewManufacturerCommand)])
+        {
+            command = new CreateManufacturer(message);
         }
 
         if (command != null)

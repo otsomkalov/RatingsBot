@@ -28,6 +28,13 @@ public static class ReplyKeyboardMarkupHelpers
                 {
                     new KeyboardButton
                     {
+                        Text = Constants.Commands.NewManufacturer
+                    }
+                },
+                new[]
+                {
+                    new KeyboardButton
+                    {
                         Text = Constants.Commands.NewItem
                     }
                 }
