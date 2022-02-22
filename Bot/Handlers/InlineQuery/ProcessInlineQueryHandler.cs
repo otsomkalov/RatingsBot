@@ -48,7 +48,6 @@ public class ProcessInlineQueryHandler : AsyncRequestHandler<ProcessInlineQuery>
     private async Task<InlineQueryResultArticle> ItemToArticleAsync(Models.Item item, Telegram.Bot.Types.InlineQuery inlineQuery,
         CancellationToken cancellationToken)
     {
-        var placeName = item.Place?.Name ?? string.Empty;
         var currentUserRating = item.Ratings.FirstOrDefault(r => r.UserId == inlineQuery.From.Id);
 
         var avgRating = item.Ratings.Any()
@@ -63,7 +62,12 @@ public class ProcessInlineQueryHandler : AsyncRequestHandler<ProcessInlineQuery>
             ? StringHelpers.CreateStarsString(avgRating)
             : "-";
 
-        var title = $"{item.Category?.Name} {item.Name} {placeName}";
+        var titleParts = new[]
+        {
+            item.Category?.Name, item.Manufacturer?.Name, item.Name, item.Place?.Name
+        };
+
+        var title = string.Join(" ", titleParts.Where(part => !string.IsNullOrEmpty(part)));
         var messageText = await _mediator.Send(new GetItemMessageText(item), cancellationToken);
         var messageContent = new InputTextMessageContent(messageText);
         var replyMarkup = await _mediator.Send(new GetRatingsMarkup(item.Id), cancellationToken);
