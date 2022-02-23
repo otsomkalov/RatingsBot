@@ -29,30 +29,33 @@ public class SetItemPlaceHandler : AsyncRequestHandler<SetItemPlace>
             await _bot.EditMessageReplyMarkupAsync(new(callbackQuery.From.Id),
                 callbackQuery.Message.MessageId,
                 placesMarkup, cancellationToken);
-        }
-        else
-        {
-            var item = await _context.Items
-                .Include(i => i.Category)
-                .Include(i => i.Manufacturer)
-                .Include(i => i.Place)
-                .FirstOrDefaultAsync(i => i.Id == itemId, cancellationToken);
 
+            return;
+        }
+
+        var item = await _context.Items
+            .Include(i => i.Category)
+            .Include(i => i.Manufacturer)
+            .Include(i => i.Place)
+            .FirstOrDefaultAsync(i => i.Id == itemId, cancellationToken);
+
+        if (entityId.HasValue)
+        {
             item.PlaceId = entityId;
 
             var entityEntry = _context.Items.Update(item);
             await _context.SaveChangesAsync(cancellationToken);
 
             await entityEntry.Reference(i => i.Place).LoadAsync(cancellationToken);
-
-            var ratingsMarkup = await _mediator.Send(new GetRatingsMarkup(itemId), cancellationToken);
-            var messageText = await _mediator.Send(new GetItemMessageText(item), cancellationToken);
-
-            await _bot.EditMessageTextAsync(new(callbackQuery.From.Id),
-                callbackQuery.Message.MessageId,
-                messageText,
-                replyMarkup: ratingsMarkup,
-                cancellationToken: cancellationToken);
         }
+
+        var ratingsMarkup = await _mediator.Send(new GetRatingsMarkup(itemId), cancellationToken);
+        var messageText = await _mediator.Send(new GetItemMessageText(item), cancellationToken);
+
+        await _bot.EditMessageTextAsync(new(callbackQuery.From.Id),
+            callbackQuery.Message.MessageId,
+            messageText,
+            replyMarkup: ratingsMarkup,
+            cancellationToken: cancellationToken);
     }
 }

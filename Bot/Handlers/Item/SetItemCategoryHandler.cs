@@ -33,23 +33,23 @@ public class SetItemCategoryHandler : AsyncRequestHandler<SetItemCategory>
                 callbackQuery.Message.MessageId,
                 categoriesMarkup,
                 cancellationToken);
+
+            return;
         }
-        else
-        {
-            var item = await _context.Items.FindAsync(itemId);
 
-            item.CategoryId = entityId.Value;
+        var item = await _context.Items.FindAsync(itemId);
 
-            _context.Items.Update(item);
-            await _context.SaveChangesAsync(cancellationToken);
+        item.CategoryId = entityId.Value;
 
-            var manufacturersMarkup = await _mediator.Send(new GetManufacturersMarkup(itemId), cancellationToken);
+        _context.Items.Update(item);
+        await _context.SaveChangesAsync(cancellationToken);
 
-            await _bot.EditMessageTextAsync(new(callbackQuery.From.Id),
-                callbackQuery.Message.MessageId,
-                _localizer[nameof(Messages.SelectManufacturer)],
-                replyMarkup: manufacturersMarkup,
-                cancellationToken: cancellationToken);
-        }
+        var manufacturersMarkup = await _mediator.Send(new GetManufacturersMarkup(itemId), cancellationToken);
+
+        await _bot.EditMessageTextAsync(new(callbackQuery.From.Id),
+            callbackQuery.Message.MessageId,
+            _localizer[nameof(Messages.SelectManufacturer)],
+            replyMarkup: manufacturersMarkup,
+            cancellationToken: cancellationToken);
     }
 }

@@ -28,7 +28,8 @@ public class SetItemRatingHandler : AsyncRequestHandler<SetItemRating>
 
         if (entityId.HasValue)
         {
-            var rating = await _context.Ratings.FirstOrDefaultAsync(r => r.UserId == callbackQuery.From.Id && r.ItemId == itemId,
+            var rating = await _context.Ratings
+                .FirstOrDefaultAsync(r => r.UserId == callbackQuery.From.Id && r.ItemId == itemId,
                 cancellationToken);
 
             if (rating != null)

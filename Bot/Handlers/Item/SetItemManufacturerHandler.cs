@@ -34,23 +34,26 @@ public class SetItemManufacturerHandler : AsyncRequestHandler<SetItemManufacture
                 callbackQuery.Message.MessageId,
                 manufacturersMarkup,
                 cancellationToken);
+
+            return;
         }
-        else
+
+        if (entityId.HasValue)
         {
             var item = await _context.Items.FindAsync(itemId);
 
-            item.ManufacturerId = entityId.Value;
+            item.ManufacturerId = entityId;
 
             _context.Items.Update(item);
             await _context.SaveChangesAsync(cancellationToken);
-
-            var placesMarkup = await _mediator.Send(new GetPlacesMarkup(itemId), cancellationToken);
-
-            await _bot.EditMessageTextAsync(new(callbackQuery.From.Id),
-                callbackQuery.Message.MessageId,
-                _localizer[nameof(Messages.SelectPlace)],
-                replyMarkup: placesMarkup,
-                cancellationToken: cancellationToken);
         }
+
+        var placesMarkup = await _mediator.Send(new GetPlacesMarkup(itemId), cancellationToken);
+
+        await _bot.EditMessageTextAsync(new(callbackQuery.From.Id),
+            callbackQuery.Message.MessageId,
+            _localizer[nameof(Messages.SelectPlace)],
+            replyMarkup: placesMarkup,
+            cancellationToken: cancellationToken);
     }
 }
