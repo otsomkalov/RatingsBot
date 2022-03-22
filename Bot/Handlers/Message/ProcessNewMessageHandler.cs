@@ -29,7 +29,7 @@ public class ProcessNewMessageHandler : AsyncRequestHandler<ProcessNewMessage>
             return;
         }
 
-        await _mediator.Send(new CreateUserIfNotExists(message.From.Id), cancellationToken);
+        await _mediator.Send(new CreateUserIfNotExists(message.From), cancellationToken);
 
         IRequest command = message.Text.Trim() switch
         {

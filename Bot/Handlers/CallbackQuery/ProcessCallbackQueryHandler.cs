@@ -19,7 +19,7 @@ public class ProcessCallbackQueryHandler : AsyncRequestHandler<ProcessCallbackQu
     {
         var callbackQuery = request.CallbackQuery;
 
-        await _mediator.Send(new CreateUserIfNotExists(callbackQuery.From.Id), cancellationToken);
+        await _mediator.Send(new CreateUserIfNotExists(callbackQuery.From), cancellationToken);
 
         var callbackData = callbackQuery.Data.Split(ReplyMarkup.Separator).ToImmutableList();
 

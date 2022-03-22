@@ -24,7 +24,7 @@ public class ProcessInlineQueryHandler : AsyncRequestHandler<ProcessInlineQuery>
     {
         var inlineQuery = request.InlineQuery;
 
-        await _mediator.Send(new CreateUserIfNotExists(inlineQuery.From.Id), cancellationToken);
+        await _mediator.Send(new CreateUserIfNotExists(inlineQuery.From), cancellationToken);
 
         var items = await _context.Items
             .Include(i => i.Category)
