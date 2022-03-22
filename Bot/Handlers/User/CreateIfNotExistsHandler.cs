@@ -16,23 +16,24 @@ public class CreateIfNotExistsHandler : AsyncRequestHandler<CreateUserIfNotExist
 
     protected override  async Task Handle(CreateUserIfNotExists request, CancellationToken cancellationToken)
     {
-        var id = request.Id;
+        var user = request.User;
 
-        if (_userIdProvider.UserExists(id))
+        if (_userIdProvider.UserExists(user.Id))
         {
             return;
         }
 
-        _userIdProvider.AddUserId(id);
+        _userIdProvider.AddUserId(user.Id);
 
-        if (await _context.Users.AsNoTracking().AnyAsync(u => u.Id == id, cancellationToken))
+        if (await _context.Users.AsNoTracking().AnyAsync(u => u.Id == user.Id, cancellationToken))
         {
             return;
         }
 
         await _context.AddAsync(new Models.User
         {
-            Id = id
+            Id = user.Id,
+            FirstName = user.FirstName
         }, cancellationToken);
 
         await _context.SaveChangesAsync(cancellationToken);

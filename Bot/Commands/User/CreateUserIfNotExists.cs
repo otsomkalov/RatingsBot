@@ -1,3 +1,3 @@
 ﻿namespace Bot.Commands.User;
 
-public record CreateUserIfNotExists(long Id) : IRequest;
+public record CreateUserIfNotExists(Telegram.Bot.Types.User User) : IRequest;
