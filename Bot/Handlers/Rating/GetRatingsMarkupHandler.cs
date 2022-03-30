@@ -12,42 +12,36 @@ public class GetRatingsMarkupHandler : RequestHandler<GetRatingsMarkup, InlineKe
 
         var firstRow = new InlineKeyboardButton[]
         {
-            new()
+            new("⭐")
             {
-                Text = "⭐",
                 CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Rating, RatingValues.OneStar)
             },
-            new()
+            new("⭐⭐")
             {
-                Text = "⭐⭐",
                 CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Rating, RatingValues.TwoStars)
             },
-            new()
+            new("⭐⭐⭐")
             {
-                Text = "⭐⭐⭐",
                 CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Rating, RatingValues.ThreeStars)
             }
         };
 
         var secondRow = new InlineKeyboardButton[]
         {
-            new()
+            new("⭐⭐⭐⭐")
             {
-                Text = "⭐⭐⭐⭐",
                 CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Rating, RatingValues.FourStars)
             },
-            new()
+            new("⭐⭐⭐⭐⭐")
             {
-                Text = "⭐⭐⭐⭐⭐",
                 CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Rating, RatingValues.FiveStars)
             }
         };
 
         var thirdRow = new InlineKeyboardButton[]
         {
-            new()
+            new("Refresh")
             {
-                Text = "Refresh",
                 CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Rating, null)
             }
         };

@@ -1,3 +1,3 @@
 ﻿namespace Bot.Commands.Item;
 
-public record GetItemMessageText(Models.Item Item) : IRequest<string>;
+public record GetItemMessageText(Core.Models.Item Item) : IRequest<string>;

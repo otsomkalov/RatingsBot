@@ -6,39 +6,28 @@ public static class ReplyKeyboardMarkupHelpers
 {
     public static ReplyKeyboardMarkup GetStartReplyKeyboardMarkup()
     {
-        return new()
+        var buttonsRows = new[]
         {
-            Keyboard = new[]
+            new[]
             {
-                new[]
-                {
-                    new KeyboardButton
-                    {
-                        Text = Constants.Commands.NewCategory
-                    }
-                },
-                new[]
-                {
-                    new KeyboardButton
-                    {
-                        Text = Constants.Commands.NewPlace
-                    }
-                },
-                new[]
-                {
-                    new KeyboardButton
-                    {
-                        Text = Constants.Commands.NewManufacturer
-                    }
-                },
-                new[]
-                {
-                    new KeyboardButton
-                    {
-                        Text = Constants.Commands.NewItem
-                    }
-                }
+                new KeyboardButton(Constants.Commands.NewCategory)
             },
+            new[]
+            {
+                new KeyboardButton(Constants.Commands.NewPlace)
+            },
+            new[]
+            {
+                new KeyboardButton(Constants.Commands.NewManufacturer)
+            },
+            new[]
+            {
+                new KeyboardButton(Constants.Commands.NewItem)
+            }
+        };
+
+        return new(buttonsRows)
+        {
             OneTimeKeyboard = true
         };
     }

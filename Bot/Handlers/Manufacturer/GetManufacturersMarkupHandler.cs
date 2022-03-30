@@ -1,5 +1,6 @@
 ﻿using Bot.Commands.Manufacturer;
 using Bot.Constants;
+using Core.Data;
 using Microsoft.EntityFrameworkCore;
 using Telegram.Bot.Types.ReplyMarkups;
 
@@ -18,7 +19,7 @@ public class GetManufacturersMarkupHandler : IRequestHandler<GetManufacturersMar
     {
         var itemId = request.ItemId;
 
-        var manufacturers = await _context.Manufacturers.AsNoTracking().ToListAsync(cancellationToken);
+        var manufacturers = await _context.Manufacturers.ToListAsync(cancellationToken);
 
         var rows = new List<IEnumerable<InlineKeyboardButton>>();
 
@@ -26,10 +27,9 @@ public class GetManufacturersMarkupHandler : IRequestHandler<GetManufacturersMar
         {
             var buttons = manufacturers.Skip(i)
                 .Take(ReplyMarkup.Columns)
-                .Select(m => new InlineKeyboardButton
+                .Select(manufacturer => new InlineKeyboardButton(manufacturer.Name)
                 {
-                    Text = m.Name,
-                    CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Manufacturer, m.Id)
+                    CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Manufacturer, manufacturer.Id)
                 });
 
             rows.Add(buttons);
@@ -37,14 +37,12 @@ public class GetManufacturersMarkupHandler : IRequestHandler<GetManufacturersMar
 
         rows.Add(new InlineKeyboardButton[]
         {
-            new()
+            new("<None>")
             {
-                Text = "<None>",
                 CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Manufacturer, null)
             },
-            new()
+            new("Refresh")
             {
-                Text = "Refresh",
                 CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Manufacturer, -1)
             }
         });

@@ -1,5 +1,6 @@
 ﻿using Bot.Commands.Category;
 using Bot.Constants;
+using Core.Data;
 using Microsoft.EntityFrameworkCore;
 using Telegram.Bot.Types.ReplyMarkups;
 
@@ -18,7 +19,7 @@ public class GetCategoriesMarkupHandler : IRequestHandler<GetCategoriesMarkup, I
     {
         var itemId = request.ItemId;
 
-        var categories = await _context.Categories.AsNoTracking().ToListAsync(cancellationToken);
+        var categories = await _context.Categories.ToListAsync(cancellationToken);
 
         var rows = new List<IEnumerable<InlineKeyboardButton>>();
 
@@ -26,10 +27,9 @@ public class GetCategoriesMarkupHandler : IRequestHandler<GetCategoriesMarkup, I
         {
             var buttons = categories.Skip(i)
                 .Take(ReplyMarkup.Columns)
-                .Select(c => new InlineKeyboardButton
+                .Select(category => new InlineKeyboardButton(category.Name)
                 {
-                    Text = c.Name,
-                    CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Category, c.Id)
+                    CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Category, category.Id)
                 });
 
             rows.Add(buttons);
@@ -37,9 +37,8 @@ public class GetCategoriesMarkupHandler : IRequestHandler<GetCategoriesMarkup, I
 
         rows.Add(new InlineKeyboardButton[]
         {
-            new()
+            new("Refresh")
             {
-                Text = "Refresh",
                 CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Category, null)
             }
         });
