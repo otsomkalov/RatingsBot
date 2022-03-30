@@ -6,16 +6,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
-    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.18.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0"/>
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.18.0"/>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.9">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0.7" />
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.Design" Version="1.1.0" />
-    <PackageReference Include="Telegram.Bot" Version="16.0.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.9" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0.7"/>
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.Design" Version="1.1.0"/>
+    <PackageReference Include="Telegram.Bot" Version="16.0.2"/>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.9"/>
   </ItemGroup>
 
   <ItemGroup>
@@ -34,14 +34,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Using Include="System" />
-    <Using Include="MediatR" />
-    <Using Include="Telegram.Bot" />
-    <Using Include="Bot.Helpers" />
-    <Using Include="Bot.Options" />
-    <Using Include="Bot.Services" />
-    <Using Include="Bot.Data" />
-    <Using Include="Bot.Extensions" />
+    <Using Include="System"/>
+    <Using Include="MediatR"/>
+    <Using Include="Telegram.Bot"/>
+    <Using Include="Bot.Helpers"/>
+    <Using Include="Bot.Options"/>
+    <Using Include="Bot.Extensions"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Core.csproj"/>
   </ItemGroup>
 
 </Project>

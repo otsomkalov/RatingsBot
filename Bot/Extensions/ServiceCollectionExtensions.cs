@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Core.Services;
+using Microsoft.Extensions.Options;
 
 namespace Bot.Extensions;
 

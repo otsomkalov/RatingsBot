@@ -1,13 +1,14 @@
 ﻿using Bot.Commands.InlineQuery;
 using Bot.Commands.Item;
 using Bot.Commands.Rating;
-using Bot.Commands.User;
+using Core.Commands.User;
+using Core.Data;
 using Microsoft.EntityFrameworkCore;
 using Telegram.Bot.Types.InlineQueryResults;
 
 namespace Bot.Handlers.InlineQuery;
 
-public class ProcessInlineQueryHandler : AsyncRequestHandler<ProcessInlineQuery>
+public class ProcessInlineQueryHandler : IRequestHandler<ProcessInlineQuery, Unit>
 {
     private readonly ITelegramBotClient _bot;
     private readonly AppDbContext _context;
@@ -20,11 +21,11 @@ public class ProcessInlineQueryHandler : AsyncRequestHandler<ProcessInlineQuery>
         _mediator = mediator;
     }
 
-    protected override async Task Handle(ProcessInlineQuery request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(ProcessInlineQuery request, CancellationToken cancellationToken)
     {
         var inlineQuery = request.InlineQuery;
 
-        await _mediator.Send(new CreateUserIfNotExists(inlineQuery.From), cancellationToken);
+        await _mediator.Send(new CreateUserIfNotExists(inlineQuery.From.Id, inlineQuery.From.FirstName), cancellationToken);
 
         var items = await _context.Items
             .Include(i => i.Category)
@@ -43,9 +44,11 @@ public class ProcessInlineQueryHandler : AsyncRequestHandler<ProcessInlineQuery>
         var articles = await Task.WhenAll(items.Select(async item => await ItemToArticleAsync(item, inlineQuery, cancellationToken)));
 
         await _bot.AnswerInlineQueryAsync(inlineQuery.Id, articles, cancellationToken: cancellationToken);
+
+        return Unit.Value;
     }
 
-    private async Task<InlineQueryResultArticle> ItemToArticleAsync(Models.Item item, Telegram.Bot.Types.InlineQuery inlineQuery,
+    private async Task<InlineQueryResultArticle> ItemToArticleAsync(Core.Models.Item item, Telegram.Bot.Types.InlineQuery inlineQuery,
         CancellationToken cancellationToken)
     {
         var currentUserRating = item.Ratings.FirstOrDefault(r => r.UserId == inlineQuery.From.Id);
@@ -81,7 +84,7 @@ public class ProcessInlineQueryHandler : AsyncRequestHandler<ProcessInlineQuery>
         return article;
     }
 
-    private static int CalculateAverageRating(IReadOnlyCollection<Models.Rating> ratings)
+    private static int CalculateAverageRating(IReadOnlyCollection<Core.Models.Rating> ratings)
     {
         return (int) Math.Round(ratings.Sum(r => r.Value) / (double) ratings.Count, MidpointRounding.ToPositiveInfinity);
     }
