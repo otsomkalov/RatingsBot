@@ -1,4 +1,5 @@
 ﻿using Core.Services;
+using Core.Services.Interfaces;
 using Microsoft.Extensions.Options;
 
 namespace Bot.Extensions;
@@ -17,6 +18,6 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
-        return services.AddSingleton<UserIdProvider>();
+        return services.AddSingleton<IUserIdProvider, UserIdProvider>();
     }
 }

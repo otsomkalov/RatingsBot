@@ -19,7 +19,7 @@ services.AddLocalization()
 services.Configure<TelegramOptions>(configuration.GetSection(TelegramOptions.SectionName))
     .AddTelegram();
 
-services.AddMediatR(Assembly.GetExecutingAssembly(), typeof(BaseEntity).Assembly);
+services.AddMediatR(Assembly.GetExecutingAssembly());
 
 services.AddControllers()
     .AddNewtonsoftJson();
