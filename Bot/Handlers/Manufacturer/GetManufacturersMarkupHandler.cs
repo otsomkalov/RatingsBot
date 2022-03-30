@@ -27,10 +27,9 @@ public class GetManufacturersMarkupHandler : IRequestHandler<GetManufacturersMar
         {
             var buttons = manufacturers.Skip(i)
                 .Take(ReplyMarkup.Columns)
-                .Select(m => new InlineKeyboardButton
+                .Select(manufacturer => new InlineKeyboardButton(manufacturer.Name)
                 {
-                    Text = m.Name,
-                    CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Manufacturer, m.Id)
+                    CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Manufacturer, manufacturer.Id)
                 });
 
             rows.Add(buttons);
@@ -38,14 +37,12 @@ public class GetManufacturersMarkupHandler : IRequestHandler<GetManufacturersMar
 
         rows.Add(new InlineKeyboardButton[]
         {
-            new()
+            new("<None>")
             {
-                Text = "<None>",
                 CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Manufacturer, null)
             },
-            new()
+            new("Refresh")
             {
-                Text = "Refresh",
                 CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Manufacturer, -1)
             }
         });

@@ -26,9 +26,8 @@ public class GetPlacesMarkupHandler : IRequestHandler<GetPlacesMarkup, InlineKey
         {
             var buttons = places.Skip(i)
                 .Take(ReplyMarkup.Columns)
-                .Select(place => new InlineKeyboardButton
+                .Select(place => new InlineKeyboardButton(place.Name)
                 {
-                    Text = place.Name,
                     CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Place, place.Id)
                 });
 
@@ -37,14 +36,12 @@ public class GetPlacesMarkupHandler : IRequestHandler<GetPlacesMarkup, InlineKey
 
         rows.Add(new InlineKeyboardButton[]
         {
-            new()
+            new("<None>")
             {
-                Text = "<None>",
                 CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Place, null)
             },
-            new()
+            new("Refresh")
             {
-                Text = "Refresh",
                 CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Place, -1)
             }
         });

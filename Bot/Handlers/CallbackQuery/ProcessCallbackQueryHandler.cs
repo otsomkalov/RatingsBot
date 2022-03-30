@@ -76,7 +76,7 @@ public class ProcessCallbackQueryHandler : IRequestHandler<ProcessCallbackQuery,
                         cancellationToken: cancellationToken);
                 }
             }
-            catch (MessageIsNotModifiedException)
+            catch (ApiRequestException)
             {
                 await _bot.AnswerCallbackQueryAsync(callbackQueryData.QueryId,
                     _localizer[nameof(Messages.Refreshed)], cancellationToken: cancellationToken);

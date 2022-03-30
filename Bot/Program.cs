@@ -1,3 +1,4 @@
+using System.Reflection;
 using Core.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,7 +18,7 @@ services.AddLocalization()
 services.Configure<TelegramOptions>(configuration.GetSection(TelegramOptions.SectionName))
     .AddTelegram();
 
-services.AddMediatR(typeof(Program));
+services.AddMediatR(Assembly.GetExecutingAssembly());
 
 services.AddControllers()
     .AddNewtonsoftJson();
