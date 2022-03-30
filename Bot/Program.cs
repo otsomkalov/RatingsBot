@@ -1,5 +1,6 @@
 using System.Reflection;
 using Core.Data;
+using Core.Models;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder();
@@ -18,7 +19,7 @@ services.AddLocalization()
 services.Configure<TelegramOptions>(configuration.GetSection(TelegramOptions.SectionName))
     .AddTelegram();
 
-services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
+services.AddMediatR(Assembly.GetExecutingAssembly(), typeof(BaseEntity).Assembly);
 
 services.AddControllers()
     .AddNewtonsoftJson();
