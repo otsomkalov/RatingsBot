@@ -23,7 +23,7 @@ public class UpdateController : ControllerBase
     [HttpPost]
     public async Task HandleUpdateAsync(Update update)
     {
-        IRequest command = update.Type switch
+        IRequest<Unit> command = update.Type switch
         {
             UpdateType.Message => new ProcessNewMessage(update.Message),
             UpdateType.CallbackQuery => new ProcessCallbackQuery(update.CallbackQuery),
