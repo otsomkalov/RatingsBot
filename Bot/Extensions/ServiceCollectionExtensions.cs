@@ -12,7 +12,7 @@ public static class ServiceCollectionExtensions
         {
             var options = provider.GetRequiredService<IOptions<TelegramOptions>>().Value;
 
-            return new TelegramBotClient(options.Token, baseUrl: options.ApiUrl);
+            return new TelegramBotClient(options.Token);
         });
     }
 

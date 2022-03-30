@@ -28,7 +28,7 @@ public class CreateIfNotExistsHandler : IRequestHandler<CreateUserIfNotExists, U
 
         _userIdProvider.AddUserId(id);
 
-        if (await _context.Users.AsNoTracking().AnyAsync(u => u.Id == id, cancellationToken))
+        if (await _context.Users.AnyAsync(u => u.Id == id, cancellationToken))
         {
             return Unit.Value;
         }

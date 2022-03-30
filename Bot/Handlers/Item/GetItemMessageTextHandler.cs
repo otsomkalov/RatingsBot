@@ -36,7 +36,7 @@ public class GetItemMessageTextHandler : RequestHandler<GetItemMessageText, stri
 
             foreach (var rating in item.Ratings)
             {
-                var ratingLineText = string.Format((string) _localizer[nameof(Messages.RatingLineTemplate)], rating.User.FirstName,
+                var ratingLineText = string.Format(_localizer[nameof(Messages.RatingLineTemplate)], rating.User.FirstName,
                     StringHelpers.CreateStarsString(rating.Value));
 
                 ratings.Add(ratingLineText);
@@ -49,8 +49,7 @@ public class GetItemMessageTextHandler : RequestHandler<GetItemMessageText, stri
             ratingsString = "No ratings";
         }
 
-        return string.Format((string) _localizer[nameof(Messages.ItemMessageTemplate)], item.Category.Name, manufacturerName, item.Name,
-            placeName,
+        return string.Format(_localizer[nameof(Messages.ItemMessageTemplate)], item.Category.Name, manufacturerName, item.Name, placeName,
             avgRatingString, ratingsString);
     }
 }

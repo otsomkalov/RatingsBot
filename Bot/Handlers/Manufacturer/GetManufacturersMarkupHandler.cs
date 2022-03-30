@@ -19,7 +19,7 @@ public class GetManufacturersMarkupHandler : IRequestHandler<GetManufacturersMar
     {
         var itemId = request.ItemId;
 
-        var manufacturers = await _context.Manufacturers.AsNoTracking().ToListAsync(cancellationToken);
+        var manufacturers = await _context.Manufacturers.ToListAsync(cancellationToken);
 
         var rows = new List<IEnumerable<InlineKeyboardButton>>();
 

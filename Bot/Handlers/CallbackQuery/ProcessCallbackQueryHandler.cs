@@ -50,47 +50,45 @@ public class ProcessCallbackQueryHandler : IRequestHandler<ProcessCallbackQuery,
 
     private async Task ProcessRatingCommand(CallbackQueryData callbackQueryData, CancellationToken cancellationToken)
     {
-        if (!callbackQueryData.EntityId.HasValue)
+        if (callbackQueryData.EntityId.HasValue)
         {
-            var item = await _mediator.Send(new GetItem(callbackQueryData.ItemId), cancellationToken);
+            var command = new SetItemRating(callbackQueryData.UserId, callbackQueryData.EntityId, callbackQueryData.ItemId);
 
-            var messageText = await _mediator.Send(new GetItemMessageText(item), cancellationToken);
+            await _mediator.Send(command, cancellationToken);
 
-            try
-            {
-                var ratingsMarkup = await _mediator.Send(new GetRatingsMarkup(item.Id), cancellationToken);
-
-                if (callbackQueryData.InlineMessageId != null)
-                {
-                    await _bot.EditMessageTextAsync(callbackQueryData.InlineMessageId,
-                        messageText,
-                        replyMarkup: ratingsMarkup,
-                        cancellationToken: cancellationToken);
-                }
-                else
-                {
-                    await _bot.EditMessageTextAsync(new(callbackQueryData.UserId),
-                        callbackQueryData.MessageId,
-                        messageText,
-                        replyMarkup: ratingsMarkup,
-                        cancellationToken: cancellationToken);
-                }
-            }
-            catch (ApiRequestException)
-            {
-                await _bot.AnswerCallbackQueryAsync(callbackQueryData.QueryId,
-                    _localizer[nameof(Messages.Refreshed)], cancellationToken: cancellationToken);
-            }
-
-            return;
+            await _bot.AnswerCallbackQueryAsync(callbackQueryData.QueryId, _localizer[nameof(Messages.Recorded)],
+                cancellationToken: cancellationToken);
         }
 
-        var command = new SetItemRating(callbackQueryData.UserId, callbackQueryData.EntityId, callbackQueryData.ItemId);
+        var item = await _mediator.Send(new GetItem(callbackQueryData.ItemId), cancellationToken);
 
-        await _mediator.Send(command, cancellationToken);
+        var messageText = await _mediator.Send(new GetItemMessageText(item), cancellationToken);
 
-        await _bot.AnswerCallbackQueryAsync(callbackQueryData.QueryId, _localizer[nameof(Messages.Recorded)],
-            cancellationToken: cancellationToken);
+        try
+        {
+            var ratingsMarkup = await _mediator.Send(new GetRatingsMarkup(item.Id), cancellationToken);
+
+            if (callbackQueryData.InlineMessageId != null)
+            {
+                await _bot.EditMessageTextAsync(callbackQueryData.InlineMessageId,
+                    messageText,
+                    replyMarkup: ratingsMarkup,
+                    cancellationToken: cancellationToken);
+            }
+            else
+            {
+                await _bot.EditMessageTextAsync(new(callbackQueryData.UserId),
+                    callbackQueryData.MessageId.Value,
+                    messageText,
+                    replyMarkup: ratingsMarkup,
+                    cancellationToken: cancellationToken);
+            }
+        }
+        catch (ApiRequestException)
+        {
+            await _bot.AnswerCallbackQueryAsync(callbackQueryData.QueryId,
+                _localizer[nameof(Messages.Refreshed)], cancellationToken: cancellationToken);
+        }
     }
 
     private async Task ProcessManufacturerCommand(CallbackQueryData callbackQueryData, CancellationToken cancellationToken)
@@ -100,7 +98,7 @@ public class ProcessCallbackQueryHandler : IRequestHandler<ProcessCallbackQuery,
             var manufacturersMarkup = await _mediator.Send(new GetManufacturersMarkup(callbackQueryData.ItemId), cancellationToken);
 
             await _bot.EditMessageReplyMarkupAsync(new(callbackQueryData.UserId),
-                callbackQueryData.MessageId,
+                callbackQueryData.MessageId.Value,
                 manufacturersMarkup,
                 cancellationToken);
 
@@ -112,7 +110,7 @@ public class ProcessCallbackQueryHandler : IRequestHandler<ProcessCallbackQuery,
         var placesMarkup = await _mediator.Send(new GetPlacesMarkup(callbackQueryData.ItemId), cancellationToken);
 
         await _bot.EditMessageTextAsync(new(callbackQueryData.UserId),
-            callbackQueryData.MessageId,
+            callbackQueryData.MessageId.Value,
             _localizer[nameof(Messages.SelectPlace)],
             replyMarkup: placesMarkup,
             cancellationToken: cancellationToken);
@@ -125,7 +123,7 @@ public class ProcessCallbackQueryHandler : IRequestHandler<ProcessCallbackQuery,
             var categoriesMarkup = await _mediator.Send(new GetCategoriesMarkup(callbackQueryData.ItemId), cancellationToken);
 
             await _bot.EditMessageReplyMarkupAsync(new(callbackQueryData.UserId),
-                callbackQueryData.MessageId,
+                callbackQueryData.MessageId.Value,
                 categoriesMarkup,
                 cancellationToken);
 
@@ -137,7 +135,7 @@ public class ProcessCallbackQueryHandler : IRequestHandler<ProcessCallbackQuery,
         var manufacturersMarkup = await _mediator.Send(new GetManufacturersMarkup(callbackQueryData.ItemId), cancellationToken);
 
         await _bot.EditMessageTextAsync(new(callbackQueryData.UserId),
-            callbackQueryData.MessageId,
+            callbackQueryData.MessageId.Value,
             _localizer[nameof(Messages.SelectManufacturer)],
             replyMarkup: manufacturersMarkup,
             cancellationToken: cancellationToken);
@@ -150,7 +148,7 @@ public class ProcessCallbackQueryHandler : IRequestHandler<ProcessCallbackQuery,
             var placesMarkup = await _mediator.Send(new GetPlacesMarkup(callbackQueryData.ItemId), cancellationToken);
 
             await _bot.EditMessageReplyMarkupAsync(new(callbackQueryData.UserId),
-                callbackQueryData.MessageId,
+                callbackQueryData.MessageId.Value,
                 placesMarkup, cancellationToken);
 
             return;
@@ -163,7 +161,7 @@ public class ProcessCallbackQueryHandler : IRequestHandler<ProcessCallbackQuery,
         var messageText = await _mediator.Send(new GetItemMessageText(item), cancellationToken);
 
         await _bot.EditMessageTextAsync(new(callbackQueryData.UserId),
-            callbackQueryData.MessageId,
+            callbackQueryData.MessageId.Value,
             messageText,
             replyMarkup: ratingsMarkup,
             cancellationToken: cancellationToken);
