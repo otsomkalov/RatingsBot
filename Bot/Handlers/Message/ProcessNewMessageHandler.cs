@@ -30,7 +30,7 @@ public class ProcessNewMessageHandler : IRequestHandler<ProcessNewMessage, Unit>
     {
         var message = request.Message;
 
-        if (message.From.IsBot)
+        if (message.From.IsBot || string.IsNullOrEmpty(message.Text))
         {
             return Unit.Value;
         }
@@ -65,30 +65,33 @@ public class ProcessNewMessageHandler : IRequestHandler<ProcessNewMessage, Unit>
                 replyMarkup: categoriesMarkup,
                 replyToMessageId: message.MessageId,
                 cancellationToken: cancellationToken);
+
+            return Unit.Value;
         }
-        else
+
+        if (message.ReplyToMessage?.Text == _localizer[nameof(Messages.NewCategoryCommand)])
         {
-            if (message.ReplyToMessage?.Text == _localizer[nameof(Messages.NewCategoryCommand)])
-            {
-                command = new CreateCategory(message.Text);
-            }
-            else if (message.ReplyToMessage?.Text == _localizer[nameof(Messages.NewPlaceCommand)])
-            {
-                command = new CreatePlace(message.Text.Trim());
-            }
-            else if (message.ReplyToMessage?.Text == _localizer[nameof(Messages.NewManufacturerCommand)])
-            {
-                command = new CreateManufacturer(message.Text);
-            }
-
-            await _mediator.Send(command, cancellationToken);
-
-            await _bot.SendTextMessageAsync(new(message.From.Id),
-                _localizer[nameof(Messages.Created)],
-                replyToMessageId: message.MessageId,
-                replyMarkup: ReplyKeyboardMarkupHelpers.GetStartReplyKeyboardMarkup(),
-                cancellationToken: cancellationToken);
+            command = new CreateCategory(message.Text);
         }
+        else if (message.ReplyToMessage?.Text == _localizer[nameof(Messages.NewPlaceCommand)])
+        {
+            command = new CreatePlace(message.Text.Trim());
+        }
+        else if (message.ReplyToMessage?.Text == _localizer[nameof(Messages.NewManufacturerCommand)])
+        {
+            command = new CreateManufacturer(message.Text);
+        }
+
+        if (command != null)
+        {
+            await _mediator.Send(command, cancellationToken);
+        }
+
+        await _bot.SendTextMessageAsync(new(message.From.Id),
+            _localizer[nameof(Messages.Created)],
+            replyToMessageId: message.MessageId,
+            replyMarkup: ReplyKeyboardMarkupHelpers.GetStartReplyKeyboardMarkup(),
+            cancellationToken: cancellationToken);
 
         return Unit.Value;
     }
