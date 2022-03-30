@@ -20,6 +20,8 @@ public class GetItemHandler : IRequestHandler<GetItem, Models.Item>
             .Include(i => i.Category)
             .Include(i => i.Manufacturer)
             .Include(i => i.Place)
+            .Include(i => i.Ratings)
+            .ThenInclude(r => r.User)
             .FirstOrDefaultAsync(i => i.Id == request.Id, cancellationToken);
     }
 }

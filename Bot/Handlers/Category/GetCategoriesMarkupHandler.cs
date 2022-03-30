@@ -19,7 +19,7 @@ public class GetCategoriesMarkupHandler : IRequestHandler<GetCategoriesMarkup, I
     {
         var itemId = request.ItemId;
 
-        var categories = await _context.Categories.AsNoTracking().ToListAsync(cancellationToken);
+        var categories = await _context.Categories.ToListAsync(cancellationToken);
 
         var rows = new List<IEnumerable<InlineKeyboardButton>>();
 

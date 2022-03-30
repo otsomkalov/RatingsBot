@@ -1,6 +1,4 @@
-using System.Reflection;
 using Core.Data;
-using Core.Models;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder();
@@ -11,7 +9,10 @@ var configuration = builder.Configuration;
 services.AddApplicationInsightsTelemetry();
 
 services.AddDbContext<AppDbContext>(optionsBuilder =>
-    optionsBuilder.UseNpgsql(configuration.GetConnectionString(DatabaseOptions.ConnectionStringName)));
+{
+    optionsBuilder.UseNpgsql(configuration.GetConnectionString(DatabaseOptions.ConnectionStringName));
+    optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+});
 
 services.AddLocalization()
     .AddServices();

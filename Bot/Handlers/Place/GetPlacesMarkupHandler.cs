@@ -18,7 +18,7 @@ public class GetPlacesMarkupHandler : IRequestHandler<GetPlacesMarkup, InlineKey
     public async Task<InlineKeyboardMarkup> Handle(GetPlacesMarkup request, CancellationToken cancellationToken)
     {
         var itemId = request.ItemId;
-        var places = await _context.Places.AsNoTracking().ToListAsync(cancellationToken);
+        var places = await _context.Places.ToListAsync(cancellationToken);
 
         var rows = new List<IEnumerable<InlineKeyboardButton>>();
 
