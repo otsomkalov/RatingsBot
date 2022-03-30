@@ -44,15 +44,6 @@ public class ProcessCallbackQueryTests
 
         var telegramClientMock = new Mock<ITelegramBotClient>();
 
-        telegramClientMock.Setup(m => m.SendTextMessageAsync(It.IsAny<ChatId>(), It.IsAny<string>(), It.IsAny<ParseMode>(),
-                It.IsAny<IEnumerable<MessageEntity>>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<int>(), It.IsAny<bool>(),
-                It.IsAny<IReplyMarkup>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Message());
-
-        telegramClientMock.Setup(m => m.EditMessageTextAsync(It.IsAny<ChatId>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<ParseMode>(),
-                It.IsAny<IEnumerable<MessageEntity>>(), It.IsAny<bool>(), It.IsAny<InlineKeyboardMarkup>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Message());
-
         var localizerMock = new Mock<IStringLocalizer<Messages>>();
 
         var processCallbackQueryHandler =
