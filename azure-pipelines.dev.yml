@@ -1,4 +1,4 @@
-﻿trigger:
+trigger:
   branches:
     include:
       - dev
@@ -15,6 +15,16 @@ stages:
       - job: Build
         displayName: Build and push the Docker image
         steps:
+          - task: DotNetCoreCLI@2
+            displayName: 'Build project'
+            inputs:
+              command: build
+              arguments: "--configuration Release"
+          - task: DotNetCoreCLI@2
+            inputs:
+              command: test
+              projects: '**/*Tests/*.csproj'
+              arguments: '--configuration Release'
           - task: Docker@1
             displayName: 'Build and push the Docker image'
             inputs:
