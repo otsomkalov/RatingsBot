@@ -54,26 +54,6 @@ public class ProcessCallbackQueryTests
         // Doesn't throw an exception
     }
 
-    private static ProcessCallbackQueryHandler GetHandler()
-    {
-        var mediatorMock = new Mock<IMediator>();
-
-        mediatorMock.Setup(m => m.Send(It.IsAny<GetItem>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Item
-            {
-                Id = 1
-            });
-
-        var telegramClientMock = new Mock<ITelegramBotClient>();
-
-        var localizerMock = new Mock<IStringLocalizer<Messages>>();
-
-        var processCallbackQueryHandler =
-            new ProcessCallbackQueryHandler(mediatorMock.Object, telegramClientMock.Object, localizerMock.Object);
-
-        return processCallbackQueryHandler;
-    }
-
     [Theory]
     [InlineData("1|r|5")]
     [InlineData("1|r|null")]
@@ -100,5 +80,25 @@ public class ProcessCallbackQueryTests
 
         // Assert
         // Doesn't throw an exception
+    }
+
+    private static ProcessCallbackQueryHandler GetHandler()
+    {
+        var mediatorMock = new Mock<IMediator>();
+
+        mediatorMock.Setup(m => m.Send(It.IsAny<GetItem>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Item
+            {
+                Id = 1
+            });
+
+        var telegramClientMock = new Mock<ITelegramBotClient>();
+
+        var localizerMock = new Mock<IStringLocalizer<Messages>>();
+
+        var processCallbackQueryHandler =
+            new ProcessCallbackQueryHandler(mediatorMock.Object, telegramClientMock.Object, localizerMock.Object);
+
+        return processCallbackQueryHandler;
     }
 }

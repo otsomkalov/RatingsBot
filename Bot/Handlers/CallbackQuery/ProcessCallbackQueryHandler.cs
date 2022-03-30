@@ -11,6 +11,7 @@ using Core.Commands.Item;
 using Core.Commands.User;
 using Microsoft.Extensions.Localization;
 using Telegram.Bot.Exceptions;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Bot.Handlers.CallbackQuery;
 
@@ -61,7 +62,6 @@ public class ProcessCallbackQueryHandler : IRequestHandler<ProcessCallbackQuery,
         }
 
         var item = await _mediator.Send(new GetItem(callbackQueryData.ItemId), cancellationToken);
-
         var messageText = await _mediator.Send(new GetItemMessageText(item), cancellationToken);
 
         try
@@ -97,10 +97,7 @@ public class ProcessCallbackQueryHandler : IRequestHandler<ProcessCallbackQuery,
         {
             var manufacturersMarkup = await _mediator.Send(new GetManufacturersMarkup(callbackQueryData.ItemId), cancellationToken);
 
-            await _bot.EditMessageReplyMarkupAsync(new(callbackQueryData.UserId),
-                callbackQueryData.MessageId.Value,
-                manufacturersMarkup,
-                cancellationToken);
+            await EditMessageReplyMarkup(callbackQueryData, manufacturersMarkup, cancellationToken);
 
             return;
         }
@@ -122,10 +119,7 @@ public class ProcessCallbackQueryHandler : IRequestHandler<ProcessCallbackQuery,
         {
             var categoriesMarkup = await _mediator.Send(new GetCategoriesMarkup(callbackQueryData.ItemId), cancellationToken);
 
-            await _bot.EditMessageReplyMarkupAsync(new(callbackQueryData.UserId),
-                callbackQueryData.MessageId.Value,
-                categoriesMarkup,
-                cancellationToken);
+            await EditMessageReplyMarkup(callbackQueryData, categoriesMarkup, cancellationToken);
 
             return;
         }
@@ -147,9 +141,7 @@ public class ProcessCallbackQueryHandler : IRequestHandler<ProcessCallbackQuery,
         {
             var placesMarkup = await _mediator.Send(new GetPlacesMarkup(callbackQueryData.ItemId), cancellationToken);
 
-            await _bot.EditMessageReplyMarkupAsync(new(callbackQueryData.UserId),
-                callbackQueryData.MessageId.Value,
-                placesMarkup, cancellationToken);
+            await EditMessageReplyMarkup(callbackQueryData, placesMarkup, cancellationToken);
 
             return;
         }
@@ -165,5 +157,22 @@ public class ProcessCallbackQueryHandler : IRequestHandler<ProcessCallbackQuery,
             messageText,
             replyMarkup: ratingsMarkup,
             cancellationToken: cancellationToken);
+    }
+
+    private async Task EditMessageReplyMarkup(CallbackQueryData callbackQueryData, InlineKeyboardMarkup inlineKeyboardMarkup,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            await _bot.EditMessageReplyMarkupAsync(new(callbackQueryData.UserId),
+                callbackQueryData.MessageId.Value,
+                inlineKeyboardMarkup, cancellationToken);
+        }
+        catch (ApiRequestException)
+        {
+            await _bot.AnswerCallbackQueryAsync(callbackQueryData.QueryId,
+                _localizer[nameof(Messages.Refreshed)],
+                cancellationToken: cancellationToken);
+        }
     }
 }
