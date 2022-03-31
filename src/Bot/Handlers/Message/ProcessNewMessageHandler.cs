@@ -71,7 +71,7 @@ public class ProcessNewMessageHandler : IRequestHandler<ProcessNewMessage, Unit>
 
         if (message.ReplyToMessage?.Text == _localizer[nameof(Messages.NewCategoryCommand)])
         {
-            command = new CreateCategory(message.Text);
+            command = new CreateCategory(message.Text.Trim());
         }
         else if (message.ReplyToMessage?.Text == _localizer[nameof(Messages.NewPlaceCommand)])
         {
@@ -79,7 +79,7 @@ public class ProcessNewMessageHandler : IRequestHandler<ProcessNewMessage, Unit>
         }
         else if (message.ReplyToMessage?.Text == _localizer[nameof(Messages.NewManufacturerCommand)])
         {
-            command = new CreateManufacturer(message.Text);
+            command = new CreateManufacturer(message.Text.Trim());
         }
 
         if (command != null)

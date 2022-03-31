@@ -59,11 +59,9 @@
         <value>{0} - {1}</value>
     </data>
     <data name="ItemMessageTemplate" xml:space="preserve">
-        <value>
-{0} {1} {2} {3}
+        <value>{0} {1} {2} {3}
 {4}
 Ratings:
-{5}
-        </value>
+{5}    </value>
     </data>
 </root>
