@@ -41,7 +41,7 @@ stages:
               imageName: '$(ImageName)'
               includeLatestTag: true
               useDefaultContext: false
-              buildContext: '.'
+              buildContext: './src/'
           - task: Docker@1
             displayName: 'Push the Docker image to Dockerhub'
             inputs:

@@ -3,7 +3,7 @@ WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["src/Bot/Bot.csproj", "Bot/"]
+COPY ["Bot/Bot.csproj", "Bot/"]
 RUN dotnet restore "Bot/Bot.csproj"
 COPY . .
 WORKDIR "/src/Bot"
