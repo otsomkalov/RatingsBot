@@ -10,8 +10,8 @@
 
 namespace Bot.Resources {
     using System;
-
-
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -23,20 +23,20 @@ namespace Bot.Resources {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Messages {
-
+        
         private static global::System.Resources.ResourceManager resourceMan;
-
+        
         private static global::System.Globalization.CultureInfo resourceCulture;
-
+        
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         internal Messages() {
         }
-
+        
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Bot.Resources.Messages", typeof(Messages).Assembly);
@@ -45,13 +45,13 @@ namespace Bot.Resources {
                 return resourceMan;
             }
         }
-
+        
         /// <summary>
         ///   Overrides the current thread's CurrentUICulture property for all
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -59,124 +59,122 @@ namespace Bot.Resources {
                 resourceCulture = value;
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Created!.
         /// </summary>
-        internal static string Created {
+        public static string Created {
             get {
                 return ResourceManager.GetString("Created", resourceCulture);
             }
         }
-
+        
         /// <summary>
-        ///   Looks up a localized string similar to
-        ///{0} {1} {2} {3}
+        ///   Looks up a localized string similar to {0} {1} {2} {3}
         ///{4}
         ///Ratings:
-        ///{5}
-        ///        .
+        ///{5}    .
         /// </summary>
-        internal static string ItemMessageTemplate {
+        public static string ItemMessageTemplate {
             get {
                 return ResourceManager.GetString("ItemMessageTemplate", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Type a name of a new category.
         /// </summary>
-        internal static string NewCategoryCommand {
+        public static string NewCategoryCommand {
             get {
                 return ResourceManager.GetString("NewCategoryCommand", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Type a name of a new item.
         /// </summary>
-        internal static string NewItemCommand {
+        public static string NewItemCommand {
             get {
                 return ResourceManager.GetString("NewItemCommand", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Type a name of a new manufacturer.
         /// </summary>
-        internal static string NewManufacturerCommand {
+        public static string NewManufacturerCommand {
             get {
                 return ResourceManager.GetString("NewManufacturerCommand", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Type a name of a new place.
         /// </summary>
-        internal static string NewPlaceCommand {
+        public static string NewPlaceCommand {
             get {
                 return ResourceManager.GetString("NewPlaceCommand", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to {0} - {1}.
         /// </summary>
-        internal static string RatingLineTemplate {
+        public static string RatingLineTemplate {
             get {
                 return ResourceManager.GetString("RatingLineTemplate", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Recorded.
         /// </summary>
-        internal static string Recorded {
+        public static string Recorded {
             get {
                 return ResourceManager.GetString("Recorded", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Refreshed.
         /// </summary>
-        internal static string Refreshed {
+        public static string Refreshed {
             get {
                 return ResourceManager.GetString("Refreshed", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Select category.
         /// </summary>
-        internal static string SelectCategory {
+        public static string SelectCategory {
             get {
                 return ResourceManager.GetString("SelectCategory", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Select manufacturer.
         /// </summary>
-        internal static string SelectManufacturer {
+        public static string SelectManufacturer {
             get {
                 return ResourceManager.GetString("SelectManufacturer", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Select place.
         /// </summary>
-        internal static string SelectPlace {
+        public static string SelectPlace {
             get {
                 return ResourceManager.GetString("SelectPlace", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Welcome to ratings bot. Type @rtngsbot in chat to see your ratings &amp; available items..
         /// </summary>
-        internal static string Welcome {
+        public static string Welcome {
             get {
                 return ResourceManager.GetString("Welcome", resourceCulture);
             }

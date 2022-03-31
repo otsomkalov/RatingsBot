@@ -9,12 +9,32 @@ using MediatR;
 using Microsoft.Extensions.Localization;
 using Moq;
 using Telegram.Bot;
+using Telegram.Bot.Exceptions;
+using Telegram.Bot.Requests;
 using Xunit;
 
 namespace Bot.Tests;
 
 public class ProcessCallbackQueryTests
 {
+    private readonly ProcessCallbackQueryHandler _sut;
+    private readonly Mock<ITelegramBotClient> _telegramClient;
+
+    public ProcessCallbackQueryTests()
+    {
+        var mediator = new Mock<IMediator>();
+        _telegramClient = new();
+        var localizer = new Mock<IStringLocalizer<Messages>>();
+
+        mediator.Setup(m => m.Send(It.IsAny<GetItem>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Item
+            {
+                Id = 1
+            });
+
+        _sut = new(mediator.Object, _telegramClient.Object, localizer.Object);
+    }
+
     [Theory]
     [InlineData("1|c|1")]
     [InlineData("1|c|null")]
@@ -29,8 +49,6 @@ public class ProcessCallbackQueryTests
     public async Task RegularMessageCallbackQuery_Works(string data)
     {
         // Arrange
-
-        var processCallbackQueryHandler = GetHandler();
 
         var callbackQuery = new ProcessCallbackQuery(new()
         {
@@ -48,7 +66,7 @@ public class ProcessCallbackQueryTests
 
         // Act
 
-        await processCallbackQueryHandler.Handle(callbackQuery, CancellationToken.None);
+        await _sut.Handle(callbackQuery, CancellationToken.None);
 
         // Assert
         // Doesn't throw an exception
@@ -60,8 +78,6 @@ public class ProcessCallbackQueryTests
     public async Task InlineMessageCallbackQuery_Works(string data)
     {
         // Arrange
-
-        var processCallbackQueryHandler = GetHandler();
 
         var callbackQuery = new ProcessCallbackQuery(new()
         {
@@ -76,29 +92,49 @@ public class ProcessCallbackQueryTests
 
         // Act
 
-        await processCallbackQueryHandler.Handle(callbackQuery, CancellationToken.None);
+        await _sut.Handle(callbackQuery, CancellationToken.None);
 
         // Assert
         // Doesn't throw an exception
     }
 
-    private static ProcessCallbackQueryHandler GetHandler()
+    [Theory]
+    [InlineData("1|r|-1")]
+    [InlineData("1|p|-1")]
+    [InlineData("1|c|null")]
+    [InlineData("1|m|-1")]
+    public async Task InlineMessageCallbackQueryRefreshCommand_Works(string data)
     {
-        var mediatorMock = new Mock<IMediator>();
+        // Arrange
 
-        mediatorMock.Setup(m => m.Send(It.IsAny<GetItem>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Item
+        _telegramClient.Setup(m =>
+                m.MakeRequestAsync(It.IsAny<EditMessageReplyMarkupRequest>(), It.IsAny<CancellationToken>()))
+            .Throws(new ApiRequestException(string.Empty));
+
+        _telegramClient.Setup(m =>
+                m.MakeRequestAsync(It.IsAny<EditMessageTextRequest>(), It.IsAny<CancellationToken>()))
+            .Throws(new ApiRequestException(string.Empty));
+
+        var callbackQuery = new ProcessCallbackQuery(new()
+        {
+            Data = data,
+            From = new()
             {
-                Id = 1
-            });
+                Id = 1,
+                FirstName = "test"
+            },
+            Message = new()
+            {
+                MessageId = 1
+            }
+        });
 
-        var telegramClientMock = new Mock<ITelegramBotClient>();
+        // Act
 
-        var localizerMock = new Mock<IStringLocalizer<Messages>>();
+        await _sut.Handle(callbackQuery, CancellationToken.None);
 
-        var processCallbackQueryHandler =
-            new ProcessCallbackQueryHandler(mediatorMock.Object, telegramClientMock.Object, localizerMock.Object);
+        // Assert
 
-        return processCallbackQueryHandler;
+        _telegramClient.Verify(m => m.MakeRequestAsync(It.IsAny<AnswerCallbackQueryRequest>(), It.IsAny<CancellationToken>()));
     }
 }
