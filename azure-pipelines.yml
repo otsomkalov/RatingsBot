@@ -16,11 +16,17 @@ stages:
         displayName: Build and push the Docker image
         steps:
           - task: DotNetCoreCLI@2
-              displayName: 'Build project'
-              inputs:
-                command: build
-                arguments: "--configuration Release"
+            displayName: 'Restore packages'
+            inputs:
+              command: restore
+              projects: '**/*.csproj'
           - task: DotNetCoreCLI@2
+            displayName: 'Build project'
+            inputs:
+              command: build
+              arguments: "--configuration Release"
+          - task: DotNetCoreCLI@2
+            displayName: 'Run tests'
             inputs:
               command: test
               projects: '**/*Tests/*.csproj'
