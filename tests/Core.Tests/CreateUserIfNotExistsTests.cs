@@ -2,10 +2,10 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Core.Commands.User;
-using Core.Data;
 using Core.Handlers.User;
 using Core.Models;
 using Core.Services.Interfaces;
+using Data;
 using EntityFrameworkCoreMock;
 using Microsoft.EntityFrameworkCore;
 using Moq;
