@@ -9,10 +9,10 @@ namespace Core.Handlers.Place;
 
 public class CreatePlaceHandler : IRequestHandler<CreatePlace, Result>
 {
-    private readonly AppDbContext _context;
+    private readonly IAppDbContext _context;
     private readonly IValidator<CreatePlace> _validator;
 
-    public CreatePlaceHandler(AppDbContext context, IValidator<CreatePlace> validator)
+    public CreatePlaceHandler(IAppDbContext context, IValidator<CreatePlace> validator)
     {
         _context = context;
         _validator = validator;

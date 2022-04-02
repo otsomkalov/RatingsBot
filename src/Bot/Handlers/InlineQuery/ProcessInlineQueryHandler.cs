@@ -2,7 +2,7 @@
 using Bot.Commands.Item;
 using Bot.Commands.Rating;
 using Core.Commands.User;
-using Core.Data;
+using Data;
 using Microsoft.EntityFrameworkCore;
 using Telegram.Bot.Types.InlineQueryResults;
 

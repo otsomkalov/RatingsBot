@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-namespace RatingsBot.Migrations
+namespace Data.Migrations
 {
     public partial class ItemManufacturer : Migration
     {

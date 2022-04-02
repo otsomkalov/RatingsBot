@@ -7,9 +7,9 @@ namespace Core.Handlers.Item;
 
 public class SetItemManufacturerHandler : AsyncRequestHandler<SetItemManufacturer>
 {
-    private readonly AppDbContext _context;
+    private readonly IAppDbContext _context;
 
-    public SetItemManufacturerHandler(AppDbContext context)
+    public SetItemManufacturerHandler(IAppDbContext context)
     {
         _context = context;
     }

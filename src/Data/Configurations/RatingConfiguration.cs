@@ -1,7 +1,7 @@
 ﻿using Core.Models;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Core.Data.Configuration;
+namespace Data.Configuration;
 
 public class RatingConfiguration : BaseEntityConfiguration<Rating>
 {

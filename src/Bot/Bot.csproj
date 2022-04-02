@@ -6,15 +6,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
-    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.20.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1"/>
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.20.0"/>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.3" />
-    <PackageReference Include="Telegram.Bot" Version="17.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.3" />
+    <PackageReference Include="Telegram.Bot" Version="17.0.0"/>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.3"/>
   </ItemGroup>
 
   <ItemGroup>
@@ -33,16 +32,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Using Include="System" />
-    <Using Include="MediatR" />
-    <Using Include="Telegram.Bot" />
-    <Using Include="Bot.Helpers" />
-    <Using Include="Bot.Options" />
-    <Using Include="Bot.Extensions" />
+    <Using Include="System"/>
+    <Using Include="MediatR"/>
+    <Using Include="Telegram.Bot"/>
+    <Using Include="Bot.Helpers"/>
+    <Using Include="Bot.Options"/>
+    <Using Include="Bot.Extensions"/>
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Core\Core.csproj" />
+    <ProjectReference Include="..\..\src\Data\Data.csproj"/>
   </ItemGroup>
 
 </Project>

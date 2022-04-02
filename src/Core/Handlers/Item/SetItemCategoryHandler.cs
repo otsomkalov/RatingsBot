@@ -7,9 +7,9 @@ namespace Core.Handlers.Item;
 
 public class SetItemCategoryHandler : AsyncRequestHandler<SetItemCategory>
 {
-    private readonly AppDbContext _context;
+    private readonly IAppDbContext _context;
 
-    public SetItemCategoryHandler(AppDbContext context)
+    public SetItemCategoryHandler(IAppDbContext context)
     {
         _context = context;
     }
