@@ -1,5 +1,6 @@
-﻿using MediatR;
+﻿using FluentResults;
+using MediatR;
 
 namespace Core.Commands.Manufacturer;
 
-public record CreateManufacturer(string Name) : IRequest;
+public record CreateManufacturer(string Name) : IRequest<Result>;

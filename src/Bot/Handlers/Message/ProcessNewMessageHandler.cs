@@ -9,6 +9,7 @@ using Core.Commands.Item;
 using Core.Commands.Manufacturer;
 using Core.Commands.Place;
 using Core.Commands.User;
+using FluentResults;
 using Microsoft.Extensions.Localization;
 
 namespace Bot.Handlers.Message;
@@ -37,7 +38,7 @@ public class ProcessNewMessageHandler : IRequestHandler<ProcessNewMessage, Unit>
 
         await _mediator.Send(new CreateUserIfNotExists(message.From.Id, message.From.Username), cancellationToken);
 
-        IRequest command = message.Text.Trim() switch
+        IRequest messageTextCommand = message.Text.Trim() switch
         {
             Constants.Commands.Start => new ProcessStartCommand(message),
             Constants.Commands.NewPlace => new NewPlace(message),
@@ -47,9 +48,9 @@ public class ProcessNewMessageHandler : IRequestHandler<ProcessNewMessage, Unit>
             _ => null
         };
 
-        if (command != null)
+        if (messageTextCommand != null)
         {
-            await _mediator.Send(command, cancellationToken);
+            await _mediator.Send(messageTextCommand, cancellationToken);
 
             return Unit.Value;
         }
@@ -57,8 +58,19 @@ public class ProcessNewMessageHandler : IRequestHandler<ProcessNewMessage, Unit>
         if (message.ReplyToMessage?.Text == _localizer[nameof(Messages.NewItemCommand)])
         {
             var createItemCommand = new CreateItem(message.Text.Trim());
-            var item = await _mediator.Send(createItemCommand, cancellationToken);
-            var categoriesMarkup = await _mediator.Send(new GetCategoriesMarkup(item.Id), cancellationToken);
+            var createItemResult = await _mediator.Send(createItemCommand, cancellationToken);
+
+            if (createItemResult.IsFailed)
+            {
+                await _bot.SendTextMessageAsync(new (message.From.Id),
+                    string.Join(Environment.NewLine, createItemResult.Errors.Select(e => e.Message)),
+                    replyToMessageId: message.MessageId,
+                    cancellationToken: cancellationToken);
+
+                return Unit.Value;
+            }
+
+            var categoriesMarkup = await _mediator.Send(new GetCategoriesMarkup(createItemResult.Value.Id), cancellationToken);
 
             await _bot.SendTextMessageAsync(new(message.From.Id),
                 _localizer[nameof(Messages.SelectCategory)],
@@ -69,22 +81,24 @@ public class ProcessNewMessageHandler : IRequestHandler<ProcessNewMessage, Unit>
             return Unit.Value;
         }
 
+        IRequest<Result> replyMessageTextCommand = null;
+
         if (message.ReplyToMessage?.Text == _localizer[nameof(Messages.NewCategoryCommand)])
         {
-            command = new CreateCategory(message.Text.Trim());
+            replyMessageTextCommand = new CreateCategory(message.Text.Trim());
         }
         else if (message.ReplyToMessage?.Text == _localizer[nameof(Messages.NewPlaceCommand)])
         {
-            command = new CreatePlace(message.Text.Trim());
+            replyMessageTextCommand = new CreatePlace(message.Text.Trim());
         }
         else if (message.ReplyToMessage?.Text == _localizer[nameof(Messages.NewManufacturerCommand)])
         {
-            command = new CreateManufacturer(message.Text.Trim());
+            replyMessageTextCommand = new CreateManufacturer(message.Text.Trim());
         }
 
-        if (command != null)
+        if (replyMessageTextCommand != null)
         {
-            await _mediator.Send(command, cancellationToken);
+            await _mediator.Send(replyMessageTextCommand, cancellationToken);
         }
 
         await _bot.SendTextMessageAsync(new(message.From.Id),
