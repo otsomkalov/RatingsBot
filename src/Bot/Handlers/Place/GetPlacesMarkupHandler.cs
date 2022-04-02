@@ -42,7 +42,7 @@ public class GetPlacesMarkupHandler : IRequestHandler<GetPlacesMarkup, InlineKey
             },
             new("Refresh")
             {
-                CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Place, -1)
+                CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Place, 0)
             }
         });
 

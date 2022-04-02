@@ -100,9 +100,13 @@ public class ProcessCallbackQueryTests
 
     [Theory]
     [InlineData("1|r|-1")]
+    [InlineData("1|r|0")]
     [InlineData("1|p|-1")]
+    [InlineData("1|p|0")]
     [InlineData("1|c|null")]
+    [InlineData("1|c|0")]
     [InlineData("1|m|-1")]
+    [InlineData("1|m|0")]
     public async Task InlineMessageCallbackQueryRefreshCommand_Works(string data)
     {
         // Arrange
