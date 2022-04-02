@@ -6,6 +6,7 @@ using Bot.Handlers.Message;
 using Bot.Resources;
 using Core.Commands.Item;
 using Core.Models;
+using FluentResults;
 using MediatR;
 using Microsoft.Extensions.Localization;
 using Moq;
@@ -115,10 +116,10 @@ public class ProcessNewMessageTests
             .Returns(new LocalizedString(nameof(Messages.NewItemCommand), command));
 
         _mediator.Setup(m => m.Send(It.IsAny<CreateItem>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Item
+            .ReturnsAsync(Result.Ok(new Item
             {
                 Id = 1
-            });
+            }));
 
         var handler = new ProcessNewMessageHandler(_localizer.Object, _mediator.Object, _telegramBotClient.Object);
 
@@ -176,6 +177,6 @@ public class ProcessNewMessageTests
 
         // Assert
 
-        _mediator.Verify(m => m.Send(It.IsAny<IRequest>(), It.IsAny<CancellationToken>()), Times.Once);
+        _mediator.Verify(m => m.Send(It.IsAny<IRequest<Result>>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 }
