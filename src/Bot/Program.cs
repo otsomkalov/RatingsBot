@@ -1,8 +1,8 @@
-using Core.Commands.Category;
-using Core.Commands.Item;
-using Core.Commands.Manufacturer;
-using Core.Commands.Place;
 using Core.Data;
+using Core.Requests.Category;
+using Core.Requests.Item;
+using Core.Requests.Manufacturer;
+using Core.Requests.Place;
 using Core.Validators.Category;
 using Core.Validators.Item;
 using Core.Validators.Manufacturer;

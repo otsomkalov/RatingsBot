@@ -1,4 +1,4 @@
-﻿using Core.Commands.Category;
+﻿using Core.Requests.Category;
 using FluentValidation;
 
 namespace Core.Validators.Category;

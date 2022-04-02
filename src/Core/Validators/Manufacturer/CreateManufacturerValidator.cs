@@ -1,4 +1,4 @@
-﻿using Core.Commands.Manufacturer;
+﻿using Core.Requests.Manufacturer;
 using FluentValidation;
 
 namespace Core.Validators.Manufacturer;

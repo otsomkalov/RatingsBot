@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Core.Commands.Item;
 using Core.Handlers.Item;
 using Core.Models;
+using Core.Requests.Item;
 using Data;
 using EntityFrameworkCoreMock;
 using Microsoft.EntityFrameworkCore;

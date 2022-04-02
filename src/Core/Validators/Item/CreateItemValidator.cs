@@ -1,4 +1,4 @@
-﻿using Core.Commands.Item;
+﻿using Core.Requests.Item;
 using FluentValidation;
 
 namespace Core.Validators.Item;

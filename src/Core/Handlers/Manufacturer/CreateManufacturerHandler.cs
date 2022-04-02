@@ -1,6 +1,6 @@
-﻿using Core.Commands.Manufacturer;
-using Core.Data;
+﻿using Core.Data;
 using Core.Errors;
+using Core.Requests.Manufacturer;
 using FluentResults;
 using FluentValidation;
 using MediatR;

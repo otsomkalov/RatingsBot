@@ -1,6 +1,6 @@
-﻿using Core.Commands.Category;
-using Core.Data;
+﻿using Core.Data;
 using Core.Errors;
+using Core.Requests.Category;
 using FluentResults;
 using FluentValidation;
 using MediatR;

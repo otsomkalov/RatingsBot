@@ -1,4 +1,4 @@
-﻿using Bot.Commands.Item;
+﻿using Bot.Requests.Item;
 using Bot.Resources;
 using Microsoft.Extensions.Localization;
 

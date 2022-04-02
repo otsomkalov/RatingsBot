@@ -1,5 +1,5 @@
-﻿using Core.Commands.Item;
-using Core.Data;
+﻿using Core.Data;
+using Core.Requests.Item;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,7 +25,7 @@ public class SetItemRatingHandler : IRequestHandler<SetItemRating, Unit>
         {
             rating = rating with
             {
-                Value = entityId.Value
+                Value = entityId
             };
 
             _context.Ratings.Update(rating);
@@ -36,7 +36,7 @@ public class SetItemRatingHandler : IRequestHandler<SetItemRating, Unit>
             {
                 ItemId = itemId,
                 UserId = userId,
-                Value = entityId.Value
+                Value = entityId
             };
 
             await _context.Ratings.AddAsync(rating, cancellationToken);
