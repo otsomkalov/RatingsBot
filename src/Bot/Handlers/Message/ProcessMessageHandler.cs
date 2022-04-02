@@ -1,4 +1,5 @@
-﻿using Bot.Requests.Category;
+﻿using Bot.Constants;
+using Bot.Requests.Category;
 using Bot.Requests.Message;
 using Bot.Resources;
 using Core.Requests.Category;
@@ -37,11 +38,11 @@ public class ProcessMessageHandler : IRequestHandler<ProcessMessage, Unit>
 
         IRequest messageTextCommand = message.Text.Trim() switch
         {
-            Constants.Commands.Start => new ProcessStartCommand(message),
-            Constants.Commands.NewPlace => new NewPlaceCommand(message),
-            Constants.Commands.NewCategory => new NewCategoryCommand(message),
-            Constants.Commands.NewItem => new NewItemCommand(message),
-            Constants.Commands.NewManufacturer => new NewManufacturerCommand(message),
+            Commands.Start => new ProcessStartCommand(message),
+            Commands.NewPlace => new NewPlaceCommand(message),
+            Commands.NewCategory => new NewCategoryCommand(message),
+            Commands.NewItem => new NewItemCommand(message),
+            Commands.NewManufacturer => new NewManufacturerCommand(message),
             _ => null
         };
 
@@ -61,7 +62,7 @@ public class ProcessMessageHandler : IRequestHandler<ProcessMessage, Unit>
 
             if (createItemResult.IsFailed)
             {
-                await _bot.SendTextMessageAsync(new (message.From.Id),
+                await _bot.SendTextMessageAsync(new(message.From.Id),
                     string.Join(Environment.NewLine, createItemResult.Errors.Select(e => e.Message)),
                     replyToMessageId: message.MessageId,
                     cancellationToken: cancellationToken);

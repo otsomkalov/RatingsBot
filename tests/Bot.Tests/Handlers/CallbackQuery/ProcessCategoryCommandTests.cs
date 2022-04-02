@@ -17,9 +17,9 @@ namespace Bot.Tests.Handlers.CallbackQuery;
 
 public class ProcessCategoryCommandTests
 {
-    private readonly ProcessCategoryCommandHandler _sut;
-    private readonly IMediator _mediator;
     private readonly ITelegramBotClient _bot;
+    private readonly IMediator _mediator;
+    private readonly ProcessCategoryCommandHandler _sut;
 
     public ProcessCategoryCommandTests()
     {

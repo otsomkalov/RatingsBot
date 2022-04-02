@@ -10,9 +10,9 @@ namespace Bot.Handlers.CallbackQuery;
 
 public class ProcessManufacturerCommandHandler : IRequestHandler<ProcessManufacturerCommand, Unit>
 {
-    private readonly IMediator _mediator;
     private readonly ITelegramBotClient _bot;
     private readonly IStringLocalizer<Messages> _localizer;
+    private readonly IMediator _mediator;
 
     public ProcessManufacturerCommandHandler(IMediator mediator, ITelegramBotClient bot, IStringLocalizer<Messages> localizer)
     {

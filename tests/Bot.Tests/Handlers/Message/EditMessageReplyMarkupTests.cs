@@ -1,7 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.Dsl;
 using Bot.Handlers.Message;
 using Bot.Models;
 using Bot.Requests.Message;
@@ -19,9 +18,8 @@ namespace Bot.Tests.Handlers.Message;
 
 public class EditMessageReplyMarkupTests
 {
-    private readonly Fixture _fixture;
-
     private readonly ITelegramBotClient _bot;
+    private readonly Fixture _fixture;
 
     private readonly EditMessageReplyMarkupHandler _sut;
 

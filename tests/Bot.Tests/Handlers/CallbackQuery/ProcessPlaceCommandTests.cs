@@ -18,8 +18,8 @@ namespace Bot.Tests.Handlers.CallbackQuery;
 
 public class ProcessPlaceCommandTests
 {
-    private readonly IMediator _mediator;
     private readonly ITelegramBotClient _bot;
+    private readonly IMediator _mediator;
 
     private readonly ProcessPlaceCommandHandler _sut;
 
@@ -56,7 +56,7 @@ public class ProcessPlaceCommandTests
 
         // Act
 
-        await _sut.Handle(new (new(callbackQuery)), CancellationToken.None);
+        await _sut.Handle(new(new(callbackQuery)), CancellationToken.None);
 
         // Assert
 

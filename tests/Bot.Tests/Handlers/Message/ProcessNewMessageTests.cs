@@ -1,5 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using Bot.Constants;
 using Bot.Handlers.Message;
 using Bot.Requests.Category;
 using Bot.Requests.Message;
@@ -17,8 +18,8 @@ namespace Bot.Tests.Handlers.Message;
 
 public class ProcessNewMessageTests
 {
-    private readonly IMediator _mediator;
     private readonly IStringLocalizer<Messages> _localizer;
+    private readonly IMediator _mediator;
     private readonly ITelegramBotClient _telegramBotClient;
 
     public ProcessNewMessageTests()
@@ -39,7 +40,7 @@ public class ProcessNewMessageTests
         {
             From = new()
             {
-                IsBot = true,
+                IsBot = true
             },
             Text = "test"
         };
@@ -76,11 +77,11 @@ public class ProcessNewMessageTests
     }
 
     [Theory]
-    [InlineData(Constants.Commands.Start)]
-    [InlineData(Constants.Commands.NewCategory)]
-    [InlineData(Constants.Commands.NewItem)]
-    [InlineData(Constants.Commands.NewManufacturer)]
-    [InlineData(Constants.Commands.NewPlace)]
+    [InlineData(Commands.Start)]
+    [InlineData(Commands.NewCategory)]
+    [InlineData(Commands.NewItem)]
+    [InlineData(Commands.NewManufacturer)]
+    [InlineData(Commands.NewPlace)]
     public async Task MessageTextCommands_ExecutesCommands(string command)
     {
         // Arrange

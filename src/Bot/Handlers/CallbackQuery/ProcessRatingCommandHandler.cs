@@ -9,9 +9,9 @@ namespace Bot.Handlers.CallbackQuery;
 
 public class ProcessRatingCommandHandler : IRequestHandler<ProcessRatingCommand, Unit>
 {
-    private readonly IMediator _mediator;
     private readonly ITelegramBotClient _bot;
     private readonly IStringLocalizer<Messages> _localizer;
+    private readonly IMediator _mediator;
 
     public ProcessRatingCommandHandler(IMediator mediator, ITelegramBotClient bot, IStringLocalizer<Messages> localizer)
     {

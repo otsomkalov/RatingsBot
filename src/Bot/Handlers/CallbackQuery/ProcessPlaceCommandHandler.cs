@@ -9,8 +9,8 @@ namespace Bot.Handlers.CallbackQuery;
 
 public class ProcessPlaceCommandHandler : IRequestHandler<ProcessPlaceCommand, Unit>
 {
-    private readonly IMediator _mediator;
     private readonly ITelegramBotClient _bot;
+    private readonly IMediator _mediator;
 
     public ProcessPlaceCommandHandler(IMediator mediator, ITelegramBotClient bot)
     {

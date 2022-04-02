@@ -1,10 +1,11 @@
-﻿using Bot.Resources;
+﻿using Bot.Requests.Message;
+using Bot.Resources;
 using Microsoft.Extensions.Localization;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Bot.Handlers.Message;
 
-public class NewManufacturerCommandHandler : AsyncRequestHandler<Requests.Message.NewManufacturerCommand>
+public class NewManufacturerCommandHandler : AsyncRequestHandler<NewManufacturerCommand>
 {
     private readonly ITelegramBotClient _bot;
     private readonly IStringLocalizer<Messages> _localizer;
@@ -15,7 +16,7 @@ public class NewManufacturerCommandHandler : AsyncRequestHandler<Requests.Messag
         _localizer = localizer;
     }
 
-    protected override async Task Handle(Requests.Message.NewManufacturerCommand request, CancellationToken cancellationToken)
+    protected override async Task Handle(NewManufacturerCommand request, CancellationToken cancellationToken)
     {
         var message = request.Message;
 

@@ -10,8 +10,8 @@ namespace Bot.Tests.Handlers.CallbackQuery;
 
 public class ProcessCallbackQueryTests
 {
-    private readonly ProcessCallbackQueryHandler _sut;
     private readonly IMediator _mediator;
+    private readonly ProcessCallbackQueryHandler _sut;
 
     public ProcessCallbackQueryTests()
     {
