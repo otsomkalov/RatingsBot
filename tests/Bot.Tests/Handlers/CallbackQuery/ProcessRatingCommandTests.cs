@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
+using AutoFixture.Dsl;
 using Bot.Handlers.CallbackQuery;
 using Bot.Requests.Item;
 using Bot.Requests.Rating;
@@ -20,12 +21,17 @@ namespace Bot.Tests.Handlers.CallbackQuery;
 
 public class ProcessRatingCommandTests
 {
-    private readonly IMediator _mediator;
     private readonly ITelegramBotClient _bot;
 
+    private readonly IPostprocessComposer<Telegram.Bot.Types.CallbackQuery> _callbackQueryComposer;
+
     private readonly Fixture _fixture;
+    private readonly Item _item;
+    private readonly IMediator _mediator;
+    private readonly Rating _rating;
 
     private readonly ProcessRatingCommandHandler _sut;
+    private readonly User _user;
 
     public ProcessRatingCommandTests()
     {
@@ -34,7 +40,29 @@ public class ProcessRatingCommandTests
         _fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
         _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
 
+        _user = _fixture.Build<User>()
+            .Create();
+
+        _rating = _fixture.Build<Rating>()
+            .With(r => r.UserId, _user.Id)
+            .Create();
+
+        var ratings = new Collection<Rating>
+        {
+            _rating
+        };
+
+        _item = _fixture.Build<Item>()
+            .With(i => i.Ratings, ratings)
+            .Create();
+
+        _callbackQueryComposer = _fixture.Build<Telegram.Bot.Types.CallbackQuery>()
+            .With(cq => cq.From, _user);
+
         _mediator = Substitute.For<IMediator>();
+
+        _mediator.Send(Arg.Is(new GetItem(_item.Id)), Arg.Any<CancellationToken>())
+            .Returns(_item);
 
         _bot = Substitute.For<ITelegramBotClient>();
 
@@ -48,28 +76,10 @@ public class ProcessRatingCommandTests
     {
         // Arrange
 
-        var user = _fixture.Build<User>()
-            .Create();
+        var newRatingValue = _fixture.Create<int>();
 
-        var rating = _fixture.Build<Rating>()
-            .With(r => r.UserId, user.Id)
-            .Create();
-
-        var ratings = new Collection<Rating>
-        {
-            rating
-        };
-
-        var item = _fixture.Build<Item>()
-            .With(i => i.Ratings, ratings)
-            .Create();
-
-        _mediator.Send(Arg.Is(new GetItem(item.Id)), Arg.Any<CancellationToken>())
-            .Returns(item);
-
-        var callbackQuery = _fixture.Build<Telegram.Bot.Types.CallbackQuery>()
-            .With(cq => cq.Data, $"{item.Id}|r|{rating.Id}")
-            .With(cq => cq.From, user)
+        var callbackQuery = _callbackQueryComposer
+            .With(cq => cq.Data, $"{_item.Id}|r|{newRatingValue}")
             .Without(cq => cq.InlineMessageId)
             .Create();
 
@@ -79,10 +89,10 @@ public class ProcessRatingCommandTests
 
         // Assert
 
-        await _mediator.Received().Send(Arg.Is(new SetItemRating(user.Id, rating.Id, item.Id)), Arg.Any<CancellationToken>());
-        await _mediator.Received().Send(Arg.Is(new GetItem(item.Id)), Arg.Any<CancellationToken>());
-        await _mediator.Received().Send(Arg.Is(new GetItemMessageText(item)), Arg.Any<CancellationToken>());
-        await _mediator.Received().Send(Arg.Is(new GetRatingsMarkup(item.Id)), Arg.Any<CancellationToken>());
+        await _mediator.Received().Send(Arg.Is(new SetItemRating(_user.Id, newRatingValue, _item.Id)), Arg.Any<CancellationToken>());
+        await _mediator.Received().Send(Arg.Is(new GetItem(_item.Id)), Arg.Any<CancellationToken>());
+        await _mediator.Received().Send(Arg.Is(new GetItemMessageText(_item)), Arg.Any<CancellationToken>());
+        await _mediator.Received().Send(Arg.Is(new GetRatingsMarkup(_item.Id)), Arg.Any<CancellationToken>());
         await _bot.Received().MakeRequestAsync(Arg.Any<AnswerCallbackQueryRequest>(), Arg.Any<CancellationToken>());
         await _bot.Received().MakeRequestAsync(Arg.Any<EditMessageTextRequest>(), Arg.Any<CancellationToken>());
     }
@@ -92,28 +102,8 @@ public class ProcessRatingCommandTests
     {
         // Arrange
 
-        var user = _fixture.Build<User>()
-            .Create();
-
-        var rating = _fixture.Build<Rating>()
-            .With(r => r.UserId, user.Id)
-            .Create();
-
-        var ratings = new Collection<Rating>
-        {
-            rating
-        };
-
-        var item = _fixture.Build<Item>()
-            .With(i => i.Ratings, ratings)
-            .Create();
-
-        _mediator.Send(Arg.Is(new GetItem(item.Id)), Arg.Any<CancellationToken>())
-            .Returns(item);
-
-        var callbackQuery = _fixture.Build<Telegram.Bot.Types.CallbackQuery>()
-            .With(cq => cq.Data, $"{item.Id}|r|null")
-            .With(cq => cq.From, user)
+        var callbackQuery = _callbackQueryComposer
+            .With(cq => cq.Data, $"{_item.Id}|r|null")
             .Without(cq => cq.InlineMessageId)
             .Create();
 
@@ -123,9 +113,9 @@ public class ProcessRatingCommandTests
 
         // Assert
 
-        await _mediator.Received().Send(Arg.Is(new GetItem(item.Id)), Arg.Any<CancellationToken>());
-        await _mediator.Received().Send(Arg.Is(new GetItemMessageText(item)), Arg.Any<CancellationToken>());
-        await _mediator.Received().Send(Arg.Is(new GetRatingsMarkup(item.Id)), Arg.Any<CancellationToken>());
+        await _mediator.Received().Send(Arg.Is(new GetItem(_item.Id)), Arg.Any<CancellationToken>());
+        await _mediator.Received().Send(Arg.Is(new GetItemMessageText(_item)), Arg.Any<CancellationToken>());
+        await _mediator.Received().Send(Arg.Is(new GetRatingsMarkup(_item.Id)), Arg.Any<CancellationToken>());
         await _bot.Received().MakeRequestAsync(Arg.Any<EditMessageTextRequest>(), Arg.Any<CancellationToken>());
     }
 
@@ -134,31 +124,8 @@ public class ProcessRatingCommandTests
     {
         // Arrange
 
-        var ratingValue = _fixture.Create<int>();
-
-        var user = _fixture.Build<User>()
-            .Create();
-
-        var rating = _fixture.Build<Rating>()
-            .With(r => r.UserId, user.Id)
-            .With(r => r.Value, ratingValue)
-            .Create();
-
-        var ratings = new Collection<Rating>
-        {
-            rating
-        };
-
-        var item = _fixture.Build<Item>()
-            .With(i => i.Ratings, ratings)
-            .Create();
-
-        _mediator.Send(Arg.Is(new GetItem(item.Id)), Arg.Any<CancellationToken>())
-            .Returns(item);
-
-        var callbackQuery = _fixture.Build<Telegram.Bot.Types.CallbackQuery>()
-            .With(cq => cq.Data, $"{item.Id}|r|{ratingValue}")
-            .With(cq => cq.From, user)
+        var callbackQuery = _callbackQueryComposer
+            .With(cq => cq.Data, $"{_item.Id}|r|{_rating.Value}")
             .Without(cq => cq.InlineMessageId)
             .Create();
 
@@ -168,7 +135,7 @@ public class ProcessRatingCommandTests
 
         // Assert
 
-        await _mediator.Received().Send(Arg.Is(new GetItem(item.Id)), Arg.Any<CancellationToken>());
+        await _mediator.Received().Send(Arg.Is(new GetItem(_item.Id)), Arg.Any<CancellationToken>());
         await _bot.Received().MakeRequestAsync(Arg.Any<AnswerCallbackQueryRequest>(), Arg.Any<CancellationToken>());
     }
 
@@ -177,30 +144,10 @@ public class ProcessRatingCommandTests
     {
         // Arrange
 
-        var ratingValue = 5;
+        var ratingValue = _fixture.Create<int>();
 
-        var user = _fixture.Build<User>()
-            .Create();
-
-        var rating = _fixture.Build<Rating>()
-            .With(r => r.UserId, user.Id)
-            .Create();
-
-        var ratings = new Collection<Rating>
-        {
-            rating
-        };
-
-        var item = _fixture.Build<Item>()
-            .With(i => i.Ratings, ratings)
-            .Create();
-
-        _mediator.Send(Arg.Is(new GetItem(item.Id)), Arg.Any<CancellationToken>())
-            .Returns(item);
-
-        var callbackQuery = _fixture.Build<Telegram.Bot.Types.CallbackQuery>()
-            .With(cq => cq.Data, $"{item.Id}|r|{ratingValue}")
-            .With(cq => cq.From, user)
+        var callbackQuery = _callbackQueryComposer
+            .With(cq => cq.Data, $"{_item.Id}|r|{ratingValue}")
             .Without(cq => cq.Message)
             .Create();
 
@@ -210,10 +157,10 @@ public class ProcessRatingCommandTests
 
         // Assert
 
-        await _mediator.Received().Send(Arg.Is(new SetItemRating(user.Id, ratingValue, item.Id)), Arg.Any<CancellationToken>());
-        await _mediator.Received().Send(Arg.Is(new GetItem(item.Id)), Arg.Any<CancellationToken>());
-        await _mediator.Received().Send(Arg.Is(new GetItemMessageText(item)), Arg.Any<CancellationToken>());
-        await _mediator.Received().Send(Arg.Is(new GetRatingsMarkup(item.Id)), Arg.Any<CancellationToken>());
+        await _mediator.Received().Send(Arg.Is(new SetItemRating(_user.Id, ratingValue, _item.Id)), Arg.Any<CancellationToken>());
+        await _mediator.Received().Send(Arg.Is(new GetItem(_item.Id)), Arg.Any<CancellationToken>());
+        await _mediator.Received().Send(Arg.Is(new GetItemMessageText(_item)), Arg.Any<CancellationToken>());
+        await _mediator.Received().Send(Arg.Is(new GetRatingsMarkup(_item.Id)), Arg.Any<CancellationToken>());
         await _bot.Received().MakeRequestAsync(Arg.Any<EditInlineMessageTextRequest>(), Arg.Any<CancellationToken>());
     }
 
@@ -222,28 +169,8 @@ public class ProcessRatingCommandTests
     {
         // Arrange
 
-        var user = _fixture.Build<User>()
-            .Create();
-
-        var rating = _fixture.Build<Rating>()
-            .With(r => r.UserId, user.Id)
-            .Create();
-
-        var ratings = new Collection<Rating>
-        {
-            rating
-        };
-
-        var item = _fixture.Build<Item>()
-            .With(i => i.Ratings, ratings)
-            .Create();
-
-        _mediator.Send(Arg.Is(new GetItem(item.Id)), Arg.Any<CancellationToken>())
-            .Returns(item);
-
-        var callbackQuery = _fixture.Build<Telegram.Bot.Types.CallbackQuery>()
-            .With(cq => cq.Data, $"{item.Id}|r|null")
-            .With(cq => cq.From, user)
+        var callbackQuery = _callbackQueryComposer
+            .With(cq => cq.Data, $"{_item.Id}|r|null")
             .Without(cq => cq.Message)
             .Create();
 
@@ -253,9 +180,9 @@ public class ProcessRatingCommandTests
 
         // Assert
 
-        await _mediator.Received().Send(Arg.Is(new GetItem(item.Id)), Arg.Any<CancellationToken>());
-        await _mediator.Received().Send(Arg.Is(new GetItemMessageText(item)), Arg.Any<CancellationToken>());
-        await _mediator.Received().Send(Arg.Is(new GetRatingsMarkup(item.Id)), Arg.Any<CancellationToken>());
+        await _mediator.Received().Send(Arg.Is(new GetItem(_item.Id)), Arg.Any<CancellationToken>());
+        await _mediator.Received().Send(Arg.Is(new GetItemMessageText(_item)), Arg.Any<CancellationToken>());
+        await _mediator.Received().Send(Arg.Is(new GetRatingsMarkup(_item.Id)), Arg.Any<CancellationToken>());
         await _bot.Received().MakeRequestAsync(Arg.Any<EditInlineMessageTextRequest>(), Arg.Any<CancellationToken>());
     }
 
@@ -264,28 +191,8 @@ public class ProcessRatingCommandTests
     {
         // Arrange
 
-        var user = _fixture.Build<User>()
-            .Create();
-
-        var rating = _fixture.Build<Rating>()
-            .With(r => r.UserId, user.Id)
-            .Create();
-
-        var ratings = new Collection<Rating>
-        {
-            rating
-        };
-
-        var item = _fixture.Build<Item>()
-            .With(i => i.Ratings, ratings)
-            .Create();
-
-        _mediator.Send(Arg.Is(new GetItem(item.Id)), Arg.Any<CancellationToken>())
-            .Returns(item);
-
-        var callbackQuery = _fixture.Build<Telegram.Bot.Types.CallbackQuery>()
-            .With(cq => cq.Data, $"{item.Id}|r|{rating.Value}")
-            .With(cq => cq.From, user)
+        var callbackQuery = _callbackQueryComposer
+            .With(cq => cq.Data, $"{_item.Id}|r|{_rating.Value}")
             .Without(cq => cq.Message)
             .Create();
 
@@ -295,7 +202,7 @@ public class ProcessRatingCommandTests
 
         // Assert
 
-        await _mediator.Received().Send(Arg.Is(new GetItem(item.Id)), Arg.Any<CancellationToken>());
+        await _mediator.Received().Send(Arg.Is(new GetItem(_item.Id)), Arg.Any<CancellationToken>());
         await _bot.Received().MakeRequestAsync(Arg.Any<AnswerCallbackQueryRequest>(), Arg.Any<CancellationToken>());
     }
 }

@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using AutoFixture;
 using Bot.Handlers.Message;
-using Bot.Models;
 using Bot.Requests.Message;
 using Bot.Resources;
 using Microsoft.Extensions.Localization;
@@ -46,9 +45,7 @@ public class EditMessageReplyMarkupTests
             .With(cq => cq.Data, "1|r|1")
             .Create();
 
-        var cqd = new CallbackQueryData(callbackQuery);
-
-        var request = new EditMessageReplyMarkup(cqd, _fixture.Create<InlineKeyboardMarkup>());
+        var request = new EditMessageReplyMarkup(new(callbackQuery), _fixture.Create<InlineKeyboardMarkup>());
 
         // Act
 
@@ -71,9 +68,7 @@ public class EditMessageReplyMarkupTests
             .With(cq => cq.Data, "1|r|1")
             .Create();
 
-        var cqd = new CallbackQueryData(callbackQuery);
-
-        var request = new EditMessageReplyMarkup(cqd, _fixture.Create<InlineKeyboardMarkup>());
+        var request = new EditMessageReplyMarkup(new(callbackQuery), _fixture.Create<InlineKeyboardMarkup>());
 
         // Act
 
