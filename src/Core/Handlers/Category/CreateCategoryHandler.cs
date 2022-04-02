@@ -9,10 +9,10 @@ namespace Core.Handlers.Category;
 
 public class CreateCategoryHandler : IRequestHandler<CreateCategory, Result>
 {
-    private readonly AppDbContext _context;
+    private readonly IAppDbContext _context;
     private readonly IValidator<CreateCategory> _validator;
 
-    public CreateCategoryHandler(AppDbContext context, IValidator<CreateCategory> validator)
+    public CreateCategoryHandler(IAppDbContext context, IValidator<CreateCategory> validator)
     {
         _context = context;
         _validator = validator;

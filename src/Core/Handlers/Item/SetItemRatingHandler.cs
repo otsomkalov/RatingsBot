@@ -7,9 +7,9 @@ namespace Core.Handlers.Item;
 
 public class SetItemRatingHandler : IRequestHandler<SetItemRating, Unit>
 {
-    private readonly AppDbContext _context;
+    private readonly IAppDbContext _context;
 
-    public SetItemRatingHandler(AppDbContext context)
+    public SetItemRatingHandler(IAppDbContext context)
     {
         _context = context;
     }

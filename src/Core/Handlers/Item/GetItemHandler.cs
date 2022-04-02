@@ -7,9 +7,9 @@ namespace Core.Handlers.Item;
 
 public class GetItemHandler : IRequestHandler<GetItem, Models.Item>
 {
-    private readonly AppDbContext _context;
+    private readonly IAppDbContext _context;
 
-    public GetItemHandler(AppDbContext context)
+    public GetItemHandler(IAppDbContext context)
     {
         _context = context;
     }

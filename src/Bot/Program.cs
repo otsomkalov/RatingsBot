@@ -7,6 +7,7 @@ using Core.Validators.Category;
 using Core.Validators.Item;
 using Core.Validators.Manufacturer;
 using Core.Validators.Place;
+using Data;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
@@ -30,7 +31,8 @@ services
     .AddSingleton<IValidator<CreateItem>, CreateItemValidator>()
     .AddSingleton<IValidator<CreateManufacturer>, CreateManufacturerValidator>()
     .AddSingleton<IValidator<CreateCategory>, CreateCategoryValidator>()
-    .AddSingleton<IValidator<CreatePlace>, CreatePlaceValidator>();
+    .AddSingleton<IValidator<CreatePlace>, CreatePlaceValidator>()
+    .AddScoped<IAppDbContext>(sp => sp.GetRequiredService<AppDbContext>());
 
 services.Configure<TelegramOptions>(configuration.GetSection(TelegramOptions.SectionName))
     .AddTelegram();

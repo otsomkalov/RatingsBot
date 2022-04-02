@@ -7,9 +7,9 @@ namespace Core.Handlers.Item;
 
 public class SetItemPlaceHandler : AsyncRequestHandler<SetItemPlace>
 {
-    private readonly AppDbContext _context;
+    private readonly IAppDbContext _context;
 
-    public SetItemPlaceHandler(AppDbContext context)
+    public SetItemPlaceHandler(IAppDbContext context)
     {
         _context = context;
     }
