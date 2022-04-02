@@ -8,10 +8,10 @@ namespace Core.Handlers.User;
 
 public class CreateIfNotExistsHandler : IRequestHandler<CreateUserIfNotExists, Unit>
 {
-    private readonly AppDbContext _context;
+    private readonly IAppDbContext _context;
     private readonly IUserIdProvider _userIdProvider;
 
-    public CreateIfNotExistsHandler(IUserIdProvider userIdProvider, AppDbContext context)
+    public CreateIfNotExistsHandler(IUserIdProvider userIdProvider, IAppDbContext context)
     {
         _userIdProvider = userIdProvider;
         _context = context;

@@ -1,6 +1,6 @@
 ﻿using Bot.Commands.Place;
 using Bot.Constants;
-using Core.Data;
+using Data;
 using Microsoft.EntityFrameworkCore;
 using Telegram.Bot.Types.ReplyMarkups;
 

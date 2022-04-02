@@ -9,10 +9,10 @@ namespace Core.Handlers.Manufacturer;
 
 public class CreateManufacturerHandler : IRequestHandler<CreateManufacturer, Result>
 {
-    private readonly AppDbContext _context;
+    private readonly IAppDbContext _context;
     private readonly IValidator<CreateManufacturer> _validator;
 
-    public CreateManufacturerHandler(AppDbContext context, IValidator<CreateManufacturer> validator)
+    public CreateManufacturerHandler(IAppDbContext context, IValidator<CreateManufacturer> validator)
     {
         _context = context;
         _validator = validator;
