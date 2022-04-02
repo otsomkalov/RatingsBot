@@ -43,7 +43,7 @@ public class GetManufacturersMarkupHandler : IRequestHandler<GetManufacturersMar
             },
             new("Refresh")
             {
-                CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Manufacturer, -1)
+                CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Manufacturer, 0)
             }
         });
 

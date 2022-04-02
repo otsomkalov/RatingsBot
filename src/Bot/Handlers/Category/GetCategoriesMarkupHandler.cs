@@ -39,7 +39,7 @@ public class GetCategoriesMarkupHandler : IRequestHandler<GetCategoriesMarkup, I
         {
             new("Refresh")
             {
-                CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Category, null)
+                CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Category, 0)
             }
         });
 
