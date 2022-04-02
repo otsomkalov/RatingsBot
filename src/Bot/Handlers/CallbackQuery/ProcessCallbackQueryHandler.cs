@@ -51,7 +51,7 @@ public class ProcessCallbackQueryHandler : IRequestHandler<ProcessCallbackQuery,
 
     private async Task ProcessRatingCommand(CallbackQueryData callbackQueryData, CancellationToken cancellationToken)
     {
-        if (callbackQueryData.EntityId.HasValue)
+        if (callbackQueryData.EntityId is not null and not 0)
         {
             var command = new SetItemRating(callbackQueryData.UserId, callbackQueryData.EntityId, callbackQueryData.ItemId);
 
@@ -93,7 +93,7 @@ public class ProcessCallbackQueryHandler : IRequestHandler<ProcessCallbackQuery,
 
     private async Task ProcessManufacturerCommand(CallbackQueryData callbackQueryData, CancellationToken cancellationToken)
     {
-        if (callbackQueryData.EntityId is -1)
+        if (callbackQueryData.EntityId is 0 or -1)
         {
             var manufacturersMarkup = await _mediator.Send(new GetManufacturersMarkup(callbackQueryData.ItemId), cancellationToken);
 
@@ -115,7 +115,7 @@ public class ProcessCallbackQueryHandler : IRequestHandler<ProcessCallbackQuery,
 
     private async Task ProcessCategoryCommand(CallbackQueryData callbackQueryData, CancellationToken cancellationToken)
     {
-        if (!callbackQueryData.EntityId.HasValue)
+        if (callbackQueryData.EntityId is null or 0)
         {
             var categoriesMarkup = await _mediator.Send(new GetCategoriesMarkup(callbackQueryData.ItemId), cancellationToken);
 
@@ -137,7 +137,7 @@ public class ProcessCallbackQueryHandler : IRequestHandler<ProcessCallbackQuery,
 
     private async Task ProcessPlaceCommand(CallbackQueryData callbackQueryData, CancellationToken cancellationToken)
     {
-        if (callbackQueryData.EntityId is -1)
+        if (callbackQueryData.EntityId is 0 or -1)
         {
             var placesMarkup = await _mediator.Send(new GetPlacesMarkup(callbackQueryData.ItemId), cancellationToken);
 

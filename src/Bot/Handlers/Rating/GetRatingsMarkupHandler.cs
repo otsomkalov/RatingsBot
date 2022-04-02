@@ -42,7 +42,7 @@ public class GetRatingsMarkupHandler : RequestHandler<GetRatingsMarkup, InlineKe
         {
             new("Refresh")
             {
-                CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Rating, null)
+                CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Rating, 0)
             }
         };
 
