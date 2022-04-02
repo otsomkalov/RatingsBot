@@ -1,4 +1,13 @@
+using Core.Commands.Category;
+using Core.Commands.Item;
+using Core.Commands.Manufacturer;
+using Core.Commands.Place;
 using Core.Data;
+using Core.Validators.Category;
+using Core.Validators.Item;
+using Core.Validators.Manufacturer;
+using Core.Validators.Place;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder();
@@ -16,6 +25,12 @@ services.AddDbContext<AppDbContext>(optionsBuilder =>
 
 services.AddLocalization()
     .AddServices();
+
+services
+    .AddSingleton<IValidator<CreateItem>, CreateItemValidator>()
+    .AddSingleton<IValidator<CreateManufacturer>, CreateManufacturerValidator>()
+    .AddSingleton<IValidator<CreateCategory>, CreateCategoryValidator>()
+    .AddSingleton<IValidator<CreatePlace>, CreatePlaceValidator>();
 
 services.Configure<TelegramOptions>(configuration.GetSection(TelegramOptions.SectionName))
     .AddTelegram();

@@ -1,5 +1,6 @@
-﻿using MediatR;
+﻿using FluentResults;
+using MediatR;
 
 namespace Core.Commands.Item;
 
-public record CreateItem(string Name) : IRequest<Models.Item>;
+public record CreateItem(string Name) : IRequest<Result<Models.Item>>;
