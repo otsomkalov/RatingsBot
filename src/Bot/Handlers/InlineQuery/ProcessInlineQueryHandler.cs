@@ -1,7 +1,7 @@
-﻿using Bot.Commands.InlineQuery;
-using Bot.Commands.Item;
-using Bot.Commands.Rating;
-using Core.Commands.User;
+﻿using Bot.Requests.InlineQuery;
+using Bot.Requests.Item;
+using Bot.Requests.Rating;
+using Core.Requests.User;
 using Data;
 using Microsoft.EntityFrameworkCore;
 using Telegram.Bot.Types.InlineQueryResults;

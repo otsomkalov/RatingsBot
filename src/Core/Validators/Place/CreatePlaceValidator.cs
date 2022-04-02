@@ -1,4 +1,4 @@
-﻿using Core.Commands.Place;
+﻿using Core.Requests.Place;
 using FluentValidation;
 
 namespace Core.Validators.Place;

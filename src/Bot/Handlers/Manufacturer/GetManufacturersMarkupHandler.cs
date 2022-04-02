@@ -1,5 +1,5 @@
-﻿using Bot.Commands.Manufacturer;
-using Bot.Constants;
+﻿using Bot.Constants;
+using Bot.Requests.Manufacturer;
 using Data;
 using Microsoft.EntityFrameworkCore;
 using Telegram.Bot.Types.ReplyMarkups;

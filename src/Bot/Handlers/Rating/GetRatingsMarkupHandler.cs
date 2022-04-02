@@ -1,5 +1,5 @@
-﻿using Bot.Commands.Rating;
-using Bot.Constants;
+﻿using Bot.Constants;
+using Bot.Requests.Rating;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Bot.Handlers.Rating;

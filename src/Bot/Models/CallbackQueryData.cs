@@ -12,14 +12,11 @@ public record CallbackQueryData
 
         ItemId = int.Parse(callbackData[0]);
         EntityId = int.TryParse(callbackData[2], out var id) ? id : null;
-        Command = callbackData[1];
         MessageId = query.Message?.MessageId;
         InlineMessageId = query.InlineMessageId;
         UserId = query.From.Id;
         QueryId = query.Id;
     }
-
-    public string Command { get; }
 
     public int? EntityId { get; }
 

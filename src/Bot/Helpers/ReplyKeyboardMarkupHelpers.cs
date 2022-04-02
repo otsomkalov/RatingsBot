@@ -1,4 +1,5 @@
-﻿using Telegram.Bot.Types.ReplyMarkups;
+﻿using Bot.Constants;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Bot.Helpers;
 
@@ -10,19 +11,19 @@ public static class ReplyKeyboardMarkupHelpers
         {
             new[]
             {
-                new KeyboardButton(Constants.Commands.NewCategory)
+                new KeyboardButton(Commands.NewCategory)
             },
             new[]
             {
-                new KeyboardButton(Constants.Commands.NewPlace)
+                new KeyboardButton(Commands.NewPlace)
             },
             new[]
             {
-                new KeyboardButton(Constants.Commands.NewManufacturer)
+                new KeyboardButton(Commands.NewManufacturer)
             },
             new[]
             {
-                new KeyboardButton(Constants.Commands.NewItem)
+                new KeyboardButton(Commands.NewItem)
             }
         };
 

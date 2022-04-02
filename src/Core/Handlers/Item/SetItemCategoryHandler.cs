@@ -1,5 +1,5 @@
-﻿using Core.Commands.Item;
-using Core.Data;
+﻿using Core.Data;
+using Core.Requests.Item;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 

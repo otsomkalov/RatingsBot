@@ -1,6 +1,6 @@
-﻿using Bot.Commands.CallbackQuery;
-using Bot.Commands.InlineQuery;
-using Bot.Commands.Message;
+﻿using Bot.Requests.CallbackQuery;
+using Bot.Requests.InlineQuery;
+using Bot.Requests.Message;
 using Microsoft.AspNetCore.Mvc;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -25,7 +25,7 @@ public class UpdateController : ControllerBase
     {
         IRequest<Unit> command = update.Type switch
         {
-            UpdateType.Message => new ProcessNewMessage(update.Message),
+            UpdateType.Message => new ProcessMessage(update.Message),
             UpdateType.CallbackQuery => new ProcessCallbackQuery(update.CallbackQuery),
             UpdateType.InlineQuery => new ProcessInlineQuery(update.InlineQuery),
             _ => null

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Core.Commands.User;
 using Core.Handlers.User;
 using Core.Models;
+using Core.Requests.User;
 using Core.Services.Interfaces;
 using Data;
 using EntityFrameworkCoreMock;
