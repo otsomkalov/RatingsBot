@@ -1,40 +1,49 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
+using AutoFixture;
 using Core.Handlers.User;
 using Core.Models;
 using Core.Requests.User;
 using Core.Services.Interfaces;
 using Data;
-using EntityFrameworkCoreMock;
+using EntityFrameworkCoreMock.NSubstitute;
+using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using Moq;
+using NSubstitute;
 using Xunit;
 
 namespace Core.Tests;
 
 public class CreateUserIfNotExistsTests
 {
-    private const long UserId = 1;
-    private const string UserFirstName = nameof(UserFirstName);
+    private readonly string _userFirstName;
+    private readonly int _userId;
+    private readonly IUserIdProvider _userIdProvider;
+
+    public CreateUserIfNotExistsTests()
+    {
+        _userIdProvider = Substitute.For<IUserIdProvider>();
+
+        var fixture = new Fixture();
+
+        _userId = fixture.Create<int>();
+        _userFirstName = fixture.Create<string>();
+    }
 
     [Fact]
     public async Task CachedUser_Works()
     {
         // Arrange
 
-        var userIdProviderMock = new Mock<IUserIdProvider>();
-
-        userIdProviderMock.Setup(m => m.UserExists(It.IsAny<long>()))
-            .Returns(true);
+        _userIdProvider.UserExists(_userId).Returns(true);
 
         var contextMock = new DbContextMock<AppDbContext>(new DbContextOptions<AppDbContext>());
 
-        var usersSetMock = contextMock.CreateDbSetMock(m => m.Users, Array.Empty<User>());
+        var usersSetMock = contextMock.CreateDbSetMock(m => m.Users);
 
-        var handler = new CreateIfNotExistsHandler(userIdProviderMock.Object, contextMock.Object);
+        var handler = new CreateIfNotExistsHandler(_userIdProvider, contextMock.Object);
 
-        var request = new CreateUserIfNotExists(UserId, UserFirstName);
+        var request = new CreateUserIfNotExists(_userId, _userFirstName);
 
         // Act
 
@@ -42,10 +51,9 @@ public class CreateUserIfNotExistsTests
 
         // Assert
 
-        userIdProviderMock.Verify(m => m.UserExists(It.IsAny<long>()), Times.Once);
-
+        _userIdProvider.Received().UserExists(_userId);
         var usersExists = await usersSetMock.Object.AnyAsync();
-        Assert.False(usersExists);
+        usersExists.Should().BeFalse();
     }
 
     [Fact]
@@ -53,10 +61,7 @@ public class CreateUserIfNotExistsTests
     {
         // Arrange
 
-        var userIdProviderMock = new Mock<IUserIdProvider>();
-
-        userIdProviderMock.Setup(m => m.UserExists(It.IsAny<long>()))
-            .Returns(false);
+        _userIdProvider.UserExists(_userId).Returns(false);
 
         var contextMock = new DbContextMock<AppDbContext>(new DbContextOptions<AppDbContext>());
 
@@ -64,13 +69,13 @@ public class CreateUserIfNotExistsTests
         {
             new User
             {
-                Id = UserId
+                Id = _userId
             }
         });
 
-        var handler = new CreateIfNotExistsHandler(userIdProviderMock.Object, contextMock.Object);
+        var handler = new CreateIfNotExistsHandler(_userIdProvider, contextMock.Object);
 
-        var request = new CreateUserIfNotExists(UserId, UserFirstName);
+        var request = new CreateUserIfNotExists(_userId, _userFirstName);
 
         // Act
 
@@ -78,8 +83,8 @@ public class CreateUserIfNotExistsTests
 
         // Assert
 
-        userIdProviderMock.Verify(m => m.UserExists(It.IsAny<long>()), Times.Once);
-        userIdProviderMock.Verify(m => m.AddUserId(UserId), Times.Once);
+        _userIdProvider.Received().UserExists(_userId);
+        _userIdProvider.Received().AddUserId(_userId);
     }
 
     [Fact]
@@ -87,18 +92,15 @@ public class CreateUserIfNotExistsTests
     {
         // Arrange
 
-        var userIdProviderMock = new Mock<IUserIdProvider>();
-
-        userIdProviderMock.Setup(m => m.UserExists(It.IsAny<long>()))
-            .Returns(false);
+        _userIdProvider.UserExists(_userId).Returns(false);
 
         var contextMock = new DbContextMock<AppDbContext>(new DbContextOptions<AppDbContext>());
 
-        var usersSetMock = contextMock.CreateDbSetMock(m => m.Users, Array.Empty<User>());
+        var usersSetMock = contextMock.CreateDbSetMock(m => m.Users);
 
-        var handler = new CreateIfNotExistsHandler(userIdProviderMock.Object, contextMock.Object);
+        var handler = new CreateIfNotExistsHandler(_userIdProvider, contextMock.Object);
 
-        var request = new CreateUserIfNotExists(UserId, UserFirstName);
+        var request = new CreateUserIfNotExists(_userId, _userFirstName);
 
         // Act
 
@@ -106,11 +108,11 @@ public class CreateUserIfNotExistsTests
 
         // Assert
 
-        userIdProviderMock.Verify(m => m.UserExists(It.IsAny<long>()));
-        userIdProviderMock.Verify(m => m.AddUserId(UserId));
-        usersSetMock.Verify(m => m.AddAsync(It.IsAny<User>(), It.IsAny<CancellationToken>()));
+        _userIdProvider.Received().UserExists(_userId);
+        _userIdProvider.Received().AddUserId(_userId);
+        await usersSetMock.Object.Received().AddAsync(Arg.Is<User>(u => u.Id == _userId && u.FirstName == _userFirstName));
 
-        var userCreated = await usersSetMock.Object.AnyAsync(u => u.Id == UserId && u.FirstName == UserFirstName);
-        Assert.True(userCreated);
+        var count = await usersSetMock.Object.CountAsync();
+        count.Should().Be(1);
     }
 }
