@@ -38,7 +38,8 @@ public class ProcessCategoryCommandHandler : IRequestHandler<ProcessCategoryComm
 
         await _mediator.Send(new SetItemCategory(callbackQueryData.ItemId, callbackQueryData.CategoryId), cancellationToken);
 
-        var manufacturersMarkup = await _mediator.Send(new GetInlineKeyboardMarkup(callbackQueryData.ItemId, ReplyMarkup.Manufacturer), cancellationToken);
+        var manufacturersMarkup = await _mediator.Send(new GetInlineKeyboardMarkup(callbackQueryData.ItemId, ReplyMarkup.Manufacturer),
+            cancellationToken);
 
         await _bot.EditMessageTextAsync(new(callbackQueryData.UserId),
             callbackQueryData.MessageId.Value,
