@@ -1,8 +1,8 @@
-﻿using Bot.Requests.Item;
+﻿using Bot.Requests.Message.Item;
 using Bot.Resources;
 using Microsoft.Extensions.Localization;
 
-namespace Bot.Handlers.Item;
+namespace Bot.Handlers.Message;
 
 public class GetItemMessageTextHandler : RequestHandler<GetItemMessageText, string>
 {

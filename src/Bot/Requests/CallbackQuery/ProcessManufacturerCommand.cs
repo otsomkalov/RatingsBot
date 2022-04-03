@@ -2,4 +2,4 @@
 
 namespace Bot.Requests.CallbackQuery;
 
-public record ProcessManufacturerCommand(CallbackQueryData CallbackQueryData) : IRequest;
+public record ProcessManufacturerCommand(EntitiesCallbackQueryData CallbackQueryData) : IRequest;

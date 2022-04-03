@@ -1,6 +1,5 @@
 ﻿using Bot.Requests.CallbackQuery;
-using Bot.Requests.Category;
-using Bot.Requests.Manufacturer;
+using Bot.Requests.InlineKeyboardMarkup;
 using Bot.Requests.Message;
 using Bot.Resources;
 using Core.Requests.Item;
@@ -23,18 +22,19 @@ public class ProcessCategoryCommandHandler : IRequestHandler<ProcessCategoryComm
 
     public async Task<Unit> Handle(ProcessCategoryCommand request, CancellationToken cancellationToken)
     {
-        var callbackQueryData = request.CallbackQueryData;
+        var callbackQueryData = request.CallbackQueryQueryData;
 
-        if (callbackQueryData.EntityId is null or 0)
+        if (callbackQueryData.CategoryId == 0)
         {
-            var categoriesMarkup = await _mediator.Send(new GetCategoriesMarkup(callbackQueryData.ItemId), cancellationToken);
+            var categoriesMarkup = await _mediator.Send(new GetCategoriesMarkup(callbackQueryData.ItemId, callbackQueryData.Page),
+                cancellationToken);
 
             await _mediator.Send(new EditMessageReplyMarkup(callbackQueryData, categoriesMarkup), cancellationToken);
 
             return Unit.Value;
         }
 
-        await _mediator.Send(new SetItemCategory(callbackQueryData.EntityId.Value, callbackQueryData.ItemId), cancellationToken);
+        await _mediator.Send(new SetItemCategory(callbackQueryData.ItemId, callbackQueryData.CategoryId), cancellationToken);
 
         var manufacturersMarkup = await _mediator.Send(new GetManufacturersMarkup(callbackQueryData.ItemId), cancellationToken);
 

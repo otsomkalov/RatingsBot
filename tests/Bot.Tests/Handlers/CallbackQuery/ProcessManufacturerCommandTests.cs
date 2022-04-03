@@ -1,9 +1,10 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using AutoFixture;
+using AutoFixture.Dsl;
 using Bot.Handlers.CallbackQuery;
-using Bot.Requests.Manufacturer;
+using Bot.Requests.InlineKeyboardMarkup;
 using Bot.Requests.Message;
-using Bot.Requests.Place;
 using Bot.Resources;
 using Core.Requests.Item;
 using MediatR;
@@ -18,12 +19,29 @@ namespace Bot.Tests.Handlers.CallbackQuery;
 public class ProcessManufacturerCommandTests
 {
     private readonly ITelegramBotClient _bot;
+
+    private readonly IPostprocessComposer<Telegram.Bot.Types.CallbackQuery> _callbackQueryComposer;
+    private readonly int _itemId;
+    private readonly int? _manufacturerId;
     private readonly IMediator _mediator;
+    private readonly int _page;
 
     private readonly ProcessManufacturerCommandHandler _sut;
 
     public ProcessManufacturerCommandTests()
     {
+        var fixture = new Fixture();
+
+        fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
+        fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+
+        _callbackQueryComposer = fixture.Build<Telegram.Bot.Types.CallbackQuery>()
+            .Without(cq => cq.InlineMessageId);
+
+        _itemId = fixture.Create<int>();
+        _manufacturerId = fixture.Create<int?>();
+        _page = fixture.Create<int>();
+
         _mediator = Substitute.For<IMediator>();
         _bot = Substitute.For<ITelegramBotClient>();
 
@@ -32,26 +50,14 @@ public class ProcessManufacturerCommandTests
         _sut = new(_mediator, _bot, localizer);
     }
 
-    [Theory]
-    [InlineData("1|m|1")]
-    [InlineData("1|m|null")]
-    public async Task RegularMessageCallbackQuery_SetItemManufacturer_Works(string data)
+    [Fact]
+    public async Task RegularMessageCallbackQuery_SetItemManufacturer_Works()
     {
         // Arrange
 
-        var callbackQuery = new Telegram.Bot.Types.CallbackQuery
-        {
-            Data = data,
-            From = new()
-            {
-                Id = 1,
-                FirstName = "test"
-            },
-            Message = new()
-            {
-                MessageId = 1
-            }
-        };
+        var callbackQuery = _callbackQueryComposer
+            .With(cq => cq.Data, $"{_itemId}|m|{_page}|{_manufacturerId}")
+            .Create();
 
         // Act
 
@@ -59,31 +65,23 @@ public class ProcessManufacturerCommandTests
 
         // Assert
 
-        await _mediator.Received().Send(Arg.Any<SetItemManufacturer>(), Arg.Any<CancellationToken>());
-        await _mediator.Received().Send(Arg.Any<GetPlacesMarkup>(), Arg.Any<CancellationToken>());
-        await _bot.Received().MakeRequestAsync(Arg.Any<EditMessageTextRequest>(), Arg.Any<CancellationToken>());
+        await _mediator.Received().Send(Arg.Is(new SetItemManufacturer(_itemId, _manufacturerId)));
+        await _mediator.Received().Send(Arg.Is(new GetPlacesMarkup(_itemId)));
+        await _bot.Received().MakeRequestAsync(Arg.Any<EditMessageTextRequest>());
     }
 
     [Theory]
-    [InlineData("1|m|0")]
-    [InlineData("1|m|-1")]
-    public async Task RegularMessageCallbackQuery_RefreshManufacturers_Works(string data)
+    [InlineData("{0}|m|{1}|0")]
+    [InlineData("{0}|m|{1}|-1")]
+    public async Task RegularMessageCallbackQuery_RefreshManufacturers_Works(string dataFormat)
     {
         // Arrange
 
-        var callbackQuery = new Telegram.Bot.Types.CallbackQuery
-        {
-            Data = data,
-            From = new()
-            {
-                Id = 1,
-                FirstName = "test"
-            },
-            Message = new()
-            {
-                MessageId = 1
-            }
-        };
+        var data = string.Format(dataFormat, _itemId, _page);
+
+        var callbackQuery = _callbackQueryComposer
+            .With(cq => cq.Data, data)
+            .Create();
 
         // Act
 
@@ -91,7 +89,7 @@ public class ProcessManufacturerCommandTests
 
         // Assert
 
-        await _mediator.Received().Send(Arg.Any<GetManufacturersMarkup>(), Arg.Any<CancellationToken>());
-        await _mediator.Received().Send(Arg.Any<EditMessageReplyMarkup>(), Arg.Any<CancellationToken>());
+        await _mediator.Received().Send(Arg.Is(new GetManufacturersMarkup(_itemId)));
+        await _mediator.Received().Send(Arg.Any<EditMessageReplyMarkup>());
     }
 }

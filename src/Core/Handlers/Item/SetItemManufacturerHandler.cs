@@ -16,14 +16,14 @@ public class SetItemManufacturerHandler : AsyncRequestHandler<SetItemManufacture
 
     protected override async Task Handle(SetItemManufacturer request, CancellationToken cancellationToken)
     {
-        var (entityId, itemId) = request;
+        var (itemId, manufacturerId) = request;
 
         var item = await _context.Items
             .FirstOrDefaultAsync(i => i.Id == itemId, cancellationToken);
 
         item = item with
         {
-            ManufacturerId = entityId
+            ManufacturerId = manufacturerId
         };
 
         _context.Items.Update(item);

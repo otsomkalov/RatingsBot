@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.Dsl;
 using Bot.Handlers.CallbackQuery;
-using Bot.Requests.Item;
-using Bot.Requests.Rating;
+using Bot.Requests.InlineKeyboardMarkup;
+using Bot.Requests.Message.Item;
 using Bot.Resources;
 using Core.Models;
 using Core.Requests.Item;
@@ -25,7 +25,7 @@ public class ProcessRatingCommandTests
 
     private readonly IPostprocessComposer<Telegram.Bot.Types.CallbackQuery> _callbackQueryComposer;
 
-    private readonly Fixture _fixture;
+    private readonly IFixture _fixture;
     private readonly Item _item;
     private readonly IMediator _mediator;
     private readonly Rating _rating;
@@ -35,7 +35,7 @@ public class ProcessRatingCommandTests
 
     public ProcessRatingCommandTests()
     {
-        _fixture = new();
+        _fixture = new Fixture();
 
         _fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
         _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
@@ -61,7 +61,7 @@ public class ProcessRatingCommandTests
 
         _mediator = Substitute.For<IMediator>();
 
-        _mediator.Send(Arg.Is(new GetItem(_item.Id)), Arg.Any<CancellationToken>())
+        _mediator.Send(Arg.Is(new GetItem(_item.Id)))
             .Returns(_item);
 
         _bot = Substitute.For<ITelegramBotClient>();
@@ -89,21 +89,25 @@ public class ProcessRatingCommandTests
 
         // Assert
 
-        await _mediator.Received().Send(Arg.Is(new SetItemRating(_user.Id, newRatingValue, _item.Id)), Arg.Any<CancellationToken>());
-        await _mediator.Received().Send(Arg.Is(new GetItem(_item.Id)), Arg.Any<CancellationToken>());
-        await _mediator.Received().Send(Arg.Is(new GetItemMessageText(_item)), Arg.Any<CancellationToken>());
-        await _mediator.Received().Send(Arg.Is(new GetRatingsMarkup(_item.Id)), Arg.Any<CancellationToken>());
-        await _bot.Received().MakeRequestAsync(Arg.Any<AnswerCallbackQueryRequest>(), Arg.Any<CancellationToken>());
-        await _bot.Received().MakeRequestAsync(Arg.Any<EditMessageTextRequest>(), Arg.Any<CancellationToken>());
+        await _mediator.Received().Send(Arg.Is(new SetItemRating(_item.Id, _user.Id, newRatingValue)));
+        await _mediator.Received().Send(Arg.Is(new GetItem(_item.Id)));
+        await _mediator.Received().Send(Arg.Is(new GetItemMessageText(_item)));
+        await _mediator.Received().Send(Arg.Is(new GetRatingsMarkup(_item.Id)));
+        await _bot.Received().MakeRequestAsync(Arg.Any<AnswerCallbackQueryRequest>());
+        await _bot.Received().MakeRequestAsync(Arg.Any<EditMessageTextRequest>());
     }
 
-    [Fact]
-    public async Task RegularMessageCallbackQuery_RefreshRatings_Works()
+    [Theory]
+    [InlineData("{0}|r|null")]
+    [InlineData("{0}|r|0")]
+    public async Task RegularMessageCallbackQuery_RefreshRatings_Works(string dataFormat)
     {
         // Arrange
 
+        var data = string.Format(dataFormat, _item.Id);
+
         var callbackQuery = _callbackQueryComposer
-            .With(cq => cq.Data, $"{_item.Id}|r|null")
+            .With(cq => cq.Data, data)
             .Without(cq => cq.InlineMessageId)
             .Create();
 
@@ -113,10 +117,10 @@ public class ProcessRatingCommandTests
 
         // Assert
 
-        await _mediator.Received().Send(Arg.Is(new GetItem(_item.Id)), Arg.Any<CancellationToken>());
-        await _mediator.Received().Send(Arg.Is(new GetItemMessageText(_item)), Arg.Any<CancellationToken>());
-        await _mediator.Received().Send(Arg.Is(new GetRatingsMarkup(_item.Id)), Arg.Any<CancellationToken>());
-        await _bot.Received().MakeRequestAsync(Arg.Any<EditMessageTextRequest>(), Arg.Any<CancellationToken>());
+        await _mediator.Received().Send(Arg.Is(new GetItem(_item.Id)));
+        await _mediator.Received().Send(Arg.Is(new GetItemMessageText(_item)));
+        await _mediator.Received().Send(Arg.Is(new GetRatingsMarkup(_item.Id)));
+        await _bot.Received().MakeRequestAsync(Arg.Any<EditMessageTextRequest>());
     }
 
     [Fact]
@@ -135,8 +139,8 @@ public class ProcessRatingCommandTests
 
         // Assert
 
-        await _mediator.Received().Send(Arg.Is(new GetItem(_item.Id)), Arg.Any<CancellationToken>());
-        await _bot.Received().MakeRequestAsync(Arg.Any<AnswerCallbackQueryRequest>(), Arg.Any<CancellationToken>());
+        await _mediator.Received().Send(Arg.Is(new GetItem(_item.Id)));
+        await _bot.Received().MakeRequestAsync(Arg.Any<AnswerCallbackQueryRequest>());
     }
 
     [Fact]
@@ -157,11 +161,11 @@ public class ProcessRatingCommandTests
 
         // Assert
 
-        await _mediator.Received().Send(Arg.Is(new SetItemRating(_user.Id, ratingValue, _item.Id)), Arg.Any<CancellationToken>());
-        await _mediator.Received().Send(Arg.Is(new GetItem(_item.Id)), Arg.Any<CancellationToken>());
-        await _mediator.Received().Send(Arg.Is(new GetItemMessageText(_item)), Arg.Any<CancellationToken>());
-        await _mediator.Received().Send(Arg.Is(new GetRatingsMarkup(_item.Id)), Arg.Any<CancellationToken>());
-        await _bot.Received().MakeRequestAsync(Arg.Any<EditInlineMessageTextRequest>(), Arg.Any<CancellationToken>());
+        await _mediator.Received().Send(Arg.Is(new SetItemRating(_item.Id, _user.Id, ratingValue)));
+        await _mediator.Received().Send(Arg.Is(new GetItem(_item.Id)));
+        await _mediator.Received().Send(Arg.Is(new GetItemMessageText(_item)));
+        await _mediator.Received().Send(Arg.Is(new GetRatingsMarkup(_item.Id)));
+        await _bot.Received().MakeRequestAsync(Arg.Any<EditInlineMessageTextRequest>());
     }
 
     [Fact]
@@ -180,10 +184,10 @@ public class ProcessRatingCommandTests
 
         // Assert
 
-        await _mediator.Received().Send(Arg.Is(new GetItem(_item.Id)), Arg.Any<CancellationToken>());
-        await _mediator.Received().Send(Arg.Is(new GetItemMessageText(_item)), Arg.Any<CancellationToken>());
-        await _mediator.Received().Send(Arg.Is(new GetRatingsMarkup(_item.Id)), Arg.Any<CancellationToken>());
-        await _bot.Received().MakeRequestAsync(Arg.Any<EditInlineMessageTextRequest>(), Arg.Any<CancellationToken>());
+        await _mediator.Received().Send(Arg.Is(new GetItem(_item.Id)));
+        await _mediator.Received().Send(Arg.Is(new GetItemMessageText(_item)));
+        await _mediator.Received().Send(Arg.Is(new GetRatingsMarkup(_item.Id)));
+        await _bot.Received().MakeRequestAsync(Arg.Any<EditInlineMessageTextRequest>());
     }
 
     [Fact]
@@ -202,7 +206,7 @@ public class ProcessRatingCommandTests
 
         // Assert
 
-        await _mediator.Received().Send(Arg.Is(new GetItem(_item.Id)), Arg.Any<CancellationToken>());
-        await _bot.Received().MakeRequestAsync(Arg.Any<AnswerCallbackQueryRequest>(), Arg.Any<CancellationToken>());
+        await _mediator.Received().Send(Arg.Is(new GetItem(_item.Id)));
+        await _bot.Received().MakeRequestAsync(Arg.Any<AnswerCallbackQueryRequest>());
     }
 }

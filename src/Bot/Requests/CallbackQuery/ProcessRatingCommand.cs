@@ -2,4 +2,4 @@
 
 namespace Bot.Requests.CallbackQuery;
 
-public record ProcessRatingCommand(CallbackQueryData CallbackQueryData) : IRequest;
+public record ProcessRatingCommand(RatingCallbackQueryData CallbackQueryData) : IRequest;

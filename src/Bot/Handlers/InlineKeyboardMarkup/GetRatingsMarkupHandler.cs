@@ -1,12 +1,12 @@
 ﻿using Bot.Constants;
-using Bot.Requests.Rating;
+using Bot.Requests.InlineKeyboardMarkup;
 using Telegram.Bot.Types.ReplyMarkups;
 
-namespace Bot.Handlers.Rating;
+namespace Bot.Handlers.InlineKeyboardMarkup;
 
-public class GetRatingsMarkupHandler : RequestHandler<GetRatingsMarkup, InlineKeyboardMarkup>
+public class GetRatingsMarkupHandler : RequestHandler<GetRatingsMarkup, Telegram.Bot.Types.ReplyMarkups.InlineKeyboardMarkup>
 {
-    protected override InlineKeyboardMarkup Handle(GetRatingsMarkup request)
+    protected override Telegram.Bot.Types.ReplyMarkups.InlineKeyboardMarkup Handle(GetRatingsMarkup request)
     {
         var itemId = request.ItemId;
 

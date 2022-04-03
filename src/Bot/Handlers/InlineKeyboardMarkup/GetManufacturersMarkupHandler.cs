@@ -1,12 +1,12 @@
 ﻿using Bot.Constants;
-using Bot.Requests.Manufacturer;
+using Bot.Requests.InlineKeyboardMarkup;
 using Data;
 using Microsoft.EntityFrameworkCore;
 using Telegram.Bot.Types.ReplyMarkups;
 
-namespace Bot.Handlers.Manufacturer;
+namespace Bot.Handlers.InlineKeyboardMarkup;
 
-public class GetManufacturersMarkupHandler : IRequestHandler<GetManufacturersMarkup, InlineKeyboardMarkup>
+public class GetManufacturersMarkupHandler : IRequestHandler<GetManufacturersMarkup, Telegram.Bot.Types.ReplyMarkups.InlineKeyboardMarkup>
 {
     private readonly AppDbContext _context;
 
@@ -15,7 +15,8 @@ public class GetManufacturersMarkupHandler : IRequestHandler<GetManufacturersMar
         _context = context;
     }
 
-    public async Task<InlineKeyboardMarkup> Handle(GetManufacturersMarkup request, CancellationToken cancellationToken)
+    public async Task<Telegram.Bot.Types.ReplyMarkups.InlineKeyboardMarkup> Handle(GetManufacturersMarkup request,
+        CancellationToken cancellationToken)
     {
         var itemId = request.ItemId;
 
@@ -23,10 +24,10 @@ public class GetManufacturersMarkupHandler : IRequestHandler<GetManufacturersMar
 
         var rows = new List<IEnumerable<InlineKeyboardButton>>();
 
-        for (var i = 0; i < manufacturers.Count; i += ReplyMarkup.Columns)
+        for (var i = 0; i < manufacturers.Count; i += ReplyMarkup.ButtonsPerRow)
         {
             var buttons = manufacturers.Skip(i)
-                .Take(ReplyMarkup.Columns)
+                .Take(ReplyMarkup.ButtonsPerRow)
                 .Select(manufacturer => new InlineKeyboardButton(manufacturer.Name)
                 {
                     CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Manufacturer, manufacturer.Id)

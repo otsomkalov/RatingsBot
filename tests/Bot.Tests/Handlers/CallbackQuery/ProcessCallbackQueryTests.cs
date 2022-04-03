@@ -41,7 +41,7 @@ public class ProcessCallbackQueryTests
 
         // Assert
 
-        await _mediator.Received().Send(Arg.Any<ProcessCategoryCommand>(), Arg.Any<CancellationToken>());
+        await _mediator.Received().Send(Arg.Any<ProcessCategoryCommand>());
     }
 
     [Theory]
@@ -65,7 +65,7 @@ public class ProcessCallbackQueryTests
 
         // Assert
 
-        await _mediator.Received().Send(Arg.Any<ProcessManufacturerCommand>(), Arg.Any<CancellationToken>());
+        await _mediator.Received().Send(Arg.Any<ProcessManufacturerCommand>());
     }
 
     [Theory]
@@ -89,7 +89,7 @@ public class ProcessCallbackQueryTests
 
         // Assert
 
-        await _mediator.Received().Send(Arg.Any<ProcessPlaceCommand>(), Arg.Any<CancellationToken>());
+        await _mediator.Received().Send(Arg.Any<ProcessPlaceCommand>());
     }
 
     [Theory]
@@ -112,6 +112,6 @@ public class ProcessCallbackQueryTests
 
         // Assert
 
-        await _mediator.Received().Send(Arg.Any<ProcessRatingCommand>(), Arg.Any<CancellationToken>());
+        await _mediator.Received().Send(Arg.Any<ProcessRatingCommand>());
     }
 }

@@ -1,28 +1,20 @@
-﻿using System.Collections.Immutable;
-using Bot.Constants;
-using Telegram.Bot.Types;
+﻿using Telegram.Bot.Types;
 
 namespace Bot.Models;
 
-public record CallbackQueryData
+public abstract class CallbackQueryData
 {
-    public CallbackQueryData(CallbackQuery query)
+    protected CallbackQueryData(CallbackQuery query)
     {
-        var callbackData = query.Data.Split(ReplyMarkup.Separator).ToImmutableList();
-
-        ItemId = int.Parse(callbackData[0]);
-        EntityId = int.TryParse(callbackData[2], out var id) ? id : null;
         MessageId = query.Message?.MessageId;
         InlineMessageId = query.InlineMessageId;
         UserId = query.From.Id;
         QueryId = query.Id;
     }
 
-    public int? EntityId { get; }
-
     public string InlineMessageId { get; }
 
-    public int ItemId { get; }
+    public int ItemId { get; protected init; }
 
     public int? MessageId { get; }
 

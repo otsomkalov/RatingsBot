@@ -2,4 +2,4 @@
 
 namespace Core.Requests.Item;
 
-public record SetItemCategory(int EntityId, int ItemId) : IRequest;
+public record SetItemCategory(int ItemId, int CategoryId) : IRequest;

@@ -2,4 +2,4 @@
 
 namespace Core.Requests.Item;
 
-public record SetItemManufacturer(int? EntityId, int Item) : IRequest;
+public record SetItemManufacturer(int ItemId, int? ManufacturerId) : IRequest;

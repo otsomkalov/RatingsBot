@@ -16,7 +16,7 @@ public class SetItemRatingHandler : IRequestHandler<SetItemRating, Unit>
 
     public async Task<Unit> Handle(SetItemRating request, CancellationToken cancellationToken)
     {
-        var (userId, entityId, itemId) = request;
+        var (itemId, userId, ratingValue) = request;
 
         var rating = await _context.Ratings
             .FirstOrDefaultAsync(r => r.UserId == userId && r.ItemId == itemId, cancellationToken);
@@ -25,7 +25,7 @@ public class SetItemRatingHandler : IRequestHandler<SetItemRating, Unit>
         {
             rating = rating with
             {
-                Value = entityId
+                Value = ratingValue
             };
 
             _context.Ratings.Update(rating);
@@ -36,7 +36,7 @@ public class SetItemRatingHandler : IRequestHandler<SetItemRating, Unit>
             {
                 ItemId = itemId,
                 UserId = userId,
-                Value = entityId
+                Value = ratingValue
             };
 
             await _context.Ratings.AddAsync(rating, cancellationToken);

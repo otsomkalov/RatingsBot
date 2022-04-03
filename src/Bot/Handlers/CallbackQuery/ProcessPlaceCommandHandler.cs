@@ -1,8 +1,7 @@
 ﻿using Bot.Requests.CallbackQuery;
-using Bot.Requests.Item;
+using Bot.Requests.InlineKeyboardMarkup;
 using Bot.Requests.Message;
-using Bot.Requests.Place;
-using Bot.Requests.Rating;
+using Bot.Requests.Message.Item;
 using Core.Requests.Item;
 
 namespace Bot.Handlers.CallbackQuery;
@@ -31,7 +30,7 @@ public class ProcessPlaceCommandHandler : IRequestHandler<ProcessPlaceCommand, U
             return Unit.Value;
         }
 
-        await _mediator.Send(new SetItemPlace(callbackQueryData.EntityId, callbackQueryData.ItemId), cancellationToken);
+        await _mediator.Send(new SetItemPlace(callbackQueryData.ItemId, callbackQueryData.EntityId), cancellationToken);
 
         var item = await _mediator.Send(new GetItem(callbackQueryData.ItemId), cancellationToken);
         var ratingsMarkup = await _mediator.Send(new GetRatingsMarkup(callbackQueryData.ItemId), cancellationToken);

@@ -1,6 +1,7 @@
-﻿using Bot.Requests.InlineQuery;
-using Bot.Requests.Item;
-using Bot.Requests.Rating;
+﻿using Bot.Requests.InlineKeyboardMarkup;
+using Bot.Requests.InlineQuery;
+using Bot.Requests.Message.Item;
+using Core.Models;
 using Core.Requests.User;
 using Data;
 using Microsoft.EntityFrameworkCore;
@@ -48,7 +49,7 @@ public class ProcessInlineQueryHandler : IRequestHandler<ProcessInlineQuery, Uni
         return Unit.Value;
     }
 
-    private async Task<InlineQueryResultArticle> ItemToArticleAsync(Core.Models.Item item, Telegram.Bot.Types.InlineQuery inlineQuery,
+    private async Task<InlineQueryResultArticle> ItemToArticleAsync(Item item, Telegram.Bot.Types.InlineQuery inlineQuery,
         CancellationToken cancellationToken)
     {
         var currentUserRating = item.Ratings.FirstOrDefault(r => r.UserId == inlineQuery.From.Id);
@@ -84,7 +85,7 @@ public class ProcessInlineQueryHandler : IRequestHandler<ProcessInlineQuery, Uni
         return article;
     }
 
-    private static int CalculateAverageRating(IReadOnlyCollection<Core.Models.Rating> ratings)
+    private static int CalculateAverageRating(IReadOnlyCollection<Rating> ratings)
     {
         return (int) Math.Round(ratings.Sum(r => r.Value) / (double) ratings.Count, MidpointRounding.ToPositiveInfinity);
     }

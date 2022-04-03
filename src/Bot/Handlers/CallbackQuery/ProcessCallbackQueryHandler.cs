@@ -20,25 +20,37 @@ public class ProcessCallbackQueryHandler : IRequestHandler<ProcessCallbackQuery,
 
         await _mediator.Send(new CreateUserIfNotExists(callbackQuery.From.Id, callbackQuery.From.FirstName), cancellationToken);
 
-        var callbackQueryData = new CallbackQueryData(callbackQuery);
+        if (callbackQuery.Data.Contains(ReplyMarkup.Rating))
+        {
+            var ratingCallbackQueryData = new RatingCallbackQueryData(callbackQuery);
+            var processRatingCommand = new ProcessRatingCommand(ratingCallbackQueryData);
 
-        IRequest commandToExecute = null;
+            await _mediator.Send(processRatingCommand, cancellationToken);
+
+            return Unit.Value;
+        }
 
         if (callbackQuery.Data.Contains(ReplyMarkup.Category))
         {
-            commandToExecute = new ProcessCategoryCommand(callbackQueryData);
+            var categoryCallbackQueryData = new CategoryCallbackQueryData(callbackQuery);
+            var processCategoryCommand = new ProcessCategoryCommand(categoryCallbackQueryData);
+
+            await _mediator.Send(processCategoryCommand, cancellationToken);
+
+            return Unit.Value;
         }
-        else if (callbackQuery.Data.Contains(ReplyMarkup.Place))
+
+        IRequest commandToExecute = null;
+
+        var entitiesCallbackQueryData = new EntitiesCallbackQueryData(callbackQuery);
+
+        if (callbackQuery.Data.Contains(ReplyMarkup.Place))
         {
-            commandToExecute = new ProcessPlaceCommand(callbackQueryData);
+            commandToExecute = new ProcessPlaceCommand(entitiesCallbackQueryData);
         }
         else if (callbackQuery.Data.Contains(ReplyMarkup.Manufacturer))
         {
-            commandToExecute = new ProcessManufacturerCommand(callbackQueryData);
-        }
-        else if (callbackQuery.Data.Contains(ReplyMarkup.Rating))
-        {
-            commandToExecute = new ProcessRatingCommand(callbackQueryData);
+            commandToExecute = new ProcessManufacturerCommand(entitiesCallbackQueryData);
         }
 
         await _mediator.Send(commandToExecute, cancellationToken);

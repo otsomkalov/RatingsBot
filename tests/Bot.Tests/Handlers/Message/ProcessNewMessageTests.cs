@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Bot.Constants;
 using Bot.Handlers.Message;
-using Bot.Requests.Category;
+using Bot.Requests.InlineKeyboardMarkup;
 using Bot.Requests.Message;
 using Bot.Resources;
 using Core.Models;
@@ -102,7 +102,7 @@ public class ProcessNewMessageTests
 
         // Assert
 
-        await _mediator.Received().Send(Arg.Any<IRequest>(), Arg.Any<CancellationToken>());
+        await _mediator.Received().Send(Arg.Any<IRequest>());
     }
 
     [Fact]
@@ -114,7 +114,7 @@ public class ProcessNewMessageTests
 
         _localizer[nameof(Messages.NewItemCommand)].Returns(new LocalizedString(nameof(Messages.NewItemCommand), command));
 
-        _mediator.Send(Arg.Any<CreateItem>(), Arg.Any<CancellationToken>())
+        _mediator.Send(Arg.Any<CreateItem>())
             .Returns(Result.Ok(new Item
             {
                 Id = 1
@@ -140,7 +140,7 @@ public class ProcessNewMessageTests
 
         // Assert
 
-        await _mediator.Received().Send(Arg.Any<GetCategoriesMarkup>(), Arg.Any<CancellationToken>());
+        await _mediator.Received().Send(Arg.Any<GetCategoriesMarkup>());
     }
 
     [Theory]
@@ -175,6 +175,6 @@ public class ProcessNewMessageTests
 
         // Assert
 
-        await _mediator.Received().Send(Arg.Any<IRequest<Result>>(), Arg.Any<CancellationToken>());
+        await _mediator.Received().Send(Arg.Any<IRequest<Result>>());
     }
 }

@@ -1,8 +1,9 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using AutoFixture;
+using AutoFixture.Dsl;
 using Bot.Handlers.CallbackQuery;
-using Bot.Requests.Category;
-using Bot.Requests.Manufacturer;
+using Bot.Requests.InlineKeyboardMarkup;
 using Bot.Requests.Message;
 using Bot.Resources;
 using Core.Requests.Item;
@@ -18,11 +19,29 @@ namespace Bot.Tests.Handlers.CallbackQuery;
 public class ProcessCategoryCommandTests
 {
     private readonly ITelegramBotClient _bot;
+
+    private readonly IPostprocessComposer<Telegram.Bot.Types.CallbackQuery> _callbackQueryComposer;
+    private readonly int _categoryId;
+    private readonly int _itemId;
     private readonly IMediator _mediator;
+    private readonly int _page;
+
     private readonly ProcessCategoryCommandHandler _sut;
 
     public ProcessCategoryCommandTests()
     {
+        var fixture = new Fixture();
+
+        fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
+        fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+
+        _callbackQueryComposer = fixture.Build<Telegram.Bot.Types.CallbackQuery>()
+            .Without(cq => cq.InlineMessageId);
+
+        _itemId = fixture.Create<int>();
+        _categoryId = fixture.Create<int>();
+        _page = fixture.Create<int>();
+
         _mediator = Substitute.For<IMediator>();
         _bot = Substitute.For<ITelegramBotClient>();
 
@@ -36,19 +55,9 @@ public class ProcessCategoryCommandTests
     {
         // Arrange
 
-        var callbackQuery = new Telegram.Bot.Types.CallbackQuery
-        {
-            Data = "1|c|1",
-            From = new()
-            {
-                Id = 1,
-                FirstName = "test"
-            },
-            Message = new()
-            {
-                MessageId = 1
-            }
-        };
+        var callbackQuery = _callbackQueryComposer
+            .With(cq => cq.Data, $"{_itemId}|c|{_page}|{_categoryId}")
+            .Create();
 
         // Act
 
@@ -56,29 +65,23 @@ public class ProcessCategoryCommandTests
 
         // Assert
 
-        await _mediator.Received().Send(Arg.Any<SetItemCategory>(), Arg.Any<CancellationToken>());
-        await _mediator.Received().Send(Arg.Any<GetManufacturersMarkup>(), Arg.Any<CancellationToken>());
-        await _bot.Received().MakeRequestAsync(Arg.Any<EditMessageTextRequest>(), Arg.Any<CancellationToken>());
+        await _mediator.Received().Send(Arg.Is(new SetItemCategory(_itemId, _categoryId)));
+        await _mediator.Received().Send(Arg.Is(new GetManufacturersMarkup(_itemId)));
+        await _bot.Received().MakeRequestAsync(Arg.Any<EditMessageTextRequest>());
     }
 
-    [Fact]
-    public async Task RegularMessageCallbackQuery_RefreshCategories_Works()
+    [Theory]
+    [InlineData("{0}|c|{1}|null")]
+    [InlineData("{0}|c|{1}|0")]
+    public async Task RegularMessageCallbackQuery_RefreshCategories_Works(string dataFormat)
     {
         // Arrange
 
-        var callbackQuery = new Telegram.Bot.Types.CallbackQuery
-        {
-            Data = "1|c|null",
-            From = new()
-            {
-                Id = 1,
-                FirstName = "test"
-            },
-            Message = new()
-            {
-                MessageId = 1
-            }
-        };
+        var data = string.Format(dataFormat, _itemId, _page);
+
+        var callbackQuery = _callbackQueryComposer
+            .With(cq => cq.Data, data)
+            .Create();
 
         // Act
 
@@ -86,7 +89,7 @@ public class ProcessCategoryCommandTests
 
         // Assert
 
-        await _mediator.Received().Send(Arg.Any<GetCategoriesMarkup>(), Arg.Any<CancellationToken>());
-        await _mediator.Received().Send(Arg.Any<EditMessageReplyMarkup>(), Arg.Any<CancellationToken>());
+        await _mediator.Received().Send(Arg.Is(new GetCategoriesMarkup(_itemId, _page)));
+        await _mediator.Received().Send(Arg.Any<EditMessageReplyMarkup>());
     }
 }
