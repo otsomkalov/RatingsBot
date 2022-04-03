@@ -16,14 +16,14 @@ public class SetItemPlaceHandler : AsyncRequestHandler<SetItemPlace>
 
     protected override async Task Handle(SetItemPlace request, CancellationToken cancellationToken)
     {
-        var (entityId, itemId) = request;
+        var (itemId, placeId) = request;
 
         var item = await _context.Items
             .FirstOrDefaultAsync(i => i.Id == itemId, cancellationToken);
 
         item = item with
         {
-            PlaceId = entityId
+            PlaceId = placeId
         };
 
         _context.Items.Update(item);

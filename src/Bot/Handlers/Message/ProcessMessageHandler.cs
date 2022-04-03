@@ -1,5 +1,5 @@
 ﻿using Bot.Constants;
-using Bot.Requests.Category;
+using Bot.Requests.InlineKeyboardMarkup;
 using Bot.Requests.Message;
 using Bot.Resources;
 using Core.Requests.Category;

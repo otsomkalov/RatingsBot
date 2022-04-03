@@ -1,6 +1,6 @@
 ﻿using Bot.Requests.CallbackQuery;
-using Bot.Requests.Item;
-using Bot.Requests.Rating;
+using Bot.Requests.InlineKeyboardMarkup;
+using Bot.Requests.Message.Item;
 using Bot.Resources;
 using Core.Requests.Item;
 using Microsoft.Extensions.Localization;
@@ -26,7 +26,7 @@ public class ProcessRatingCommandHandler : IRequestHandler<ProcessRatingCommand,
 
         if (callbackQueryData.EntityId is not null and not 0)
         {
-            var command = new SetItemRating(callbackQueryData.UserId, callbackQueryData.EntityId.Value, callbackQueryData.ItemId);
+            var command = new SetItemRating(callbackQueryData.ItemId, callbackQueryData.UserId, callbackQueryData.EntityId.Value);
 
             await _mediator.Send(command, cancellationToken);
 

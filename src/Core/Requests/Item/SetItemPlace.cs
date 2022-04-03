@@ -2,4 +2,4 @@
 
 namespace Core.Requests.Item;
 
-public record SetItemPlace(int? EntityId, int Item) : IRequest;
+public record SetItemPlace(int ItemId, int? PlaceId) : IRequest;

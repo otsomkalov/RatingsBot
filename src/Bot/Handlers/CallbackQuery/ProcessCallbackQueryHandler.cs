@@ -20,24 +20,26 @@ public class ProcessCallbackQueryHandler : IRequestHandler<ProcessCallbackQuery,
 
         await _mediator.Send(new CreateUserIfNotExists(callbackQuery.From.Id, callbackQuery.From.FirstName), cancellationToken);
 
-        var callbackQueryData = new CallbackQueryData(callbackQuery);
-
         IRequest commandToExecute = null;
 
         if (callbackQuery.Data.Contains(ReplyMarkup.Category))
         {
+            var callbackQueryData = new EntitiesCallbackQueryData(callbackQuery);
             commandToExecute = new ProcessCategoryCommand(callbackQueryData);
         }
         else if (callbackQuery.Data.Contains(ReplyMarkup.Place))
         {
+            var callbackQueryData = new EntitiesCallbackQueryData(callbackQuery);
             commandToExecute = new ProcessPlaceCommand(callbackQueryData);
         }
         else if (callbackQuery.Data.Contains(ReplyMarkup.Manufacturer))
         {
+            var callbackQueryData = new EntitiesCallbackQueryData(callbackQuery);
             commandToExecute = new ProcessManufacturerCommand(callbackQueryData);
         }
         else if (callbackQuery.Data.Contains(ReplyMarkup.Rating))
         {
+            var callbackQueryData = new RatingCallbackQueryData(callbackQuery);
             commandToExecute = new ProcessRatingCommand(callbackQueryData);
         }
 

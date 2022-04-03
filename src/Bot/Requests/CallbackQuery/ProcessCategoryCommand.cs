@@ -2,4 +2,4 @@
 
 namespace Bot.Requests.CallbackQuery;
 
-public record ProcessCategoryCommand(CallbackQueryData CallbackQueryData) : IRequest;
+public record ProcessCategoryCommand(EntitiesCallbackQueryData CallbackQueryData) : IRequest;

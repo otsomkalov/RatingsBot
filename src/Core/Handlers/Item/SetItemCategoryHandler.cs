@@ -16,14 +16,14 @@ public class SetItemCategoryHandler : AsyncRequestHandler<SetItemCategory>
 
     protected override async Task Handle(SetItemCategory request, CancellationToken cancellationToken)
     {
-        var (entityId, itemId) = request;
+        var (itemId, categoryId) = request;
 
         var item = await _context.Items
             .FirstOrDefaultAsync(i => i.Id == itemId, cancellationToken);
 
         item = item with
         {
-            CategoryId = entityId
+            CategoryId = categoryId
         };
 
         _context.Items.Update(item);

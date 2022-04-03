@@ -1,12 +1,12 @@
 ﻿using Bot.Constants;
-using Bot.Requests.Place;
+using Bot.Requests.InlineKeyboardMarkup;
 using Data;
 using Microsoft.EntityFrameworkCore;
 using Telegram.Bot.Types.ReplyMarkups;
 
-namespace Bot.Handlers.Place;
+namespace Bot.Handlers.InlineKeyboardMarkup;
 
-public class GetPlacesMarkupHandler : IRequestHandler<GetPlacesMarkup, InlineKeyboardMarkup>
+public class GetPlacesMarkupHandler : IRequestHandler<GetPlacesMarkup, Telegram.Bot.Types.ReplyMarkups.InlineKeyboardMarkup>
 {
     private readonly AppDbContext _context;
 
@@ -15,7 +15,8 @@ public class GetPlacesMarkupHandler : IRequestHandler<GetPlacesMarkup, InlineKey
         _context = context;
     }
 
-    public async Task<InlineKeyboardMarkup> Handle(GetPlacesMarkup request, CancellationToken cancellationToken)
+    public async Task<Telegram.Bot.Types.ReplyMarkups.InlineKeyboardMarkup> Handle(GetPlacesMarkup request,
+        CancellationToken cancellationToken)
     {
         var itemId = request.ItemId;
         var places = await _context.Places.ToListAsync(cancellationToken);

@@ -1,14 +1,13 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using AutoFixture;
+using AutoFixture.Dsl;
 using Bot.Handlers.CallbackQuery;
-using Bot.Requests.Item;
+using Bot.Requests.InlineKeyboardMarkup;
 using Bot.Requests.Message;
-using Bot.Requests.Place;
-using Bot.Requests.Rating;
-using Bot.Resources;
+using Bot.Requests.Message.Item;
 using Core.Requests.Item;
 using MediatR;
-using Microsoft.Extensions.Localization;
 using NSubstitute;
 using Telegram.Bot;
 using Telegram.Bot.Requests;
@@ -19,40 +18,42 @@ namespace Bot.Tests.Handlers.CallbackQuery;
 public class ProcessPlaceCommandTests
 {
     private readonly ITelegramBotClient _bot;
+    private readonly IPostprocessComposer<Telegram.Bot.Types.CallbackQuery> _callbackQueryComposer;
+    private readonly int _itemId;
     private readonly IMediator _mediator;
+    private readonly int _page;
+    private readonly int? _placeId;
 
     private readonly ProcessPlaceCommandHandler _sut;
 
     public ProcessPlaceCommandTests()
     {
+        var fixture = new Fixture();
+
+        fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
+        fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+
+        _callbackQueryComposer = fixture.Build<Telegram.Bot.Types.CallbackQuery>()
+            .Without(cq => cq.InlineMessageId);
+
+        _itemId = fixture.Create<int>();
+        _placeId = fixture.Create<int?>();
+        _page = fixture.Create<int>();
+
         _mediator = Substitute.For<IMediator>();
         _bot = Substitute.For<ITelegramBotClient>();
-
-        var localizer = Substitute.For<IStringLocalizer<Messages>>();
 
         _sut = new(_mediator, _bot);
     }
 
-    [Theory]
-    [InlineData("1|p|1")]
-    [InlineData("1|p|null")]
-    public async Task RegularMessageCallbackQuery_SetItemPlace_Works(string data)
+    [Fact]
+    public async Task RegularMessageCallbackQuery_SetItemPlace_Works()
     {
         // Arrange
 
-        var callbackQuery = new Telegram.Bot.Types.CallbackQuery
-        {
-            Data = data,
-            From = new()
-            {
-                Id = 1,
-                FirstName = "test"
-            },
-            Message = new()
-            {
-                MessageId = 1
-            }
-        };
+        var callbackQuery = _callbackQueryComposer
+            .With(cq => cq.Data, $"{_itemId}|p|{_page}|{_placeId}")
+            .Create();
 
         // Act
 
@@ -60,33 +61,25 @@ public class ProcessPlaceCommandTests
 
         // Assert
 
-        await _mediator.Received().Send(Arg.Any<SetItemPlace>(), Arg.Any<CancellationToken>());
-        await _mediator.Received().Send(Arg.Any<GetItem>(), Arg.Any<CancellationToken>());
-        await _mediator.Received().Send(Arg.Any<GetRatingsMarkup>(), Arg.Any<CancellationToken>());
-        await _mediator.Received().Send(Arg.Any<GetItemMessageText>(), Arg.Any<CancellationToken>());
-        await _bot.Received().MakeRequestAsync(Arg.Any<EditMessageTextRequest>(), Arg.Any<CancellationToken>());
+        await _mediator.Received().Send(Arg.Is(new SetItemPlace(_itemId, _placeId)));
+        await _mediator.Received().Send(Arg.Is(new GetItem(_itemId)));
+        await _mediator.Received().Send(Arg.Is(new GetRatingsMarkup(_itemId)));
+        await _mediator.Received().Send(Arg.Any<GetItemMessageText>());
+        await _bot.Received().MakeRequestAsync(Arg.Any<EditMessageTextRequest>());
     }
 
     [Theory]
-    [InlineData("1|p|0")]
-    [InlineData("1|p|-1")]
-    public async Task RegularMessageCallbackQuery_RefreshPlaces_Works(string data)
+    [InlineData("{0}|p|{1}|0")]
+    [InlineData("{0}|p|{1}|-1")]
+    public async Task RegularMessageCallbackQuery_RefreshPlaces_Works(string dataFormat)
     {
         // Arrange
 
-        var callbackQuery = new Telegram.Bot.Types.CallbackQuery
-        {
-            Data = data,
-            From = new()
-            {
-                Id = 1,
-                FirstName = "test"
-            },
-            Message = new()
-            {
-                MessageId = 1
-            }
-        };
+        var data = string.Format(dataFormat, _itemId, _page);
+
+        var callbackQuery = _callbackQueryComposer
+            .With(cq => cq.Data, data)
+            .Create();
 
         // Act
 
@@ -94,7 +87,7 @@ public class ProcessPlaceCommandTests
 
         // Assert
 
-        await _mediator.Received().Send(Arg.Any<GetPlacesMarkup>(), Arg.Any<CancellationToken>());
-        await _mediator.Received().Send(Arg.Any<EditMessageReplyMarkup>(), Arg.Any<CancellationToken>());
+        await _mediator.Received().Send(Arg.Is(new GetPlacesMarkup(_itemId)));
+        await _mediator.Received().Send(Arg.Any<EditMessageReplyMarkup>());
     }
 }

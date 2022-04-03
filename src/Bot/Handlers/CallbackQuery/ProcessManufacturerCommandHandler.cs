@@ -1,7 +1,6 @@
 ﻿using Bot.Requests.CallbackQuery;
-using Bot.Requests.Manufacturer;
+using Bot.Requests.InlineKeyboardMarkup;
 using Bot.Requests.Message;
-using Bot.Requests.Place;
 using Bot.Resources;
 using Core.Requests.Item;
 using Microsoft.Extensions.Localization;
@@ -34,7 +33,7 @@ public class ProcessManufacturerCommandHandler : IRequestHandler<ProcessManufact
             return Unit.Value;
         }
 
-        var command = new SetItemManufacturer(callbackQueryData.EntityId, callbackQueryData.ItemId);
+        var command = new SetItemManufacturer(callbackQueryData.ItemId, callbackQueryData.EntityId);
         await _mediator.Send(command, cancellationToken);
         var placesMarkup = await _mediator.Send(new GetPlacesMarkup(callbackQueryData.ItemId), cancellationToken);
 
