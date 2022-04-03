@@ -20,27 +20,31 @@ public class ProcessCallbackQueryHandler : IRequestHandler<ProcessCallbackQuery,
 
         await _mediator.Send(new CreateUserIfNotExists(callbackQuery.From.Id, callbackQuery.From.FirstName), cancellationToken);
 
+        if (callbackQuery.Data.Contains(ReplyMarkup.Rating))
+        {
+            var ratingCallbackQueryData = new RatingCallbackQueryData(callbackQuery);
+            var processRatingCommand = new ProcessRatingCommand(ratingCallbackQueryData);
+
+            await _mediator.Send(processRatingCommand, cancellationToken);
+
+            return Unit.Value;
+        }
+
         IRequest commandToExecute = null;
+
+        var entitiesCallbackQueryData = new EntitiesCallbackQueryData(callbackQuery);
 
         if (callbackQuery.Data.Contains(ReplyMarkup.Category))
         {
-            var callbackQueryData = new EntitiesCallbackQueryData(callbackQuery);
-            commandToExecute = new ProcessCategoryCommand(callbackQueryData);
+            commandToExecute = new ProcessCategoryCommand(entitiesCallbackQueryData);
         }
         else if (callbackQuery.Data.Contains(ReplyMarkup.Place))
         {
-            var callbackQueryData = new EntitiesCallbackQueryData(callbackQuery);
-            commandToExecute = new ProcessPlaceCommand(callbackQueryData);
+            commandToExecute = new ProcessPlaceCommand(entitiesCallbackQueryData);
         }
         else if (callbackQuery.Data.Contains(ReplyMarkup.Manufacturer))
         {
-            var callbackQueryData = new EntitiesCallbackQueryData(callbackQuery);
-            commandToExecute = new ProcessManufacturerCommand(callbackQueryData);
-        }
-        else if (callbackQuery.Data.Contains(ReplyMarkup.Rating))
-        {
-            var callbackQueryData = new RatingCallbackQueryData(callbackQuery);
-            commandToExecute = new ProcessRatingCommand(callbackQueryData);
+            commandToExecute = new ProcessManufacturerCommand(entitiesCallbackQueryData);
         }
 
         await _mediator.Send(commandToExecute, cancellationToken);
