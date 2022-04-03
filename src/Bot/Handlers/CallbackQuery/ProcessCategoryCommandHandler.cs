@@ -1,4 +1,5 @@
-﻿using Bot.Requests.CallbackQuery;
+﻿using Bot.Constants;
+using Bot.Requests.CallbackQuery;
 using Bot.Requests.InlineKeyboardMarkup;
 using Bot.Requests.Message;
 using Bot.Resources;
@@ -26,7 +27,8 @@ public class ProcessCategoryCommandHandler : IRequestHandler<ProcessCategoryComm
 
         if (callbackQueryData.CategoryId == 0)
         {
-            var categoriesMarkup = await _mediator.Send(new GetCategoriesMarkup(callbackQueryData.ItemId, callbackQueryData.Page),
+            var categoriesMarkup = await _mediator.Send(
+                new GetInlineKeyboardMarkup(callbackQueryData.ItemId, ReplyMarkup.Category, callbackQueryData.Page),
                 cancellationToken);
 
             await _mediator.Send(new EditMessageReplyMarkup(callbackQueryData, categoriesMarkup), cancellationToken);

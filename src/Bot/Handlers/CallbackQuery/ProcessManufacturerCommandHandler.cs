@@ -1,4 +1,5 @@
-﻿using Bot.Requests.CallbackQuery;
+﻿using Bot.Constants;
+using Bot.Requests.CallbackQuery;
 using Bot.Requests.InlineKeyboardMarkup;
 using Bot.Requests.Message;
 using Bot.Resources;
@@ -35,7 +36,9 @@ public class ProcessManufacturerCommandHandler : IRequestHandler<ProcessManufact
 
         var command = new SetItemManufacturer(callbackQueryData.ItemId, callbackQueryData.EntityId);
         await _mediator.Send(command, cancellationToken);
-        var placesMarkup = await _mediator.Send(new GetPlacesMarkup(callbackQueryData.ItemId), cancellationToken);
+
+        var placesMarkup =
+            await _mediator.Send(new GetInlineKeyboardMarkup(callbackQueryData.ItemId, ReplyMarkup.Place), cancellationToken);
 
         await _bot.EditMessageTextAsync(new(callbackQueryData.UserId),
             callbackQueryData.MessageId.Value,

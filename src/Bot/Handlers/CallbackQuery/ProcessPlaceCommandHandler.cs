@@ -1,4 +1,5 @@
-﻿using Bot.Requests.CallbackQuery;
+﻿using Bot.Constants;
+using Bot.Requests.CallbackQuery;
 using Bot.Requests.InlineKeyboardMarkup;
 using Bot.Requests.Message;
 using Bot.Requests.Message.Item;
@@ -23,7 +24,8 @@ public class ProcessPlaceCommandHandler : IRequestHandler<ProcessPlaceCommand, U
 
         if (callbackQueryData.EntityId is 0 or -1)
         {
-            var placesMarkup = await _mediator.Send(new GetPlacesMarkup(callbackQueryData.ItemId), cancellationToken);
+            var placesMarkup = await _mediator.Send(new GetInlineKeyboardMarkup(callbackQueryData.ItemId, ReplyMarkup.Place),
+                cancellationToken);
 
             await _mediator.Send(new EditMessageReplyMarkup(callbackQueryData, placesMarkup), cancellationToken);
 

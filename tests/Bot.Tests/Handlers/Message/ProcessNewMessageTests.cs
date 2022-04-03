@@ -140,7 +140,7 @@ public class ProcessNewMessageTests
 
         // Assert
 
-        await _mediator.Received().Send(Arg.Any<GetCategoriesMarkup>());
+        await _mediator.Received().Send(Arg.Any<GetInlineKeyboardMarkup>());
     }
 
     [Theory]

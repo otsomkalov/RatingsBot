@@ -13,4 +13,5 @@ public static class ReplyMarkup
     public const string RefreshButtonText = "Refresh";
     public const string PreviousPageButtonText = "<<<";
     public const string NextPageButtonText = ">>>";
+    public const string NoneButtonText = "<None>";
 }
