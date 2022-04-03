@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.Dsl;
+using Bot.Constants;
 using Bot.Handlers.CallbackQuery;
 using Bot.Requests.InlineKeyboardMarkup;
 using Bot.Requests.Message;
@@ -66,7 +67,7 @@ public class ProcessManufacturerCommandTests
         // Assert
 
         await _mediator.Received().Send(Arg.Is(new SetItemManufacturer(_itemId, _manufacturerId)));
-        await _mediator.Received().Send(Arg.Is(new GetPlacesMarkup(_itemId)));
+        await _mediator.Received().Send(Arg.Is(new GetInlineKeyboardMarkup(_itemId, ReplyMarkup.Place)));
         await _bot.Received().MakeRequestAsync(Arg.Any<EditMessageTextRequest>());
     }
 

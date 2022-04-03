@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.Dsl;
+using Bot.Constants;
 using Bot.Handlers.CallbackQuery;
 using Bot.Requests.InlineKeyboardMarkup;
 using Bot.Requests.Message;
@@ -89,7 +90,7 @@ public class ProcessCategoryCommandTests
 
         // Assert
 
-        await _mediator.Received().Send(Arg.Is(new GetCategoriesMarkup(_itemId, _page)));
+        await _mediator.Received().Send(Arg.Is(new GetInlineKeyboardMarkup(_itemId, ReplyMarkup.Category, _page)));
         await _mediator.Received().Send(Arg.Any<EditMessageReplyMarkup>());
     }
 }

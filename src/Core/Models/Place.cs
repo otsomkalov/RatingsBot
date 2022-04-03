@@ -1,8 +1,6 @@
 ﻿namespace Core.Models;
 
-public record Place : BaseEntity
+public record Place : NamedEntity
 {
-    public string Name { get; init; }
-
     public virtual IEnumerable<Item> Items { get; init; }
 }

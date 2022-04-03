@@ -1,12 +1,10 @@
 ﻿namespace Core.Models;
 
-public record Item : BaseEntity
+public record Item : NamedEntity
 {
     public int? CategoryId { get; init; }
 
     public int? ManufacturerId { get; init; }
-
-    public string Name { get; init; }
 
     public int? PlaceId { get; init; }
 

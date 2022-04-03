@@ -70,7 +70,8 @@ public class ProcessMessageHandler : IRequestHandler<ProcessMessage, Unit>
                 return Unit.Value;
             }
 
-            var categoriesMarkup = await _mediator.Send(new GetCategoriesMarkup(createItemResult.Value.Id), cancellationToken);
+            var categoriesMarkup = await _mediator.Send(new GetInlineKeyboardMarkup(createItemResult.Value.Id, ReplyMarkup.Category),
+                cancellationToken);
 
             await _bot.SendTextMessageAsync(new(message.From.Id),
                 _localizer[nameof(Messages.SelectCategory)],
