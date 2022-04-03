@@ -24,9 +24,9 @@ public class ProcessRatingCommandHandler : IRequestHandler<ProcessRatingCommand,
     {
         var callbackQueryData = request.CallbackQueryData;
 
-        if (callbackQueryData.EntityId is not null and not 0)
+        if (callbackQueryData.RatingValue != 0)
         {
-            var command = new SetItemRating(callbackQueryData.ItemId, callbackQueryData.UserId, callbackQueryData.EntityId.Value);
+            var command = new SetItemRating(callbackQueryData.ItemId, callbackQueryData.UserId, callbackQueryData.RatingValue);
 
             await _mediator.Send(command, cancellationToken);
 
@@ -38,7 +38,7 @@ public class ProcessRatingCommandHandler : IRequestHandler<ProcessRatingCommand,
 
         var currentUserRating = item.Ratings.FirstOrDefault(r => r.UserId == callbackQueryData.UserId);
 
-        if (currentUserRating?.Value == callbackQueryData.EntityId)
+        if (currentUserRating?.Value == callbackQueryData.RatingValue)
         {
             await _bot.AnswerCallbackQueryAsync(callbackQueryData.QueryId,
                 _localizer[nameof(Messages.Recorded)],

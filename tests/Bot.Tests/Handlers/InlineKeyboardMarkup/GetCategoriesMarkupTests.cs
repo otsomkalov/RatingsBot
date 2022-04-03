@@ -39,7 +39,7 @@ public class GetCategoriesMarkupTests
 
         _mediator = Substitute.For<IMediator>();
 
-        _mediator.Send(Arg.Any<GetKeyboardSettings>()).Returns((ButtonsPerPage, ColumnsCount: ButtonsPerRow));
+        _mediator.Send(Arg.Any<GetKeyboardSettings>()).Returns((ButtonsPerPage, ButtonsPerRow));
     }
 
     [Fact]

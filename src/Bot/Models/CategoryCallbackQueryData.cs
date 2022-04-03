@@ -4,9 +4,9 @@ using Telegram.Bot.Types;
 
 namespace Bot.Models;
 
-public class EntitiesCallbackQueryData : CallbackQueryData
+public class CategoryCallbackQueryData : CallbackQueryData
 {
-    public EntitiesCallbackQueryData(CallbackQuery query) : base(query)
+    public CategoryCallbackQueryData(CallbackQuery query) : base(query)
     {
         var callbackData = query.Data.Split(ReplyMarkup.Separator).ToImmutableList();
 
@@ -15,16 +15,16 @@ public class EntitiesCallbackQueryData : CallbackQueryData
         if (callbackData.Count == 4)
         {
             Page = int.Parse(callbackData[2]);
-            EntityId = int.TryParse(callbackData[3], out var id) ? id : null;
+            CategoryId = int.TryParse(callbackData[3], out var id) ? id : 0;
         }
         else
         {
             Page = 0;
-            EntityId = 0;
+            CategoryId = 0;
         }
     }
 
-    public int Page { get; }
+    public int CategoryId { get; }
 
-    public int? EntityId { get; }
+    public int Page { get; }
 }

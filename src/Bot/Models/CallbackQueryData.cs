@@ -12,8 +12,6 @@ public abstract class CallbackQueryData
         QueryId = query.Id;
     }
 
-    public int? EntityId { get; protected init; }
-
     public string InlineMessageId { get; }
 
     public int ItemId { get; protected init; }

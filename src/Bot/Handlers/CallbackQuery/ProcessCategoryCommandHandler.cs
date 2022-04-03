@@ -22,9 +22,9 @@ public class ProcessCategoryCommandHandler : IRequestHandler<ProcessCategoryComm
 
     public async Task<Unit> Handle(ProcessCategoryCommand request, CancellationToken cancellationToken)
     {
-        var callbackQueryData = request.CallbackQueryData;
+        var callbackQueryData = request.CallbackQueryQueryData;
 
-        if (callbackQueryData.EntityId is null or 0)
+        if (callbackQueryData.CategoryId == 0)
         {
             var categoriesMarkup = await _mediator.Send(new GetCategoriesMarkup(callbackQueryData.ItemId, callbackQueryData.Page),
                 cancellationToken);
@@ -34,7 +34,7 @@ public class ProcessCategoryCommandHandler : IRequestHandler<ProcessCategoryComm
             return Unit.Value;
         }
 
-        await _mediator.Send(new SetItemCategory(callbackQueryData.ItemId, callbackQueryData.EntityId.Value), cancellationToken);
+        await _mediator.Send(new SetItemCategory(callbackQueryData.ItemId, callbackQueryData.CategoryId), cancellationToken);
 
         var manufacturersMarkup = await _mediator.Send(new GetManufacturersMarkup(callbackQueryData.ItemId), cancellationToken);
 

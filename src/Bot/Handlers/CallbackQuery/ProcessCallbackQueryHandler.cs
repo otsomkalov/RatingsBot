@@ -30,15 +30,21 @@ public class ProcessCallbackQueryHandler : IRequestHandler<ProcessCallbackQuery,
             return Unit.Value;
         }
 
+        if (callbackQuery.Data.Contains(ReplyMarkup.Category))
+        {
+            var categoryCallbackQueryData = new CategoryCallbackQueryData(callbackQuery);
+            var processCategoryCommand = new ProcessCategoryCommand(categoryCallbackQueryData);
+
+            await _mediator.Send(processCategoryCommand, cancellationToken);
+
+            return Unit.Value;
+        }
+
         IRequest commandToExecute = null;
 
         var entitiesCallbackQueryData = new EntitiesCallbackQueryData(callbackQuery);
 
-        if (callbackQuery.Data.Contains(ReplyMarkup.Category))
-        {
-            commandToExecute = new ProcessCategoryCommand(entitiesCallbackQueryData);
-        }
-        else if (callbackQuery.Data.Contains(ReplyMarkup.Place))
+        if (callbackQuery.Data.Contains(ReplyMarkup.Place))
         {
             commandToExecute = new ProcessPlaceCommand(entitiesCallbackQueryData);
         }
