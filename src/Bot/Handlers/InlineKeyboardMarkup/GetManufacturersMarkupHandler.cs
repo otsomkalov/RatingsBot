@@ -24,10 +24,10 @@ public class GetManufacturersMarkupHandler : IRequestHandler<GetManufacturersMar
 
         var rows = new List<IEnumerable<InlineKeyboardButton>>();
 
-        for (var i = 0; i < manufacturers.Count; i += ReplyMarkup.Columns)
+        for (var i = 0; i < manufacturers.Count; i += ReplyMarkup.ButtonsPerRow)
         {
             var buttons = manufacturers.Skip(i)
-                .Take(ReplyMarkup.Columns)
+                .Take(ReplyMarkup.ButtonsPerRow)
                 .Select(manufacturer => new InlineKeyboardButton(manufacturer.Name)
                 {
                     CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Manufacturer, manufacturer.Id)

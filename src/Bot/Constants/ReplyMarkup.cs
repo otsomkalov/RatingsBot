@@ -2,8 +2,8 @@
 
 public static class ReplyMarkup
 {
-    public const int PageSize = 12;
-    public const int Columns = 3;
+    public const int ButtonsPerPage = 12;
+    public const int ButtonsPerRow = 3;
     public const string Separator = "|";
     public const string Category = "c";
     public const string Place = "p";

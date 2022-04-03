@@ -23,10 +23,10 @@ public class GetPlacesMarkupHandler : IRequestHandler<GetPlacesMarkup, Telegram.
 
         var rows = new List<IEnumerable<InlineKeyboardButton>>();
 
-        for (var i = 0; i < places.Count; i += ReplyMarkup.Columns)
+        for (var i = 0; i < places.Count; i += ReplyMarkup.ButtonsPerRow)
         {
             var buttons = places.Skip(i)
-                .Take(ReplyMarkup.Columns)
+                .Take(ReplyMarkup.ButtonsPerRow)
                 .Select(place => new InlineKeyboardButton(place.Name)
                 {
                     CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Place, place.Id)

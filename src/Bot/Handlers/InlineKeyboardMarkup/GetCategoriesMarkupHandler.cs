@@ -23,7 +23,7 @@ public class GetCategoriesMarkupHandler : IRequestHandler<GetCategoriesMarkup, T
     {
         var (itemId, page) = request;
 
-        var (buttonsPerPage, columnsCount) = await _mediator.Send(new GetKeyboardSettings(), cancellationToken);
+        var (buttonsPerPage, buttonsPerRow) = await _mediator.Send(new GetKeyboardSettings(), cancellationToken);
 
         var categories = await _context.Categories
             .OrderByDescending(c => c.Id)
@@ -37,10 +37,10 @@ public class GetCategoriesMarkupHandler : IRequestHandler<GetCategoriesMarkup, T
             ? buttonsPerPage
             : categories.Count;
 
-        for (var i = 0; i < maximumButtons; i += columnsCount)
+        for (var i = 0; i < maximumButtons; i += buttonsPerRow)
         {
             var buttons = categories.Skip(i)
-                .Take(columnsCount)
+                .Take(buttonsPerRow)
                 .Select(category => new InlineKeyboardButton(category.Name)
                 {
                     CallbackData = string.Join(ReplyMarkup.Separator, itemId, ReplyMarkup.Category, page, category.Id)

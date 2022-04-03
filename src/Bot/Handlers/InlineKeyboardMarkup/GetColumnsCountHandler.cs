@@ -7,6 +7,6 @@ public class GetColumnsCountHandler : IRequestHandler<GetKeyboardSettings, (int,
 {
     public Task<(int, int)> Handle(GetKeyboardSettings request, CancellationToken cancellationToken)
     {
-        return Task.FromResult((ReplyMarkup.PageSize, ReplyMarkup.Columns));
+        return Task.FromResult((ReplyMarkup.ButtonsPerPage, ReplyMarkup.ButtonsPerRow));
     }
 }

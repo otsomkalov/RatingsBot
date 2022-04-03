@@ -21,7 +21,7 @@ namespace Bot.Tests.Handlers.InlineKeyboardMarkup;
 public class GetCategoriesMarkupTests
 {
     private const int ButtonsPerPage = 2;
-    private const int ColumnsCount = 1;
+    private const int ButtonsPerRow = 1;
 
     private readonly IFixture _fixture;
     private readonly int _itemId;
@@ -39,7 +39,7 @@ public class GetCategoriesMarkupTests
 
         _mediator = Substitute.For<IMediator>();
 
-        _mediator.Send(Arg.Any<GetKeyboardSettings>()).Returns((ButtonsPerPage, ColumnsCount));
+        _mediator.Send(Arg.Any<GetKeyboardSettings>()).Returns((ButtonsPerPage, ColumnsCount: ButtonsPerRow));
     }
 
     [Fact]
@@ -69,7 +69,7 @@ public class GetCategoriesMarkupTests
 
         foreach (var buttonsRow in inlineKeyboardMarkup.InlineKeyboard.Take(categoriesRowsCount))
         {
-            buttonsRow.Count().Should().Be(ColumnsCount);
+            buttonsRow.Count().Should().Be(ButtonsPerRow);
         }
 
         var lastRowButtons = inlineKeyboardMarkup.InlineKeyboard.Last().ToImmutableArray();
@@ -105,7 +105,7 @@ public class GetCategoriesMarkupTests
 
         foreach (var buttonsRow in inlineKeyboardMarkup.InlineKeyboard.Take(categoriesRowsCount))
         {
-            buttonsRow.Count().Should().Be(ColumnsCount);
+            buttonsRow.Count().Should().Be(ButtonsPerRow);
         }
 
         var lastRowButtons = inlineKeyboardMarkup.InlineKeyboard.Last().ToImmutableArray();
@@ -141,7 +141,7 @@ public class GetCategoriesMarkupTests
 
         foreach (var buttonsRow in inlineKeyboardMarkup.InlineKeyboard.Take(categoriesRowsCount))
         {
-            buttonsRow.Count().Should().Be(ColumnsCount);
+            buttonsRow.Count().Should().Be(ButtonsPerRow);
         }
 
         var lastRowButtons = inlineKeyboardMarkup.InlineKeyboard.Last().ToImmutableArray();
@@ -178,7 +178,7 @@ public class GetCategoriesMarkupTests
 
         foreach (var buttonsRow in inlineKeyboardMarkup.InlineKeyboard.Take(categoriesRowsCount))
         {
-            buttonsRow.Count().Should().Be(ColumnsCount);
+            buttonsRow.Count().Should().Be(ButtonsPerRow);
         }
 
         var lastRowButtons = inlineKeyboardMarkup.InlineKeyboard.Last().ToImmutableArray();
@@ -217,7 +217,7 @@ public class GetCategoriesMarkupTests
 
         foreach (var buttonsRow in inlineKeyboardMarkup.InlineKeyboard.Take(categoriesRowsCount))
         {
-            buttonsRow.Count().Should().Be(ColumnsCount);
+            buttonsRow.Count().Should().Be(ButtonsPerRow);
         }
 
         var lastRowButtons = inlineKeyboardMarkup.InlineKeyboard.Last().ToImmutableArray();
@@ -255,7 +255,7 @@ public class GetCategoriesMarkupTests
 
         foreach (var buttonsRow in inlineKeyboardMarkup.InlineKeyboard.Take(categoriesRowsCount))
         {
-            buttonsRow.Count().Should().Be(ColumnsCount);
+            buttonsRow.Count().Should().Be(ButtonsPerRow);
         }
 
         var lastRowButtons = inlineKeyboardMarkup.InlineKeyboard.Last().ToImmutableArray();
