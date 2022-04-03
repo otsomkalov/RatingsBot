@@ -27,7 +27,8 @@ public class ProcessManufacturerCommandHandler : IRequestHandler<ProcessManufact
 
         if (callbackQueryData.EntityId is 0 or -1)
         {
-            var manufacturersMarkup = await _mediator.Send(new GetManufacturersMarkup(callbackQueryData.ItemId), cancellationToken);
+            var manufacturersMarkup = await _mediator.Send(new GetInlineKeyboardMarkup(callbackQueryData.ItemId, ReplyMarkup.Manufacturer),
+                cancellationToken);
 
             await _mediator.Send(new EditMessageReplyMarkup(callbackQueryData, manufacturersMarkup), cancellationToken);
 

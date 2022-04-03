@@ -67,7 +67,7 @@ public class ProcessCategoryCommandTests
         // Assert
 
         await _mediator.Received().Send(Arg.Is(new SetItemCategory(_itemId, _categoryId)));
-        await _mediator.Received().Send(Arg.Is(new GetManufacturersMarkup(_itemId)));
+        await _mediator.Received().Send(Arg.Is(new GetInlineKeyboardMarkup(_itemId, ReplyMarkup.Manufacturer)));
         await _bot.Received().MakeRequestAsync(Arg.Any<EditMessageTextRequest>());
     }
 
