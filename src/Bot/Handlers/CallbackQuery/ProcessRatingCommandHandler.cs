@@ -3,7 +3,6 @@ using Bot.Requests.InlineKeyboardMarkup;
 using Bot.Requests.Message.Item;
 using Bot.Resources;
 using Core.Requests.Item;
-using Core.Requests.Rating;
 using Microsoft.Extensions.Localization;
 using Telegram.Bot.Exceptions;
 
@@ -28,13 +27,8 @@ public class ProcessRatingCommandHandler : IRequestHandler<ProcessRatingCommand,
 
         if (callbackQueryData.RatingValue != 0)
         {
-            var existingRating = await _mediator.Send(new GetRating(callbackQueryData.ItemId, callbackQueryData.UserId), cancellationToken);
-
-            if (existingRating == null || callbackQueryData.RatingValue != existingRating.Value)
-            {
-                await _mediator.Send(new SetItemRating(callbackQueryData.ItemId, callbackQueryData.UserId, callbackQueryData.RatingValue),
-                    cancellationToken);
-            }
+            await _mediator.Send(new SetItemRating(callbackQueryData.ItemId, callbackQueryData.UserId, callbackQueryData.RatingValue),
+                cancellationToken);
 
             await _bot.AnswerCallbackQueryAsync(callbackQueryData.QueryId, _localizer[nameof(Messages.Recorded)],
                 cancellationToken: cancellationToken);
