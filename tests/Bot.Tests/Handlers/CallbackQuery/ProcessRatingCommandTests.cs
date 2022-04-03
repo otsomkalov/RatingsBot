@@ -9,10 +9,13 @@ using Bot.Requests.Message.Item;
 using Bot.Resources;
 using Core.Models;
 using Core.Requests.Item;
+using Core.Requests.Rating;
 using MediatR;
 using Microsoft.Extensions.Localization;
 using NSubstitute;
+using NSubstitute.ExceptionExtensions;
 using Telegram.Bot;
+using Telegram.Bot.Exceptions;
 using Telegram.Bot.Requests;
 using Xunit;
 using User = Telegram.Bot.Types.User;
@@ -89,6 +92,7 @@ public class ProcessRatingCommandTests
 
         // Assert
 
+        await _mediator.Received().Send(Arg.Is(new GetRating(_item.Id, _user.Id)));
         await _mediator.Received().Send(Arg.Is(new SetItemRating(_item.Id, _user.Id, newRatingValue)));
         await _mediator.Received().Send(Arg.Is(new GetItem(_item.Id)));
         await _mediator.Received().Send(Arg.Is(new GetItemMessageText(_item)));
@@ -128,6 +132,8 @@ public class ProcessRatingCommandTests
     {
         // Arrange
 
+        _mediator.Send(Arg.Is(new GetRating(_item.Id, _user.Id))).Returns(_rating);
+
         var callbackQuery = _callbackQueryComposer
             .With(cq => cq.Data, $"{_item.Id}|r|{_rating.Value}")
             .Without(cq => cq.InlineMessageId)
@@ -139,6 +145,7 @@ public class ProcessRatingCommandTests
 
         // Assert
 
+        await _mediator.Received().Send(Arg.Is(new GetRating(_item.Id, _user.Id)));
         await _mediator.Received().Send(Arg.Is(new GetItem(_item.Id)));
         await _bot.Received().MakeRequestAsync(Arg.Any<AnswerCallbackQueryRequest>());
     }
@@ -161,6 +168,7 @@ public class ProcessRatingCommandTests
 
         // Assert
 
+        await _mediator.Received().Send(Arg.Is(new GetRating(_item.Id, _user.Id)));
         await _mediator.Received().Send(Arg.Is(new SetItemRating(_item.Id, _user.Id, ratingValue)));
         await _mediator.Received().Send(Arg.Is(new GetItem(_item.Id)));
         await _mediator.Received().Send(Arg.Is(new GetItemMessageText(_item)));
@@ -195,6 +203,8 @@ public class ProcessRatingCommandTests
     {
         // Arrange
 
+        _mediator.Send(Arg.Is(new GetRating(_item.Id, _user.Id))).Returns(_rating);
+
         var callbackQuery = _callbackQueryComposer
             .With(cq => cq.Data, $"{_item.Id}|r|{_rating.Value}")
             .Without(cq => cq.Message)
@@ -206,7 +216,33 @@ public class ProcessRatingCommandTests
 
         // Assert
 
+        await _mediator.Received().Send(Arg.Is(new GetRating(_item.Id, _user.Id)));
         await _mediator.Received().Send(Arg.Is(new GetItem(_item.Id)));
         await _bot.Received().MakeRequestAsync(Arg.Any<AnswerCallbackQueryRequest>());
+    }
+
+    [Fact]
+    public async Task InlineMessageCallbackQuery_SetItemSameRating_SameMessageText_Works()
+    {
+        // Arrange
+
+        _mediator.Send(Arg.Is(new GetRating(_item.Id, _user.Id))).Returns(_rating);
+
+        _bot.MakeRequestAsync(Arg.Any<EditInlineMessageTextRequest>()).Throws(new ApiRequestException("test"));
+
+        var callbackQuery = _callbackQueryComposer
+            .With(cq => cq.Data, $"{_item.Id}|r|{_rating.Value}")
+            .Without(cq => cq.Message)
+            .Create();
+
+        // Act
+
+        await _sut.Handle(new(new(callbackQuery)), CancellationToken.None);
+
+        // Assert
+
+        await _mediator.Received().Send(Arg.Is(new GetRating(_item.Id, _user.Id)));
+        await _mediator.Received().Send(Arg.Is(new GetItem(_item.Id)));
+        await _bot.Received(2).MakeRequestAsync(Arg.Any<AnswerCallbackQueryRequest>());
     }
 }

@@ -3,7 +3,9 @@ using Bot.Requests.InlineKeyboardMarkup;
 using Bot.Requests.Message.Item;
 using Bot.Resources;
 using Core.Requests.Item;
+using Core.Requests.Rating;
 using Microsoft.Extensions.Localization;
+using Telegram.Bot.Exceptions;
 
 namespace Bot.Handlers.CallbackQuery;
 
@@ -26,43 +28,43 @@ public class ProcessRatingCommandHandler : IRequestHandler<ProcessRatingCommand,
 
         if (callbackQueryData.RatingValue != 0)
         {
-            var command = new SetItemRating(callbackQueryData.ItemId, callbackQueryData.UserId, callbackQueryData.RatingValue);
+            var existingRating = await _mediator.Send(new GetRating(callbackQueryData.ItemId, callbackQueryData.UserId), cancellationToken);
 
-            await _mediator.Send(command, cancellationToken);
+            if (existingRating == null || callbackQueryData.RatingValue != existingRating.Value)
+            {
+                await _mediator.Send(new SetItemRating(callbackQueryData.ItemId, callbackQueryData.UserId, callbackQueryData.RatingValue),
+                    cancellationToken);
+            }
 
             await _bot.AnswerCallbackQueryAsync(callbackQueryData.QueryId, _localizer[nameof(Messages.Recorded)],
                 cancellationToken: cancellationToken);
         }
 
         var item = await _mediator.Send(new GetItem(callbackQueryData.ItemId), cancellationToken);
-
-        var currentUserRating = item.Ratings.FirstOrDefault(r => r.UserId == callbackQueryData.UserId);
-
-        if (currentUserRating?.Value == callbackQueryData.RatingValue)
-        {
-            await _bot.AnswerCallbackQueryAsync(callbackQueryData.QueryId,
-                _localizer[nameof(Messages.Recorded)],
-                cancellationToken: cancellationToken);
-
-            return Unit.Value;
-        }
-
         var messageText = await _mediator.Send(new GetItemMessageText(item), cancellationToken);
         var ratingsMarkup = await _mediator.Send(new GetRatingsMarkup(item.Id), cancellationToken);
 
-        if (callbackQueryData.InlineMessageId != null)
+        try
         {
-            await _bot.EditMessageTextAsync(callbackQueryData.InlineMessageId,
-                messageText,
-                replyMarkup: ratingsMarkup,
-                cancellationToken: cancellationToken);
+            if (callbackQueryData.InlineMessageId != null)
+            {
+                await _bot.EditMessageTextAsync(callbackQueryData.InlineMessageId,
+                    messageText,
+                    replyMarkup: ratingsMarkup,
+                    cancellationToken: cancellationToken);
+            }
+            else
+            {
+                await _bot.EditMessageTextAsync(new(callbackQueryData.UserId),
+                    callbackQueryData.MessageId.Value,
+                    messageText,
+                    replyMarkup: ratingsMarkup,
+                    cancellationToken: cancellationToken);
+            }
         }
-        else
+        catch (ApiRequestException)
         {
-            await _bot.EditMessageTextAsync(new(callbackQueryData.UserId),
-                callbackQueryData.MessageId.Value,
-                messageText,
-                replyMarkup: ratingsMarkup,
+            await _bot.AnswerCallbackQueryAsync(callbackQueryData.QueryId, _localizer[nameof(Messages.Refreshed)],
                 cancellationToken: cancellationToken);
         }
 
