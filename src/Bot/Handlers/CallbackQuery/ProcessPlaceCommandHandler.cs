@@ -24,7 +24,8 @@ public class ProcessPlaceCommandHandler : IRequestHandler<ProcessPlaceCommand, U
 
         if (callbackQueryData.EntityId is 0 or -1)
         {
-            var placesMarkup = await _mediator.Send(new GetInlineKeyboardMarkup(callbackQueryData.ItemId, ReplyMarkup.Place),
+            var placesMarkup = await _mediator.Send(
+                new GetInlineKeyboardMarkup(callbackQueryData.ItemId, ReplyMarkup.Place, callbackQueryData.Page),
                 cancellationToken);
 
             await _mediator.Send(new EditMessageReplyMarkup(callbackQueryData, placesMarkup), cancellationToken);

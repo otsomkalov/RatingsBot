@@ -88,7 +88,7 @@ public class ProcessPlaceCommandTests
 
         // Assert
 
-        await _mediator.Received().Send(Arg.Is(new GetInlineKeyboardMarkup(_itemId, ReplyMarkup.Place)));
+        await _mediator.Received().Send(Arg.Is(new GetInlineKeyboardMarkup(_itemId, ReplyMarkup.Place, _page)));
         await _mediator.Received().Send(Arg.Any<EditMessageReplyMarkup>());
     }
 }

@@ -164,6 +164,7 @@ public class GetInlineKeyboardMarkupTests
         lastRowButtons.Length.Should().Be(2);
         lastRowButtons[0].Text.Should().Be(ReplyMarkup.RefreshButtonText);
         lastRowButtons[1].Text.Should().Be(ReplyMarkup.NextPageButtonText);
+        lastRowButtons[1].CallbackData.Should().Be($"{_itemId}{ReplyMarkup.Separator}{ReplyMarkup.Category}{ReplyMarkup.Separator}{1}{ReplyMarkup.Separator}{0}");
     }
 
     [Fact]
@@ -206,8 +207,10 @@ public class GetInlineKeyboardMarkupTests
         lastRowButtons.Length.Should().Be(3);
 
         lastRowButtons[0].Text.Should().Be(ReplyMarkup.PreviousPageButtonText);
+        lastRowButtons[0].CallbackData.Should().Be($"{_itemId}{ReplyMarkup.Separator}{ReplyMarkup.Category}{ReplyMarkup.Separator}{0}{ReplyMarkup.Separator}{0}");
         lastRowButtons[1].Text.Should().Be(ReplyMarkup.RefreshButtonText);
         lastRowButtons[2].Text.Should().Be(ReplyMarkup.NextPageButtonText);
+        lastRowButtons[2].CallbackData.Should().Be($"{_itemId}{ReplyMarkup.Separator}{ReplyMarkup.Category}{ReplyMarkup.Separator}{2}{ReplyMarkup.Separator}{0}");
     }
 
     [Fact]
@@ -250,6 +253,7 @@ public class GetInlineKeyboardMarkupTests
         lastRowButtons.Length.Should().Be(2);
 
         lastRowButtons[0].Text.Should().Be(ReplyMarkup.PreviousPageButtonText);
+        lastRowButtons[0].CallbackData.Should().Be($"{_itemId}{ReplyMarkup.Separator}{ReplyMarkup.Category}{ReplyMarkup.Separator}{0}{ReplyMarkup.Separator}{0}");
         lastRowButtons[1].Text.Should().Be(ReplyMarkup.RefreshButtonText);
     }
 
@@ -293,6 +297,7 @@ public class GetInlineKeyboardMarkupTests
         lastRowButtons.Length.Should().Be(2);
 
         lastRowButtons[0].Text.Should().Be(ReplyMarkup.PreviousPageButtonText);
+        lastRowButtons[0].CallbackData.Should().Be($"{_itemId}{ReplyMarkup.Separator}{ReplyMarkup.Category}{ReplyMarkup.Separator}{0}{ReplyMarkup.Separator}{0}");
         lastRowButtons[1].Text.Should().Be(ReplyMarkup.RefreshButtonText);
     }
 

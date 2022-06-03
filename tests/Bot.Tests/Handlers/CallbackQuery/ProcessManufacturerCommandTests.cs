@@ -90,7 +90,7 @@ public class ProcessManufacturerCommandTests
 
         // Assert
 
-        await _mediator.Received().Send(Arg.Is(new GetInlineKeyboardMarkup(_itemId, ReplyMarkup.Manufacturer)));
+        await _mediator.Received().Send(Arg.Is(new GetInlineKeyboardMarkup(_itemId, ReplyMarkup.Manufacturer, _page)));
         await _mediator.Received().Send(Arg.Any<EditMessageReplyMarkup>());
     }
 }
