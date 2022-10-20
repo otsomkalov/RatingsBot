@@ -24,12 +24,14 @@ variables:
 
 steps:
   - task: DotNetCoreCLI@2
-    name: Restore
+    name: restore
+    displayName: Restore packages
     inputs:
       command: 'restore'
       arguments: '-r $(Runtime)'
   - task: DotNetCoreCLI@2
-    name: Build
+    name: build
+    displayName: Build project
     inputs:
       command: 'build'
       configuration: 'Release'
@@ -37,13 +39,15 @@ steps:
       arguments: '-r $(Runtime) -c Release --no-self-contained'
       publishWebProjects: false
   - task: DotNetCoreCLI@2
-    name: Run tests
+    name: test
+    displayName: Run tests
     inputs:
       command: test
       projects: '**/*Tests/*.csproj'
       arguments: '--configuration Release'
   - task: DotNetCoreCLI@2
-    name: Publish
+    name: publish
+    displayName: Publish project
     inputs:
       command: 'publish'
       configuration: 'Release'
@@ -51,7 +55,8 @@ steps:
       arguments: '-r $(Runtime) -c Release -p:PublishReadyToRun=true -o $(Build.ArtifactStagingDirectory)'
       publishWebProjects: false
   - task: PublishBuildArtifacts@1
-    name: Pack
+    name: pack
+    displayName: Pack build
     inputs:
       PathtoPublish: '$(Build.ArtifactStagingDirectory)'
       ArtifactName: 'drop'
