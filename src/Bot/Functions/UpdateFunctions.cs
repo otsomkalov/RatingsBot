@@ -1,27 +1,27 @@
 ﻿using Bot.Requests.CallbackQuery;
 using Bot.Requests.InlineQuery;
 using Bot.Requests.Message;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.Extensions.Logging;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
-namespace Bot.Controllers;
+namespace Bot.Functions;
 
-[ApiController]
-[Route("update")]
-public class UpdateController : ControllerBase
+public class UpdateFunctions
 {
-    private readonly ILogger<UpdateController> _logger;
+    private readonly ILogger<UpdateFunctions> _logger;
     private readonly IMediator _mediator;
 
-    public UpdateController(ILogger<UpdateController> logger, IMediator mediator)
+    public UpdateFunctions(ILogger<UpdateFunctions> logger, IMediator mediator)
     {
         _logger = logger;
         _mediator = mediator;
     }
 
-    [HttpPost]
-    public async Task HandleUpdateAsync(Update update)
+    [FunctionName(nameof(HandleUpdateAsync))]
+    public async Task HandleUpdateAsync([HttpTrigger(AuthorizationLevel.Function, "POST", Route = "update")]Update update)
     {
         IRequest<Unit> command = update.Type switch
         {

@@ -2,50 +2,56 @@ trigger:
   branches:
     include:
       - main
+  paths:
+    exclude:
+      - README.MD
+      - '.github/*'
 
-pr: none
+pr:
+  branches:
+    include:
+      - main
+  paths:
+    exclude:
+      - README.MD
+      - '.github/*'
 
 pool:
   vmImage: 'ubuntu-latest'
 
-stages:
-  - stage: Build
-    displayName: Build image
-    jobs:
-      - job: Build
-        displayName: Build and push the Docker image
-        steps:
-          - task: DotNetCoreCLI@2
-            displayName: 'Restore packages'
-            inputs:
-              command: restore
-              projects: '**/*.csproj'
-          - task: DotNetCoreCLI@2
-            displayName: 'Build project'
-            inputs:
-              command: build
-              arguments: "--configuration Release"
-          - task: DotNetCoreCLI@2
-            displayName: 'Run tests'
-            inputs:
-              command: test
-              projects: '**/*Tests/*.csproj'
-              arguments: '--configuration Release'
-          - task: Docker@1
-            displayName: 'Build and push the Docker image'
-            inputs:
-              containerregistrytype: 'Container Registry'
-              dockerRegistryEndpoint: 'DockerHub'
-              command: 'Build an image'
-              dockerFile: '**/Dockerfile'
-              imageName: '$(ImageName)'
-              includeLatestTag: true
-              useDefaultContext: false
-              buildContext: './src/'
-          - task: Docker@1
-            displayName: 'Push the Docker image to Dockerhub'
-            inputs:
-              containerregistrytype: 'Container Registry'
-              dockerRegistryEndpoint: 'DockerHub'
-              command: 'Push an image'
-              imageName: '$(ImageName)'
+variables:
+  Runtime: 'linux-x64'
+
+steps:
+  - task: DotNetCoreCLI@2
+    name: Restore
+    inputs:
+      command: 'restore'
+      arguments: '-r $(Runtime)'
+  - task: DotNetCoreCLI@2
+    name: Build
+    inputs:
+      command: 'build'
+      configuration: 'Release'
+      projects: '**/Bot.fsproj'
+      arguments: '-r $(Runtime) -c Release --no-self-contained'
+      publishWebProjects: false
+  - task: DotNetCoreCLI@2
+    name: Run tests
+    inputs:
+      command: test
+      projects: '**/*Tests/*.csproj'
+      arguments: '--configuration Release'
+  - task: DotNetCoreCLI@2
+    name: Publish
+    inputs:
+      command: 'publish'
+      configuration: 'Release'
+      projects: '**/Bot.fsproj'
+      arguments: '-r $(Runtime) -c Release -p:PublishReadyToRun=true -o $(Build.ArtifactStagingDirectory)'
+      publishWebProjects: false
+  - task: PublishBuildArtifacts@1
+    name: Pack
+    inputs:
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      ArtifactName: 'drop'
