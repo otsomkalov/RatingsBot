@@ -8,16 +8,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
-    <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.1.0" />
-    <PackageReference Include="Microsoft.Extensions.Localization" Version="6.0.10" />
-    <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.1.1" />
-    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1"/>
+    <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.1.0"/>
+    <PackageReference Include="Microsoft.Extensions.Localization" Version="6.0.10"/>
+    <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.1.1"/>
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1"/>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Telegram.Bot" Version="17.0.0" />
+    <PackageReference Include="Telegram.Bot" Version="17.0.0"/>
   </ItemGroup>
 
   <ItemGroup>
@@ -36,16 +36,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Using Include="System" />
-    <Using Include="MediatR" />
-    <Using Include="Telegram.Bot" />
-    <Using Include="Bot.Helpers" />
-    <Using Include="Bot.Options" />
-    <Using Include="Bot.Extensions" />
+    <Using Include="System"/>
+    <Using Include="MediatR"/>
+    <Using Include="Telegram.Bot"/>
+    <Using Include="Bot.Helpers"/>
+    <Using Include="Bot.Options"/>
+    <Using Include="Bot.Extensions"/>
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Data\Data.csproj" />
+    <ProjectReference Include="..\Data\Data.csproj"/>
   </ItemGroup>
 
   <ItemGroup>
