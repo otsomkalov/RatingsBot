@@ -1,5 +1,6 @@
 ﻿using Core.Services;
 using Core.Services.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace Bot.Extensions;

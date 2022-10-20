@@ -1,0 +1,9 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+    "Telegram__Token": "<Telegram bot token>",
+    "Database__ConnectionString": "<PostgreSQL connection string>"
+  }
+}

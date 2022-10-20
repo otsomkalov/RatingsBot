@@ -1,6 +1,8 @@
 ﻿namespace Bot.Options;
 
-public static class DatabaseOptions
+public class DatabaseOptions
 {
-    public const string ConnectionStringName = "Default";
+    public const string SectionName = "Database";
+
+    public string ConnectionString { get; init; }
 }
